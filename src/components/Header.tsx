@@ -97,7 +97,7 @@ const Header: React.FC<HeaderProps> = ({
           {/* Store name with modern styling */}
           <div className="mb-6">
             <h1 className="text-5xl font-black leading-tight text-mcdonalds-yellow drop-shadow-lg tracking-tight">
-              McDonald's Hitchin
+              McDonald&apos;s Hitchin
             </h1>
             <p className="text-xl font-medium text-white/90 mt-1 tracking-widest uppercase">
               A505 Nightingale Road

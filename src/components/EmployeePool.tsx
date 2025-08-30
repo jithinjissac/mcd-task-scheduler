@@ -48,7 +48,7 @@ const EmployeePool: React.FC<EmployeePoolProps> = ({
       employee.shiftEnd.includes(searchTerm) ||
       (employee.task && employee.task.toLowerCase().includes(searchTerm.toLowerCase()))
     );
-  }, [employees, assignments, currentDayPart, searchTerm]);
+  }, [employees, searchTerm, isEmployeeAssigned]);
 
   const assignedEmployees = employees.filter(emp => isEmployeeAssigned(emp.name));
   const totalEmployees = employees.length;
@@ -118,7 +118,7 @@ const EmployeePool: React.FC<EmployeePoolProps> = ({
                 </button>
               </div>
             ) : searchTerm ? (
-              <p className="text-lg">No employees found matching "{searchTerm}"</p>
+              <p className="text-lg">No employees found matching &ldquo;{searchTerm}&rdquo;</p>
             ) : (
               <p className="text-lg">All employees are assigned</p>
             )}
