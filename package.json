@@ -1,0 +1,39 @@
+{
+  "name": "mcdonalds-task-scheduler",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "keywords": [
+    "mcdonalds",
+    "task-scheduler",
+    "employee-management",
+    "restaurant"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@tailwindcss/postcss": "^4.1.12",
+    "@types/node": "^24.3.0",
+    "@types/papaparse": "^5.3.16",
+    "@types/react": "^19.1.12",
+    "autoprefixer": "^10.4.21",
+    "jspdf": "^3.0.2",
+    "lucide-react": "^0.542.0",
+    "next": "^15.5.2",
+    "papaparse": "^5.5.3",
+    "postcss": "^8.5.6",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "tailwindcss": "^4.1.12",
+    "typescript": "^5.9.2"
+  },
+  "devDependencies": {
+    "eslint": "^9.34.0",
+    "eslint-config-next": "^15.5.2"
+  }
+}
