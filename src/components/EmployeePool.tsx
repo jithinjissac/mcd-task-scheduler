@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { Employee, Assignment } from '@/types';
 import EmployeeCard from './EmployeeCard';
 import { Users, Search, Upload } from 'lucide-react';
@@ -23,7 +23,7 @@ const EmployeePool: React.FC<EmployeePoolProps> = ({
   const [searchTerm, setSearchTerm] = useState('');
 
   // Check if an employee is assigned in the current day part
-  const isEmployeeAssigned = (employeeName: string): boolean => {
+  const isEmployeeAssigned = useCallback((employeeName: string): boolean => {
     const dayPartAssignments = assignments[currentDayPart];
     if (!dayPartAssignments) return false;
 
@@ -32,7 +32,7 @@ const EmployeePool: React.FC<EmployeePoolProps> = ({
         columnAssignments.includes(employeeName)
       )
     );
-  };
+  }, [assignments, currentDayPart]);
 
   // Filter employees based on search term and assignment status
   const filteredEmployees = useMemo(() => {
