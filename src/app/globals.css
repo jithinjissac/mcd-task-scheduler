@@ -5,13 +5,5 @@
 /* Import modern styles */
 @import './modern.css';
 
-/* Ensure base styles are applied */
-html, body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
-}
-
-* {
-  box-sizing: border-box;
-}
+/* Import custom McDonald's styles */
+@import './custom.css';

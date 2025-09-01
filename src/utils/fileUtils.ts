@@ -11,17 +11,41 @@ export const parseEmployeeFile = (file: File): Promise<FileUploadResult> => {
         const text = event.target?.result as string;
         
         Papa.parse(text, {
-          header: true,
+          header: false, // Parse without headers first
           skipEmptyLines: true,
           complete: (results) => {
             try {
-              const employees: Employee[] = results.data.map((row: any) => {
+              // Skip first row (day header) and use row 2 (index 1) as headers, skip row 3 (sub-headers)
+              const rawData = results.data;
+              if (rawData.length < 4) {
+                resolve({
+                  success: false,
+                  error: 'CSV file must have at least 4 rows (headers + data)'
+                });
+                return;
+              }
+
+              // Skip row 0 (day header), use row 1 (index 0 after slice) as headers
+              const dataAfterSkip = rawData.slice(1);
+              const headers = dataAfterSkip[0] as string[]; // Row 1 becomes index 0
+              // Skip row 2 (sub-headers, now index 1) and start data from row 3 (now index 2)
+              const dataRows = dataAfterSkip.slice(2);
+
+              const employees: Employee[] = dataRows.map((row: any) => {
+                // Create object from headers and row data
+                const rowObj: any = {};
+                headers.forEach((header, index) => {
+                  if (header && header.trim()) {
+                    rowObj[header.trim()] = row[index] || '';
+                  }
+                });
+
                 // Handle different possible column names
-                const name = row['Employee Name'] || row['Name'] || row['employee_name'] || row['name'] || '';
-                const minor = parseBoolean(row['Minor'] || row['minor'] || row['Minor Employee'] || 'false');
-                const shiftStart = row['Shift Start Time'] || row['Shift Start'] || row['shift_start'] || '';
-                const shiftEnd = row['Shift End Time'] || row['Shift End'] || row['shift_end'] || '';
-                const task = row['Task'] || row['task'] || '';
+                const name = rowObj['Employee Name'] || rowObj['Name'] || rowObj['employee_name'] || rowObj['name'] || '';
+                const minor = parseBoolean(rowObj['Minor'] || rowObj['minor'] || rowObj['Minor Employee'] || 'false');
+                const shiftStart = rowObj['Shift Start Time'] || rowObj['Shift Start'] || rowObj['shift_start'] || '';
+                const shiftEnd = rowObj['Shift End Time'] || rowObj['Shift End'] || rowObj['shift_end'] || '';
+                const task = rowObj['Task'] || rowObj['task'] || '';
 
                 // Validate required fields
                 if (!name.trim()) {

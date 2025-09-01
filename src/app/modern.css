@@ -919,6 +919,30 @@ body {
 }
 
 /* Responsive design */
+
+/* Tablet landscape (1024px - 769px) - 4 columns */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .assignment-grid {
+    padding: var(--space-md);
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-md);
+  }
+  
+  .station-card {
+    min-width: 0;
+  }
+  
+  .station-title {
+    font-size: 0.85rem;
+  }
+  
+  .task-header {
+    padding: var(--space-xs) var(--space-sm);
+    font-size: 0.75rem;
+  }
+}
+
+/* Mobile and small tablets (768px and below) */
 @media (max-width: 768px) {
   .app-container {
     padding: var(--space-sm);

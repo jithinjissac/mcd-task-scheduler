@@ -12,7 +12,7 @@ const DayPartTabs: React.FC<DayPartTabsProps> = ({
   currentDayPart,
   onDayPartChange
 }) => {
-  const dayParts: DayPart[] = ['Breakfast', 'Day Part 1', 'Day Part 2'];
+  const dayParts: DayPart[] = ['Breakfast', 'Lunch'];
 
   const getTabStyles = (dayPart: DayPart) => {
     const isActive = currentDayPart === dayPart;
@@ -29,10 +29,8 @@ const DayPartTabs: React.FC<DayPartTabsProps> = ({
     switch (dayPart) {
       case 'Breakfast':
         return 'Morning operations with breakfast-specific stations';
-      case 'Day Part 1':
-        return 'Lunch operations - first shift';
-      case 'Day Part 2':
-        return 'Dinner operations - second shift';
+      case 'Lunch':
+        return 'Lunch operations with full menu service';
       default:
         return '';
     }

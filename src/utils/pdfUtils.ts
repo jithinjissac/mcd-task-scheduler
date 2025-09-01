@@ -16,55 +16,55 @@ export const generatePDF = (
 
     const pageWidth = pdf.internal.pageSize.getWidth();
     const pageHeight = pdf.internal.pageSize.getHeight();
-    const margin = 15;
-    const headerHeight = 20;
-    const footerHeight = 15;
+    const margin = 10;
+    const headerHeight = 15;
+    const footerHeight = 10;
     const contentHeight = pageHeight - headerHeight - footerHeight - (2 * margin);
 
     // Helper function to add header to page
     const addHeader = (pageTitle: string, date: Date) => {
-      // Make title more prominent with larger font and better positioning
-      pdf.setFontSize(20);
-      pdf.setFont('helvetica', 'bold');
-      pdf.text("McDonald's Station/Task Schedule", margin, margin + 10);
-      
-      // Make date and schedule name prominent
-      pdf.setFontSize(16);
-      pdf.setFont('helvetica', 'bold');
-      pdf.text(pageTitle, margin, margin + 22);
-      
+      // Make title more compact
       pdf.setFontSize(14);
       pdf.setFont('helvetica', 'bold');
-      pdf.text(`Date: ${date.toLocaleDateString()}`, pageWidth - margin - 80, margin + 10);
+      pdf.text("McDonald's Station/Task Schedule", margin, margin + 8);
       
+      // Make date and schedule name more compact
       pdf.setFontSize(12);
+      pdf.setFont('helvetica', 'bold');
+      pdf.text(pageTitle, margin, margin + 16);
+      
+      pdf.setFontSize(10);
+      pdf.setFont('helvetica', 'bold');
+      pdf.text(`Date: ${date.toLocaleDateString()}`, pageWidth - margin - 60, margin + 8);
+      
+      pdf.setFontSize(8);
       pdf.setFont('helvetica', 'normal');
-      pdf.text(`Generated: ${new Date().toLocaleString()}`, pageWidth - margin - 80, margin + 22);
+      pdf.text(`Generated: ${new Date().toLocaleString()}`, pageWidth - margin - 60, margin + 16);
       
       // Draw line under header
       pdf.setLineWidth(0.5);
-      pdf.line(margin, margin + headerHeight + 5, pageWidth - margin, margin + headerHeight + 5);
+      pdf.line(margin, margin + headerHeight + 3, pageWidth - margin, margin + headerHeight + 3);
     };
 
     // Helper function to add footer to page
     const addFooter = (pageNumber: number) => {
-      const footerY = pageHeight - margin - 5;
+      const footerY = pageHeight - margin - 3;
       
       // Draw line above footer
       pdf.setLineWidth(0.5);
-      pdf.line(margin, footerY - 10, pageWidth - margin, footerY - 10);
+      pdf.line(margin, footerY - 6, pageWidth - margin, footerY - 6);
       
-      pdf.setFontSize(10);
+      pdf.setFontSize(8);
       pdf.setFont('helvetica', 'normal');
       pdf.text(`Printed by: McDonald's Task Scheduler - Burgernomics`, margin, footerY);
-      pdf.text(`Page ${pageNumber}`, pageWidth - margin - 20, footerY);
+      pdf.text(`Page ${pageNumber}`, pageWidth - margin - 15, footerY);
     };
 
     // Helper function to add shift manager section with actual assignments and shift times
     const addShiftManagerSection = (y: number, dayPartAssignments: any) => {
       const shiftManagerAssignments = dayPartAssignments?.['shift_manager']?.['Manager on Duty'] || [];
       
-      pdf.setFontSize(14);
+      pdf.setFontSize(10);
       pdf.setFont('helvetica', 'bold');
       
       if (shiftManagerAssignments.length > 0) {
@@ -88,40 +88,40 @@ export const generatePDF = (
         pdf.text('Shift Manager: ________________', margin, y);
       }
       
-      return y + 12;
+      return y + 8;
     };
 
     // Helper function to draw a station box
     const drawStationBox = (x: number, y: number, width: number, height: number, title: string, columns: string[], stationId: string, dayPartAssignments: any) => {
       // Draw station title box
       pdf.setLineWidth(0.5);
-      pdf.rect(x, y, width, 8, 'S');
-      pdf.setFontSize(12);
+      pdf.rect(x, y, width, 6, 'S');
+      pdf.setFontSize(8);
       pdf.setFont('helvetica', 'bold');
       
       // Center the title text
       const textWidth = pdf.getTextWidth(title);
       const textX = x + (width - textWidth) / 2;
-      pdf.text(title, textX, y + 5.5);
+      pdf.text(title, textX, y + 4);
 
-      let currentY = y + 8;
+      let currentY = y + 6;
       
       // Draw column boxes with labels and values on same line
       columns.forEach(column => {
         const columnAssignments = dayPartAssignments?.[stationId]?.[column] || [];
-        const columnBoxHeight = Math.max(12, columnAssignments.length * 4 + 8); // Reduced height since text is on same line
+        const columnBoxHeight = Math.max(8, columnAssignments.length * 3 + 5);
         
         pdf.rect(x, currentY, width, columnBoxHeight, 'S');
         
         // Column title on the left side
         pdf.setFont('helvetica', 'bold');
-        pdf.setFontSize(12);
-        pdf.text(column + ":", x + 2, currentY + 6);
+        pdf.setFontSize(7);
+        pdf.text(column + ":", x + 1, currentY + 4);
         
         // Add employee names with shift times on the same line, starting after the column title
         const titleWidth = pdf.getTextWidth(column + ": ");
-        let textX = x + titleWidth + 4;
-        let textY = currentY + 6;
+        let textX = x + titleWidth + 2;
+        let textY = currentY + 4;
         
         columnAssignments.forEach((employeeName: string, index: number) => {
           const employee = employees.find(emp => emp.name === employeeName);
@@ -137,17 +137,17 @@ export const generatePDF = (
           }
           
           pdf.setFont('helvetica', 'normal');
-          pdf.setFontSize(14); // Increased from 12 to 14 for better readability
+          pdf.setFontSize(6);
           
           // Check if text fits on current line, if not move to next line
           const employeeTextWidth = pdf.getTextWidth(text);
-          if (textX + employeeTextWidth > x + width - 2) {
-            textY += 5; // Increased line spacing for larger font
-            textX = x + 2;
+          if (textX + employeeTextWidth > x + width - 1) {
+            textY += 3;
+            textX = x + titleWidth + 2;
           }
           
           pdf.text(text, textX, textY);
-          textX += employeeTextWidth + 8; // Add some spacing between names
+          textX += employeeTextWidth + 4; // Add some spacing between names
         });
         
         currentY += columnBoxHeight;
@@ -170,47 +170,47 @@ export const generatePDF = (
       
       // Draw title box
       pdf.setLineWidth(0.5);
-      pdf.rect(x, y, width, 8, 'S');
-      pdf.setFontSize(12);
+      pdf.rect(x, y, width, 6, 'S');
+      pdf.setFontSize(8);
       pdf.setFont('helvetica', 'bold');
       
       // Center the title text
       const textWidth = pdf.getTextWidth(title);
       const textX = x + (width - textWidth) / 2;
-      pdf.text(title, textX, y + 5.5);
+      pdf.text(title, textX, y + 4);
 
-      let currentY = y + 8;
+      let currentY = y + 6;
       const columnWidth = width / 2; // Two columns: Item and Day
       
       // Draw column headers
       columns.forEach((column, index) => {
         const colX = x + (index * columnWidth);
-        pdf.rect(colX, currentY, columnWidth, 6, 'S');
+        pdf.rect(colX, currentY, columnWidth, 4, 'S');
         pdf.setFont('helvetica', 'bold');
-        pdf.setFontSize(12);
+        pdf.setFontSize(7);
         const colTextWidth = pdf.getTextWidth(column);
         const colTextX = colX + (columnWidth - colTextWidth) / 2;
-        pdf.text(column, colTextX, currentY + 4);
+        pdf.text(column, colTextX, currentY + 3);
       });
       
-      currentY += 6;
+      currentY += 4;
       
       // Draw content rows with DFS items and days
       dfsItems.forEach((item, rowIndex) => {
         // Item column
-        pdf.rect(x, currentY, columnWidth, 8, 'S');
+        pdf.rect(x, currentY, columnWidth, 5, 'S');
         pdf.setFont('helvetica', 'normal');
-        pdf.setFontSize(12);
-        const lines = pdf.splitTextToSize(item.label, columnWidth - 4);
-        pdf.text(lines, x + 2, currentY + 5);
+        pdf.setFontSize(6);
+        const lines = pdf.splitTextToSize(item.label, columnWidth - 2);
+        pdf.text(lines, x + 1, currentY + 3);
         
         // Day column with the day value
-        pdf.rect(x + columnWidth, currentY, columnWidth, 8, 'S');
+        pdf.rect(x + columnWidth, currentY, columnWidth, 5, 'S');
         pdf.setFont('helvetica', 'normal');
-        pdf.setFontSize(12);
-        pdf.text(item.day, x + columnWidth + 2, currentY + 5);
+        pdf.setFontSize(6);
+        pdf.text(item.day, x + columnWidth + 1, currentY + 3);
         
-        currentY += 8;
+        currentY += 5;
       });
       
       return currentY;
@@ -230,63 +230,63 @@ export const generatePDF = (
       // Left column stations
       let leftY = currentY;
       const leftX = margin;
-      const stationWidth = 85;
+      const stationWidth = 60;
       
       // Handheld
-      leftY = drawStationBox(leftX, leftY, stationWidth, 25, "Handheld", ["Staff"], "handheld", breakfastAssignments) + 5;
+      leftY = drawStationBox(leftX, leftY, stationWidth, 15, "Handheld", ["Staff"], "handheld", breakfastAssignments) + 3;
       
       // Window 1
-      leftY = drawStationBox(leftX, leftY, stationWidth, 35, "Window 1", ["Order Taker", "Cashier"], "window1", breakfastAssignments) + 5;
+      leftY = drawStationBox(leftX, leftY, stationWidth, 20, "Window 1", ["Order Taker", "Cashier"], "window1", breakfastAssignments) + 3;
       
       // Window 2
-      leftY = drawStationBox(leftX, leftY, stationWidth, 60, "Window 2", ["Presenter", "Checker", "Runner", "Holds"], "window2", breakfastAssignments) + 5;
+      leftY = drawStationBox(leftX, leftY, stationWidth, 35, "Window 2", ["Presenter", "Checker", "Runner", "Holds"], "window2", breakfastAssignments) + 3;
       
       // Front Hand Wash
-      leftY = drawStationBox(leftX, leftY, stationWidth, 25, "Front Hand Wash", ["Staff"], "front_hand_wash", breakfastAssignments) + 5;
+      leftY = drawStationBox(leftX, leftY, stationWidth, 15, "Front Hand Wash", ["Staff"], "front_hand_wash", breakfastAssignments) + 3;
       
       // Order Assembly
-      leftY = drawStationBox(leftX, leftY, stationWidth, 75, "Order Assembly", ["1. R/P", "2. R/P", "3. Delivery checker", "4. Expeditator", "5. Delivery Drinks"], "order_assembly", breakfastAssignments) + 5;
+      leftY = drawStationBox(leftX, leftY, stationWidth, 45, "Order Assembly", ["1. R/P", "2. R/P", "3. Delivery checker", "4. Expeditator", "5. Delivery Drinks"], "order_assembly", breakfastAssignments) + 3;
       
       // Middle column stations
       let middleY = currentY;
-      const middleX = leftX + stationWidth + 10;
+      const middleX = leftX + stationWidth + 8;
       
       // Kitchen Leader/Hand Wash
-      middleY = drawStationBox(middleX, middleY, stationWidth, 25, "Kitchen Leader/Hand Wash", ["Staff"], "kitchen_leader", breakfastAssignments) + 5;
+      middleY = drawStationBox(middleX, middleY, stationWidth, 15, "Kitchen Leader/Hand Wash", ["Staff"], "kitchen_leader", breakfastAssignments) + 3;
       
       // Line 1
-      middleY = drawStationBox(middleX, middleY, stationWidth, 35, "Line 1", ["Screen", "Rolls"], "line1", breakfastAssignments) + 5;
+      middleY = drawStationBox(middleX, middleY, stationWidth, 20, "Line 1", ["Screen", "Rolls"], "line1", breakfastAssignments) + 3;
       
       // Line 2
-      middleY = drawStationBox(middleX, middleY, stationWidth, 35, "Line 2", ["Screen", "Rolls"], "line2", breakfastAssignments) + 5;
+      middleY = drawStationBox(middleX, middleY, stationWidth, 20, "Line 2", ["Screen", "Rolls"], "line2", breakfastAssignments) + 3;
       
       // Batch
-      middleY = drawStationBox(middleX, middleY, stationWidth, 45, "Batch", ["Muffins", "Sausage", "Eggs"], "batch", breakfastAssignments) + 5;
+      middleY = drawStationBox(middleX, middleY, stationWidth, 25, "Batch", ["Muffins", "Sausage", "Eggs"], "batch", breakfastAssignments) + 3;
       
       // Oven
-      middleY = drawStationBox(middleX, middleY, stationWidth, 25, "Oven", ["Staff"], "oven", breakfastAssignments) + 5;
+      middleY = drawStationBox(middleX, middleY, stationWidth, 15, "Oven", ["Staff"], "oven", breakfastAssignments) + 3;
       
       // Backroom/Change Over
-      middleY = drawStationBox(middleX, middleY, stationWidth, 25, "Backroom/Change Over", ["Staff"], "backroom", breakfastAssignments) + 5;
+      middleY = drawStationBox(middleX, middleY, stationWidth, 15, "Backroom/Change Over", ["Staff"], "backroom", breakfastAssignments) + 3;
       
       // Hash browns
-      drawStationBox(middleX, middleY, stationWidth, 25, "Hash browns", ["Staff"], "hash_browns", breakfastAssignments);
+      drawStationBox(middleX, middleY, stationWidth, 15, "Hash browns", ["Staff"], "hash_browns", breakfastAssignments);
       
       // Right column stations
       let rightY = currentY;
-      const rightX = middleX + stationWidth + 10;
+      const rightX = middleX + stationWidth + 8;
       
       // Customer Care
-      rightY = drawStationBox(rightX, rightY, stationWidth, 25, "Customer Care", ["Staff"], "customer_care", breakfastAssignments) + 5;
+      rightY = drawStationBox(rightX, rightY, stationWidth, 15, "Customer Care", ["Staff"], "customer_care", breakfastAssignments) + 3;
       
       // Beverage Cell
-      rightY = drawStationBox(rightX, rightY, stationWidth, 45, "Beverage Cell", ["Soft Drinks", "Shakes", "Hot Drinks"], "beverage_cell", breakfastAssignments) + 5;
+      rightY = drawStationBox(rightX, rightY, stationWidth, 25, "Beverage Cell", ["Soft Drinks", "Shakes", "Hot Drinks"], "beverage_cell", breakfastAssignments) + 3;
       
       // Breaks
-      rightY = drawStationBox(rightX, rightY, stationWidth, 35, "Breaks", ["Kitchen", "Front"], "breaks", breakfastAssignments) + 5;
+      rightY = drawStationBox(rightX, rightY, stationWidth, 20, "Breaks", ["Kitchen", "Front"], "breaks", breakfastAssignments) + 3;
       
       // DIVE
-      rightY = drawStationBox(rightX, rightY, stationWidth, 35, "DIVE", ["09:00", "11:00"], "dive", breakfastAssignments) + 5;
+      rightY = drawStationBox(rightX, rightY, stationWidth, 20, "DIVE", ["09:00", "11:00"], "dive", breakfastAssignments) + 3;
       
       // DFS discards and Calibrations
       drawDFSSection(rightX, rightY, stationWidth);
@@ -295,177 +295,92 @@ export const generatePDF = (
       addFooter(1);
     }
 
-    // Generate Day Part 1 page
-    if (assignments['Day Part 1']) {
+    // Generate Lunch page
+    if (assignments['Lunch']) {
       // Add new page if Breakfast exists
       if (assignments['Breakfast']) {
         pdf.addPage();
       }
       
       // Add header
-      addHeader('Day Part 1 Schedule', selectedDate);
+      addHeader('Lunch Schedule', selectedDate);
       
       // Add shift manager section
-      let currentY = margin + headerHeight + 10;
-      const dayPart1Assignments = assignments['Day Part 1'] || {};
+      let currentY = margin + headerHeight + 6;
+      const dayPart1Assignments = assignments['Lunch'] || {};
       currentY = addShiftManagerSection(currentY, dayPart1Assignments);
-      currentY += 5;
+      currentY += 3;
       
       // Left column stations
       let leftY = currentY;
       const leftX = margin;
-      const stationWidth = 85;
+      const stationWidth = 60;
       
       // Handheld
-      leftY = drawStationBox(leftX, leftY, stationWidth, 30, "Handheld", ["Staff"], "handheld", dayPart1Assignments) + 5;
+      leftY = drawStationBox(leftX, leftY, stationWidth, 18, "Handheld", ["Staff"], "handheld", dayPart1Assignments) + 3;
       
       // Window 1
-      leftY = drawStationBox(leftX, leftY, stationWidth, 30, "Window 1", ["Order Taker", "Cashier"], "window1", dayPart1Assignments) + 5;
+      leftY = drawStationBox(leftX, leftY, stationWidth, 18, "Window 1", ["Order Taker", "Cashier"], "window1", dayPart1Assignments) + 3;
       
       // Window 2
-      leftY = drawStationBox(leftX, leftY, stationWidth, 50, "Window 2", ["Presenter", "Checker", "Runner", "Holds"], "window2", dayPart1Assignments) + 5;
+      leftY = drawStationBox(leftX, leftY, stationWidth, 30, "Window 2", ["Presenter", "Checker", "Runner", "Holds"], "window2", dayPart1Assignments) + 3;
       
       // Front Hand Wash
-      leftY = drawStationBox(leftX, leftY, stationWidth, 25, "Front Hand Wash", ["Staff"], "front_hand_wash", dayPart1Assignments) + 5;
+      leftY = drawStationBox(leftX, leftY, stationWidth, 15, "Front Hand Wash", ["Staff"], "front_hand_wash", dayPart1Assignments) + 3;
       
       // Order Assembly
-      drawStationBox(leftX, leftY, stationWidth, 70, "Order Assembly", ["1. R/P", "2. R/P", "3. Delivery checker", "4. Expeditator", "5. Delivery Drinks"], "order_assembly", dayPart1Assignments);
+      drawStationBox(leftX, leftY, stationWidth, 42, "Order Assembly", ["1. R/P", "2. R/P", "3. Delivery checker", "4. Expeditator", "5. Delivery Drinks"], "order_assembly", dayPart1Assignments);
       
       // Middle column stations
       let middleY = currentY;
-      const middleX = leftX + stationWidth + 10;
+      const middleX = leftX + stationWidth + 8;
       
       // Kitchen Leader/Hand Wash
-      middleY = drawStationBox(middleX, middleY, stationWidth, 25, "Kitchen Leader/Hand Wash", ["Staff"], "kitchen_leader", dayPart1Assignments) + 5;
+      middleY = drawStationBox(middleX, middleY, stationWidth, 15, "Kitchen Leader/Hand Wash", ["Staff"], "kitchen_leader", dayPart1Assignments) + 3;
       
       // Line 1
-      middleY = drawStationBox(middleX, middleY, stationWidth, 45, "Line 1", ["Initiator", "Assembler", "Finisher"], "line1", dayPart1Assignments) + 5;
+      middleY = drawStationBox(middleX, middleY, stationWidth, 25, "Line 1", ["Initiator", "Assembler", "Finisher"], "line1", dayPart1Assignments) + 3;
       
       // Line 2
-      middleY = drawStationBox(middleX, middleY, stationWidth, 45, "Line 2", ["Initiator", "Assembler", "Finisher"], "line2", dayPart1Assignments) + 5;
+      middleY = drawStationBox(middleX, middleY, stationWidth, 25, "Line 2", ["Initiator", "Assembler", "Finisher"], "line2", dayPart1Assignments) + 3;
       
       // Batch Grill
-      middleY = drawStationBox(middleX, middleY, stationWidth, 25, "Batch Grill", ["Staff"], "batch_grill", dayPart1Assignments) + 5;
+      middleY = drawStationBox(middleX, middleY, stationWidth, 15, "Batch Grill", ["Staff"], "batch_grill", dayPart1Assignments) + 3;
       
       // Batch Chicken
-      middleY = drawStationBox(middleX, middleY, stationWidth, 25, "Batch Chicken", ["Staff"], "batch_chicken", dayPart1Assignments) + 5;
+      middleY = drawStationBox(middleX, middleY, stationWidth, 15, "Batch Chicken", ["Staff"], "batch_chicken", dayPart1Assignments) + 3;
       
       // Backroom
-      middleY = drawStationBox(middleX, middleY, stationWidth, 25, "Backroom", ["Staff"], "backroom", dayPart1Assignments) + 5;
+      middleY = drawStationBox(middleX, middleY, stationWidth, 15, "Backroom", ["Staff"], "backroom", dayPart1Assignments) + 3;
       
       // Fries
-      drawStationBox(middleX, middleY, stationWidth, 25, "Fries", ["Staff"], "fries", dayPart1Assignments);
+      drawStationBox(middleX, middleY, stationWidth, 15, "Fries", ["Staff"], "fries", dayPart1Assignments);
       
       // Right column stations
       let rightY = currentY;
-      const rightX = middleX + stationWidth + 10;
+      const rightX = middleX + stationWidth + 8;
       
       // Customer Care
-      rightY = drawStationBox(rightX, rightY, stationWidth, 25, "Customer Care", ["Staff"], "customer_care", dayPart1Assignments) + 5;
+      rightY = drawStationBox(rightX, rightY, stationWidth, 15, "Customer Care", ["Staff"], "customer_care", dayPart1Assignments) + 3;
       
       // Beverage Cell
-      rightY = drawStationBox(rightX, rightY, stationWidth, 45, "Beverage Cell", ["Soft Drinks", "Shakes", "Hot Drinks"], "beverage_cell", dayPart1Assignments) + 5;
+      rightY = drawStationBox(rightX, rightY, stationWidth, 25, "Beverage Cell", ["Soft Drinks", "Shakes", "Hot Drinks"], "beverage_cell", dayPart1Assignments) + 3;
       
       // Breaks
-      rightY = drawStationBox(rightX, rightY, stationWidth, 35, "Breaks", ["Kitchen", "Front"], "breaks", dayPart1Assignments) + 5;
+      rightY = drawStationBox(rightX, rightY, stationWidth, 20, "Breaks", ["Kitchen", "Front"], "breaks", dayPart1Assignments) + 3;
       
       // DIVE
-      rightY = drawStationBox(rightX, rightY, stationWidth, 60, "DIVE", ["11:00", "15:00", "19:00", "CLOSE"], "dive", dayPart1Assignments) + 5;
+      rightY = drawStationBox(rightX, rightY, stationWidth, 30, "DIVE", ["11:00", "15:00", "19:00", "CLOSE"], "dive", dayPart1Assignments) + 3;
       
       // DELIVERY
-      drawStationBox(rightX, rightY, stationWidth, 25, "DELIVERY", ["Staff"], "delivery", dayPart1Assignments);
+      drawStationBox(rightX, rightY, stationWidth, 15, "DELIVERY", ["Staff"], "delivery", dayPart1Assignments);
       
       // Add footer
       const pageNumber = assignments['Breakfast'] ? 2 : 1;
       addFooter(pageNumber);
     }
 
-    // Generate Day Part 2 page
-    if (assignments['Day Part 2']) {
-      // Add new page if Day Part 1 exists
-      if (assignments['Day Part 1']) {
-        pdf.addPage();
-      }
-      
-      // Add header
-      addHeader('Day Part 2 Schedule', selectedDate);
-      
-      // Add shift manager section
-      let currentY = margin + headerHeight + 10;
-      const dayPart2Assignments = assignments['Day Part 2'] || {};
-      currentY = addShiftManagerSection(currentY, dayPart2Assignments);
-      currentY += 5;
-      
-      // Left column stations
-      let leftY = currentY;
-      const leftX = margin;
-      const stationWidth = 85;
-      
-      // Handheld
-      leftY = drawStationBox(leftX, leftY, stationWidth, 30, "Handheld", ["Staff"], "handheld", dayPart2Assignments) + 5;
-      
-      // Window 1
-      leftY = drawStationBox(leftX, leftY, stationWidth, 30, "Window 1", ["Order Taker", "Cashier"], "window1", dayPart2Assignments) + 5;
-      
-      // Window 2
-      leftY = drawStationBox(leftX, leftY, stationWidth, 50, "Window 2", ["Presenter", "Checker", "Runner", "Holds"], "window2", dayPart2Assignments) + 5;
-      
-      // Front Hand Wash
-      leftY = drawStationBox(leftX, leftY, stationWidth, 25, "Front Hand Wash", ["Staff"], "front_hand_wash", dayPart2Assignments) + 5;
-      
-      // Order Assembly
-      drawStationBox(leftX, leftY, stationWidth, 70, "Order Assembly", ["1. R/P", "2. R/P", "3. Delivery checker", "4. Expeditator", "5. Delivery Drinks"], "order_assembly", dayPart2Assignments);
-      
-      // Middle column stations
-      let middleY = currentY;
-      const middleX = leftX + stationWidth + 10;
-      
-      // Kitchen Leader/Hand Wash
-      middleY = drawStationBox(middleX, middleY, stationWidth, 25, "Kitchen Leader/Hand Wash", ["Staff"], "kitchen_leader", dayPart2Assignments) + 5;
-      
-      // Line 1
-      middleY = drawStationBox(middleX, middleY, stationWidth, 45, "Line 1", ["Initiator", "Assembler", "Finisher"], "line1", dayPart2Assignments) + 5;
-      
-      // Line 2
-      middleY = drawStationBox(middleX, middleY, stationWidth, 45, "Line 2", ["Initiator", "Assembler", "Finisher"], "line2", dayPart2Assignments) + 5;
-      
-      // Batch Grill
-      middleY = drawStationBox(middleX, middleY, stationWidth, 25, "Batch Grill", ["Staff"], "batch_grill", dayPart2Assignments) + 5;
-      
-      // Batch Chicken
-      middleY = drawStationBox(middleX, middleY, stationWidth, 25, "Batch Chicken", ["Staff"], "batch_chicken", dayPart2Assignments) + 5;
-      
-      // Backroom
-      middleY = drawStationBox(middleX, middleY, stationWidth, 25, "Backroom", ["Staff"], "backroom", dayPart2Assignments) + 5;
-      
-      // Fries
-      drawStationBox(middleX, middleY, stationWidth, 25, "Fries", ["Staff"], "fries", dayPart2Assignments);
-      
-      // Right column stations
-      let rightY = currentY;
-      const rightX = middleX + stationWidth + 10;
-      
-      // Customer Care
-      rightY = drawStationBox(rightX, rightY, stationWidth, 25, "Customer Care", ["Staff"], "customer_care", dayPart2Assignments) + 5;
-      
-      // Beverage Cell
-      rightY = drawStationBox(rightX, rightY, stationWidth, 45, "Beverage Cell", ["Soft Drinks", "Shakes", "Hot Drinks"], "beverage_cell", dayPart2Assignments) + 5;
-      
-      // Breaks
-      rightY = drawStationBox(rightX, rightY, stationWidth, 35, "Breaks", ["Kitchen", "Front"], "breaks", dayPart2Assignments) + 5;
-      
-      // DIVE
-      rightY = drawStationBox(rightX, rightY, stationWidth, 60, "DIVE", ["11:00", "15:00", "19:00", "CLOSE"], "dive", dayPart2Assignments) + 5;
-      
-      // DELIVERY
-      drawStationBox(rightX, rightY, stationWidth, 25, "DELIVERY", ["Staff"], "delivery", dayPart2Assignments);
-      
-      // Add footer with correct page number
-      let pageNumber = 1;
-      if (assignments['Breakfast']) pageNumber++;
-      if (assignments['Day Part 1']) pageNumber++;
-      addFooter(pageNumber);
-    }
+
 
     // Save the PDF
     const fileName = `McDonald's Schedule - ${selectedDate.toLocaleDateString()}.pdf`;
@@ -548,16 +463,16 @@ export const printSchedule = (
       `;
     }
 
-    // Generate Day Part 1 page HTML
-    if (assignments['Day Part 1']) {
-      const dayPart1Assignments = assignments['Day Part 1'] || {};
+    // Generate Lunch page HTML
+    if (assignments['Lunch']) {
+      const dayPart1Assignments = assignments['Lunch'] || {};
       
       htmlContent += `
         <div class="page">
           <div class="page-header">
             <h1>McDonald's Station/Task Schedule</h1>
             <div class="header-info">
-              <span class="schedule-name">Day Part 1 Schedule</span>
+              <span class="schedule-name">Lunch Schedule</span>
               <span class="schedule-date">Date: ${selectedDate.toLocaleDateString()}</span>
               <span>Generated: ${new Date().toLocaleString()}</span>
             </div>
@@ -609,66 +524,7 @@ export const printSchedule = (
       `;
     }
 
-    // Generate Day Part 2 page HTML
-    if (assignments['Day Part 2']) {
-      const dayPart2Assignments = assignments['Day Part 2'] || {};
-      
-      htmlContent += `
-        <div class="page">
-          <div class="page-header">
-            <h1>McDonald's Station/Task Schedule</h1>
-            <div class="header-info">
-              <span class="schedule-name">Day Part 2 Schedule</span>
-              <span class="schedule-date">Date: ${selectedDate.toLocaleDateString()}</span>
-              <span>Generated: ${new Date().toLocaleString()}</span>
-            </div>
-          </div>
-          <div class="shift-manager-section">
-            ${(() => {
-              const shiftManagerAssignments = dayPart2Assignments?.['shift_manager']?.['Manager on Duty'] || [];
-              if (shiftManagerAssignments.length > 0) {
-                const managerName = shiftManagerAssignments[0];
-                const manager = employees.find(emp => emp.name === managerName);
-                const minorIndicator = manager?.minor ? ' (Minor)' : '';
-                const shiftTimes = manager?.shiftStart && manager?.shiftEnd ? ` (${manager.shiftStart}-${manager.shiftEnd})` : '';
-                return `<span>Shift Manager: ${managerName}${shiftTimes}${minorIndicator}</span>`;
-              } else {
-                return `<span>Shift Manager: ________________</span>`;
-              }
-            })()}
-          </div>
-          <div class="content">
-            <div class="column">
-              ${generateStationHTML("Handheld", ["Staff"], "handheld", dayPart2Assignments, employees)}
-              ${generateStationHTML("Window 1", ["Order Taker", "Cashier"], "window1", dayPart2Assignments, employees)}
-              ${generateStationHTML("Window 2", ["Presenter", "Checker", "Runner", "Holds"], "window2", dayPart2Assignments, employees)}
-              ${generateStationHTML("Front Hand Wash", ["Staff"], "front_hand_wash", dayPart2Assignments, employees)}
-              ${generateStationHTML("Order Assembly", ["1. R/P", "2. R/P", "3. Delivery checker", "4. Expeditator", "5. Delivery Drinks"], "order_assembly", dayPart2Assignments, employees)}
-            </div>
-            <div class="column">
-              ${generateStationHTML("Kitchen Leader/Hand Wash", ["Staff"], "kitchen_leader", dayPart2Assignments, employees)}
-              ${generateStationHTML("Line 1", ["Initiator", "Assembler", "Finisher"], "line1", dayPart2Assignments, employees)}
-              ${generateStationHTML("Line 2", ["Initiator", "Assembler", "Finisher"], "line2", dayPart2Assignments, employees)}
-              ${generateStationHTML("Batch Grill", ["Staff"], "batch_grill", dayPart2Assignments, employees)}
-              ${generateStationHTML("Batch Chicken", ["Staff"], "batch_chicken", dayPart2Assignments, employees)}
-              ${generateStationHTML("Backroom", ["Staff"], "backroom", dayPart2Assignments, employees)}
-              ${generateStationHTML("Fries", ["Staff"], "fries", dayPart2Assignments, employees)}
-            </div>
-            <div class="column">
-              ${generateStationHTML("Customer Care", ["Staff"], "customer_care", dayPart2Assignments, employees)}
-              ${generateStationHTML("Beverage Cell", ["Soft Drinks", "Shakes", "Hot Drinks"], "beverage_cell", dayPart2Assignments, employees)}
-              ${generateStationHTML("Breaks", ["Kitchen", "Front"], "breaks", dayPart2Assignments, employees)}
-              ${generateStationHTML("DIVE", ["11:00", "15:00", "19:00", "CLOSE"], "dive", dayPart2Assignments, employees)}
-              ${generateStationHTML("DELIVERY", ["Staff"], "delivery", dayPart2Assignments, employees)}
-            </div>
-          </div>
-          <div class="page-footer">
-            <span>Printed by: McDonald's Task Scheduler - Burgernomics</span>
-            <span>Page ${assignments['Day Part 1'] ? '2' : '1'}</span>
-          </div>
-        </div>
-      `;
-    }
+
 
     // Create a new window for printing
     const printWindow = window.open('', '_blank');
@@ -684,7 +540,7 @@ export const printSchedule = (
             @media print { 
               @page { 
                 size: landscape; 
-                margin: 0.5in; 
+                margin: 0.3in; 
               } 
             }
             body { 
@@ -700,35 +556,35 @@ export const printSchedule = (
               display: flex; 
               flex-direction: column;
               box-sizing: border-box;
-              padding: 15px;
+              padding: 8px;
             }
             .page:last-child { 
               page-break-after: avoid; 
             }
             .page-header {
               border-bottom: 2px solid black;
-              margin-bottom: 15px;
-              padding-bottom: 10px;
+              margin-bottom: 8px;
+              padding-bottom: 6px;
             }
             .page-header h1 {
               margin: 0;
-              font-size: 20px;
+              font-size: 16px;
               font-weight: bold;
               color: black;
             }
             .header-info {
               display: flex;
               justify-content: space-between;
-              font-size: 12px;
-              margin-top: 8px;
+              font-size: 10px;
+              margin-top: 4px;
             }
             .schedule-name {
-              font-size: 16px !important;
+              font-size: 12px !important;
               font-weight: bold !important;
               color: black !important;
             }
             .schedule-date {
-              font-size: 14px !important;
+              font-size: 11px !important;
               font-weight: bold !important;
               color: black !important;
             }
@@ -736,9 +592,9 @@ export const printSchedule = (
               display: flex;
               justify-content: space-between;
               font-weight: bold;
-              font-size: 14px;
-              margin-bottom: 15px;
-              padding: 5px 0;
+              font-size: 11px;
+              margin-bottom: 8px;
+              padding: 3px 0;
               border-bottom: 1px solid #000;
             }
             .page-footer {
@@ -753,36 +609,36 @@ export const printSchedule = (
               display: flex; 
               justify-content: space-between; 
               font-weight: bold; 
-              font-size: 14px; 
-              margin-bottom: 10px; 
-              padding: 0 10px;
+              font-size: 11px; 
+              margin-bottom: 6px; 
+              padding: 0 6px;
             }
             .shift-manager { 
               font-weight: bold; 
-              margin-bottom: 10px; 
-              padding: 0 10px;
+              margin-bottom: 6px; 
+              padding: 0 6px;
             }
             .content { 
               display: flex; 
               justify-content: space-between; 
               flex: 1; 
-              padding: 0 10px;
+              padding: 0 6px;
             }
             .column { 
               width: 32%; 
             }
             .station { 
-              margin-bottom: 10px; 
+              margin-bottom: 6px; 
               border: 1px solid black; 
               break-inside: avoid;
             }
             .station-title { 
               background: #f0f0f0; 
-              padding: 4px; 
+              padding: 2px; 
               text-align: center; 
               font-weight: bold; 
               border-bottom: 1px solid black; 
-              font-size: 12px;
+              font-size: 9px;
             }
             .station-column { 
               border-bottom: 1px solid black; 
@@ -792,7 +648,7 @@ export const printSchedule = (
             }
             .station-column-inline {
               border-bottom: 1px solid black;
-              padding: 4px;
+              padding: 2px;
               display: flex;
               align-items: center;
             }
@@ -801,29 +657,29 @@ export const printSchedule = (
             }
             .column-label {
               font-weight: bold;
-              font-size: 14px;
-              margin-right: 8px;
+              font-size: 9px;
+              margin-right: 4px;
               flex-shrink: 0;
               color: black;
             }
             .column-employees {
-              font-size: 13px;
+              font-size: 8px;
               font-weight: Regular;
               flex: 1;
               color: black;
             }
             .column-title { 
-              padding: 2px 4px; 
-              font-size: 12px; 
+              padding: 1px 2px; 
+              font-size: 9px; 
               background: #f8f8f8; 
               border-bottom: 1px solid black;
             }
             .column-content { 
-              min-height: 20px; 
-              padding: 2px 4px; 
-              font-size: 16px;
+              min-height: 12px; 
+              padding: 1px 2px; 
+              font-size: 8px;
               font-weight: bold;
-              line-height: 1.4;
+              line-height: 1.2;
               color: black;
             }
             .dfs-table { 
@@ -832,9 +688,9 @@ export const printSchedule = (
             }
             .dfs-table td, .dfs-table th { 
               border: 1px solid black; 
-              padding: 4px; 
+              padding: 2px; 
               text-align: center; 
-              font-size: 12px; 
+              font-size: 8px; 
             }
             .dfs-table th {
               background: #f0f0f0;

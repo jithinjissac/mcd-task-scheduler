@@ -1,5 +1,52 @@
 /* McDonald's Task Scheduler Custom Styles */
 
+/* CRITICAL TEXT VISIBILITY OVERRIDES - Maximum Specificity */
+body .assignment-grid-compact .station-title-compact,
+body .grid-container-compact .station-title-compact,
+body h3.station-title-compact {
+  color: #111827 !important;
+  font-weight: 700 !important;
+  text-shadow: none !important;
+}
+
+body .assignment-grid-compact .task-name-compact,
+body .grid-container-compact .task-name-compact,
+body .task-name-compact {
+  color: #111827 !important;
+  font-weight: 600 !important;
+}
+
+/* Shift Manager specific overrides - Maximum specificity */
+body .shift-manager-card .station-title-compact,
+body .shift-manager-card h3.station-title-compact {
+  color: #000000 !important;
+  font-weight: 700 !important;
+  text-shadow: none !important;
+  font-size: 0.675rem !important;
+}
+
+body .shift-manager-card .task-name-compact {
+  color: #000000 !important;
+  font-weight: 600 !important;
+  text-shadow: none !important;
+  font-size: 0.675rem !important;
+}
+
+/* 9x9 Grid overrides - Maximum specificity */
+body .assignment-grid-9x9 .station-title-9x9,
+body .grid-container-9x9 .station-title-9x9 {
+  color: #111827 !important;
+  font-weight: 700 !important;
+}
+
+body .assignment-grid-9x9 .task-name-9x9,
+body .grid-container-9x9 .task-name-9x9 {
+  color: #111827 !important;
+  font-weight: 600 !important;
+}
+
+/* END CRITICAL OVERRIDES */
+
 /* McDonald's Brand Colors */
 :root {
   --mcdonalds-red: #DA291C;
@@ -37,6 +84,515 @@ body {
   border-color: #fcd34d !important;
 }
 
+/* Touch screen enhancements */
+@media (hover: none) and (pointer: coarse) {
+  /* Touch device specific styles */
+  .employee-card {
+    min-height: 48px !important;
+    padding: 0.75rem !important;
+    touch-action: manipulation !important;
+    user-select: none !important;
+  }
+  
+  .drop-zone {
+    min-height: 60px !important;
+    touch-action: manipulation !important;
+  }
+  
+  button {
+    min-height: 48px !important;
+    padding: 0.75rem 1.5rem !important;
+    touch-action: manipulation !important;
+  }
+}
+
+/* Touch drag and drop states */
+.touch-drag-over {
+  background-color: #dbeafe !important;
+  border-color: #3b82f6 !important;
+  border-width: 3px !important;
+  border-style: dashed !important;
+  transform: scale(1.02) !important;
+  transition: all 0.2s ease !important;
+}
+
+.employee-card.touch-dragging {
+  opacity: 0.7 !important;
+  transform: scale(1.1) rotate(5deg) !important;
+  z-index: 1000 !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3) !important;
+  pointer-events: none !important;
+}
+
+/* Enhanced touch feedback */
+.employee-card:active {
+  transform: scale(0.98) !important;
+  transition: transform 0.1s ease !important;
+}
+
+button:active {
+  transform: scale(0.98) !important;
+  transition: transform 0.1s ease !important;
+}
+
+/* Better touch targets */
+.employee-card {
+  min-height: 44px !important;
+  touch-action: manipulation !important; /* Standard touch interactions */
+  -webkit-touch-callout: none !important;
+  -webkit-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
+  user-select: none !important;
+}
+
+/* Drop zones should allow touch manipulation */
+[data-drop-zone] {
+  touch-action: manipulation !important;
+}
+
+/* During drag operations, disable scrolling */
+.employee-card.touch-dragging {
+  touch-action: none !important;
+}
+
+/* Scrolling improvements for touch */
+.scrollable-container {
+  -webkit-overflow-scrolling: touch !important;
+  scroll-behavior: smooth !important;
+}
+
+/* Modal touch improvements */
+.modal-overlay {
+  -webkit-overflow-scrolling: touch !important;
+  touch-action: manipulation !important;
+}
+
+.modal-container {
+  touch-action: manipulation !important;
+}
+
+/* CRITICAL: Modal Overlay Absolute Center Fix - High Priority */
+.modal-overlay {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: rgba(15, 23, 42, 0.45) !important;
+  backdrop-filter: blur(4px) !important;
+  -webkit-backdrop-filter: blur(4px) !important;
+  z-index: 10000 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  overflow: hidden !important;
+  -webkit-overflow-scrolling: touch !important;
+}
+
+/* CRITICAL: Force Perfect Center with Multiple Methods */
+.modal-overlay {
+  place-items: center center !important;
+  place-content: center center !important;
+}
+
+/* CRITICAL: Modal Container Center Positioning - High Priority */
+div.modal-overlay > .modal-container,
+.modal-overlay .modal-container {
+  background: white !important;
+  border-radius: 0.75rem !important;
+  width: min(90vw, 800px) !important;
+  max-width: 800px !important;
+  max-height: min(90vh, calc(100vh - 4rem)) !important;
+  overflow: auto !important;
+  box-shadow: 0 20px 50px rgba(2,6,23,0.35) !important;
+  border: 1px solid rgba(15,23,42,0.06) !important;
+  position: relative !important;
+  animation: modalSlideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  margin: auto auto !important;
+  transform: translate(0, 0) !important;
+  top: auto !important;
+  left: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+}
+
+/* Modal Animation for Perfect Center Entry */
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Alternative Modal Positioning for Absolute Center */
+.modal-overlay-alt {
+  position: fixed !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  z-index: 10000 !important;
+}
+
+/* Ensure modal content is scrollable if needed */
+.modal-container {
+  max-height: 90vh !important;
+  overflow-y: auto !important;
+}
+
+/* Ensure modal stays centered on scroll */
+.modal-overlay::before {
+  content: '' !important;
+  display: block !important;
+  height: 1px !important;
+  margin-top: -1px !important;
+  pointer-events: none !important;
+}
+
+.modal-header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 1rem 1.25rem !important;
+  border-bottom: 1px solid #eef2f7 !important;
+}
+
+.modal-title {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.75rem !important;
+  color: #111827 !important;
+}
+
+.modal-title h2 {
+  margin: 0 !important;
+  font-size: 1.125rem !important;
+  font-weight: 700 !important;
+}
+
+.modal-close-btn {
+  background: transparent !important;
+  border: none !important;
+  padding: 0.5rem !important;
+  border-radius: 0.5rem !important;
+  cursor: pointer !important;
+  color: #374151 !important;
+}
+
+.modal-close-btn:hover {
+  background: #f3f4f6 !important;
+}
+
+/* Station selection list inside modal */
+.station-list {
+  padding: 1rem !important;
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 0.75rem !important;
+}
+
+.station-card {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.5rem !important;
+  padding: 0.75rem 1rem !important;
+  border-radius: 0.5rem !important;
+  background: #ffffff !important;
+  border: 1px solid #eef2f7 !important;
+}
+
+/* Polished station modal styles */
+.station-list {
+  grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
+}
+
+@media (min-width: 700px) {
+  .station-list { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+}
+
+@media (min-width: 1100px) {
+  .station-list { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
+}
+
+.station-card {
+  transition: transform 180ms cubic-bezier(.2,.8,.2,1) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  min-height: 84px !important;
+}
+
+.station-row { display:flex; gap:0.75rem; align-items:center; justify-content:space-between; }
+
+.station-left { display:flex; gap:0.75rem; align-items:center; }
+.station-icon {
+  width:44px; height:44px; border-radius:8px; background:linear-gradient(180deg,var(--mcdonalds-yellow),#f7c948); display:flex; align-items:center; justify-content:center; color:#111827; font-weight:700;
+}
+
+.station-name { font-size:0.975rem; font-weight:700; color:#0f172a; }
+.station-sub { font-size:0.8rem; color: #374151; font-weight: 500; }
+
+.station-count { background:#e0e7ff; color:#1e40af; padding:0.25rem 0.5rem; border-radius:999px; font-weight:700; font-size:0.75rem; border: 1px solid #c7d2fe; }
+
+.station-card:hover { transform: translateY(-6px); box-shadow: 0 14px 40px rgba(2,6,23,0.12) !important; }
+
+.station-actions { display:flex; gap:0.5rem; align-items:center; }
+.station-add-btn { min-width:88px; }
+
+.station-add-btn.add { background: var(--mcdonalds-red) !important; color:#fff !important; box-shadow: 0 6px 18px rgba(218,41,28,0.12) !important; }
+.station-add-btn.assigned { border:1px solid #e6e9ee !important; background:#fff !important; color:#6b7280 !important; }
+
+.station-selected { outline: 2px solid rgba(59,130,246,0.12) !important; box-shadow: 0 10px 30px rgba(59,130,246,0.08) !important; }
+
+.station-card .station-columns { margin-top:0.75rem; display:flex; gap:0.5rem; flex-direction:column; }
+.station-card .station-column-pill { 
+  padding:0.75rem; 
+  background:#f8fafc; 
+  color:#111827; 
+  border-radius:8px; 
+  font-size:0.875rem; 
+  font-weight: 500;
+  border:1px solid #e2e8f0;
+  transition: all 180ms ease;
+}
+.station-card .station-column-pill:hover { 
+  background:#ffffff; 
+  border-color:#cbd5e1; 
+  box-shadow: 0 4px 12px rgba(2,6,23,0.08);
+}
+
+/* accessible focus states */
+.station-card:focus-within, .station-card:focus { box-shadow: 0 10px 30px rgba(2,6,23,0.08); transform: translateY(-4px); }
+
+
+.station-card .station-row {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 1rem !important;
+}
+
+.station-card .station-name {
+  font-weight: 600 !important;
+  color: #111827 !important;
+}
+
+.station-card .station-meta {
+  font-size: 0.875rem !important;
+  color: #6b7280 !important;
+}
+
+.station-actions {
+  display: flex !important;
+  gap: 0.5rem !important;
+  align-items: center !important;
+}
+
+.station-add-btn {
+  padding: 0.45rem 0.75rem !important;
+  border-radius: 0.5rem !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  border: none !important;
+}
+
+.station-add-btn.add {
+  background: var(--mcdonalds-red) !important;
+  color: #fff !important;
+}
+
+.station-add-btn.assigned {
+  background: #f3f4f6 !important;
+  color: #6b7280 !important;
+  cursor: default !important;
+}
+
+/* Make modal content readable on small screens */
+@media (max-width: 640px) {
+  .modal-container { width: calc(100% - 2rem) !important; }
+  .station-list { gap: 0.5rem !important; }
+}
+
+/* Employee selection modal specific styles */
+.employee-stats-modal {
+  display: flex !important;
+  gap: 0.75rem !important;
+  padding: 0.75rem 1rem !important;
+  align-items: center !important;
+  border-bottom: 1px solid #f3f4f6 !important;
+}
+
+.employee-stats-modal .stat-item-modal {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  padding: 0.5rem 0.75rem !important;
+  border-radius: 0.5rem !important;
+  background: #f8fafc !important;
+}
+
+.employee-stats-modal .stat-number { font-weight: 700 !important; color: #111827 !important; }
+.employee-stats-modal .stat-label { font-size: 0.75rem !important; color: #6b7280 !important; }
+
+.search-container-modal {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  padding: 0.75rem 1rem !important;
+  border-bottom: 1px solid #f3f4f6 !important;
+}
+
+.search-input-modal {
+  width: 100% !important;
+  padding: 0.5rem 0.75rem !important;
+  border: 1px solid #e6e9ee !important;
+  border-radius: 0.5rem !important;
+  color: #111827 !important;
+  font-weight: 500 !important;
+  background: #ffffff !important;
+}
+
+.search-input-modal:focus {
+  outline: none !important;
+  border-color: #3b82f6 !important;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+}
+
+.search-input-modal::placeholder {
+  color: #6b7280 !important;
+}
+
+.search-icon-modal { color: #6b7280 !important; }
+
+.employee-list-modal {
+  padding: 0.75rem 1rem !important;
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 0.5rem !important;
+  max-height: 48vh !important;
+  overflow: auto !important;
+}
+
+.employee-card-modal {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 0.5rem !important;
+  padding: 0.6rem 0.75rem !important;
+  border-radius: 0.5rem !important;
+  border: 1px solid #eef2f7 !important;
+  background: #ffffff !important;
+  cursor: pointer !important;
+}
+
+.employee-card-modal:hover { box-shadow: 0 8px 30px rgba(2,6,23,0.06) !important; transform: translateY(-2px) !important; }
+
+.employee-info-modal { display: flex !important; flex-direction: column !important; gap: 0.15rem !important; }
+.employee-name-modal { font-weight: 600 !important; color: #111827 !important; }
+.employee-time-modal { font-size: 0.8rem !important; color: #374151 !important; font-weight: 500 !important; display:flex; gap:0.35rem; align-items:center; }
+
+.minor-badge-modal {
+  background: #f59e0b !important;
+  color: #1f2937 !important;
+  padding: 0.25rem 0.45rem !important;
+  border-radius: 0.375rem !important;
+  font-weight: 700 !important;
+  font-size: 0.75rem !important;
+  border: 1px solid #d97706 !important;
+}
+
+.no-employees-modal { padding: 1rem; color: #374151; font-weight: 500; text-align: center; }
+
+/* Confirmation overlay inside modal */
+.confirmation-overlay {
+  position: absolute !important;
+  inset: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: rgba(2,6,23,0.45) !important;
+  z-index: 2000 !important;
+}
+
+.confirmation-dialog {
+  background: white !important;
+  padding: 1rem !important;
+  width: min(92%, 520px) !important;
+  border-radius: 0.5rem !important;
+  box-shadow: 0 20px 50px rgba(2,6,23,0.25) !important;
+}
+
+.confirmation-buttons { display:flex !important; gap:0.5rem !important; justify-content:flex-end !important; margin-top:0.5rem !important; }
+
+.confirm-btn { padding:0.5rem 0.75rem !important; border-radius:0.5rem !important; font-weight:600 !important; border:none !important; cursor:pointer !important; }
+.confirm-btn.replace { background:#ef4444 !important; color:#fff !important; }
+.confirm-btn.add { background:#10b981 !important; color:#fff !important; }
+.confirm-btn.cancel { background:#f3f4f6 !important; color:#374151 !important; }
+
+@media (max-width: 640px) {
+  .employee-list-modal { grid-template-columns: 1fr !important; max-height: 38vh !important; }
+  .confirmation-dialog { width: calc(100% - 2rem) !important; }
+}
+
+
+/* Prevent default touch behaviors that interfere with custom drag */
+* {
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Improve tap targets for better accessibility */
+.employee-card, button, [role="button"] {
+  min-width: 44px !important;
+  min-height: 44px !important;
+}
+
+/* Better visual feedback for touch interactions */
+.employee-card:hover,
+.employee-card:focus {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  transition: all 0.2s ease !important;
+}
+
+/* Touch-specific styling */
+@media (pointer: coarse) {
+  .employee-card {
+    padding: 0.75rem !important;
+    margin: 0.25rem 0 !important;
+    border-radius: 0.5rem !important;
+  }
+  
+  .drop-zone {
+    padding: 1rem !important;
+    min-height: 80px !important;
+  }
+  
+  button {
+    padding: 0.875rem 1.5rem !important;
+    font-size: 1rem !important;
+  }
+}
+
+/* Disable text selection during drag operations */
+.employee-card.dragging,
+.employee-card.touch-dragging {
+  -webkit-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
+  user-select: none !important;
+}
+
 /* McDonald's themed buttons */
 .btn-primary {
   background-color: var(--mcdonalds-red) !important;
@@ -72,28 +628,445 @@ body {
 .assignment-grid {
   border-collapse: collapse !important;
   border: 1px solid #d1d5db !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  table-layout: fixed !important;
+  font-size: 0.875rem !important;
 }
 
 .assignment-grid th,
 .assignment-grid td {
   border: 1px solid #d1d5db !important;
-  padding: 0.5rem !important;
+  padding: 0.375rem !important;
+  vertical-align: top !important;
+  word-wrap: break-word !important;
+  overflow: hidden !important;
 }
 
 .assignment-grid th {
   background-color: #f3f4f6 !important;
   font-weight: bold !important;
   text-align: center !important;
+  font-size: 0.75rem !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+/* Responsive table sizing */
+@media (max-width: 1200px) {
+  .assignment-grid {
+    font-size: 0.75rem !important;
+  }
+  
+  .assignment-grid th,
+  .assignment-grid td {
+    padding: 0.25rem !important;
+  }
+  
+  .assignment-grid th {
+    font-size: 0.625rem !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .assignment-grid {
+    font-size: 0.625rem !important;
+  }
+  
+  .assignment-grid th,
+  .assignment-grid td {
+    padding: 0.125rem !important;
+  }
 }
 
 /* Drop zone styling */
 .drop-zone {
-  min-height: 80px !important;
-  padding: 0.5rem !important;
+  min-height: 60px !important;
+  padding: 0.375rem !important;
   border: 2px dashed #d1d5db !important;
-  border-radius: 0.5rem !important;
+  border-radius: 0.375rem !important;
   transition: all 0.2s ease-in-out !important;
   background-color: white !important;
+  width: 100% !important;
+  height: auto !important;
+  overflow: visible !important;
+  position: relative !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.125rem !important;
+  flex: 1 !important;
+  min-height: fit-content !important;
+  box-sizing: border-box !important;
+}
+
+/* Responsive app container */
+.app-container-responsive {
+  display: flex !important;
+  flex-direction: column !important;
+  min-height: 100vh !important;
+  background-color: #f9fafb !important;
+  overflow-x: hidden !important;
+}
+
+/* Main Layout Container - Side by Side */
+.main-layout-container {
+  display: flex !important;
+  height: calc(100vh - 200px) !important;
+  gap: 1rem !important;
+  padding: 0 1rem !important;
+  overflow: hidden !important;
+}
+
+/* Responsive: Stack on smaller screens */
+@media (max-width: 1200px) {
+  .main-layout-container {
+    flex-direction: column !important;
+    height: calc(100vh - 180px) !important;
+  }
+  
+  .employee-pool-sidebar {
+    width: 100% !important;
+    min-width: auto !important;
+    max-width: none !important;
+    height: 200px !important;
+    min-height: 200px !important;
+    max-height: 200px !important;
+  }
+  
+  .assignment-grid-main {
+    height: calc(100% - 220px) !important;
+  }
+}
+
+/* Employee Pool Sidebar */
+.employee-pool-sidebar {
+  width: 300px !important;
+  min-width: 300px !important;
+  max-width: 300px !important;
+  background: white !important;
+  border: 2px solid #e5e7eb !important;
+  border-radius: 0.5rem !important;
+  box-shadow: 0 2px 4px -1px rgb(0 0 0 / 0.1) !important;
+  overflow-y: auto !important;
+  height: 100% !important;
+}
+
+/* Modify employee list for vertical layout */
+.employee-pool-sidebar .employees-list-horizontal {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.5rem !important;
+  max-height: none !important;
+  overflow-y: visible !important;
+}
+
+.employee-pool-sidebar .employee-card-horizontal-wrapper {
+  width: 100% !important;
+  min-width: auto !important;
+  flex-shrink: 0 !important;
+}
+
+.employee-pool-sidebar .available-employees-horizontal {
+  overflow-y: visible !important;
+  max-height: none !important;
+}
+
+.employee-pool-sidebar .employee-pool-header-horizontal {
+  flex-direction: column !important;
+  gap: 0.5rem !important;
+  align-items: stretch !important;
+}
+
+.employee-pool-sidebar .employee-stats-horizontal {
+  justify-content: space-between !important;
+  width: 100% !important;
+}
+
+/* Assignment Grid Main Area - Enhanced Responsiveness */
+.assignment-grid-main {
+  flex: 1 !important;
+  background: white !important;
+  border: 2px solid #e5e7eb !important;
+  border-radius: 0.5rem !important;
+  overflow: auto !important;
+  height: 100% !important;
+  padding: 0.5rem !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+/* Grid Container Wrapper for Better Responsiveness */
+.grid-container-9x9 {
+  flex: 1 !important;
+  overflow: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+  padding: 0.25rem !important;
+  background-color: #f9fafb !important;
+  border-radius: 0.375rem !important;
+}
+
+/* Responsive Grid Container Adjustments */
+@media (max-width: 1024px) {
+  .grid-container-9x9 {
+    padding: 0.1875rem !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .grid-container-9x9 {
+    padding: 0.125rem !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .grid-container-9x9 {
+    padding: 0.09375rem !important;
+  }
+}
+
+/* Horizontal Employee Pool Styles */
+.employee-pool-horizontal {
+  width: 100% !important;
+  background: white !important;
+  border-bottom: 2px solid #e5e7eb !important;
+  box-shadow: 0 2px 4px -1px rgb(0 0 0 / 0.1) !important;
+  margin-bottom: 1rem !important;
+}
+
+.employee-pool-horizontal-container {
+  padding: 0.75rem !important;
+  max-width: 100% !important;
+}
+
+.employee-pool-header-horizontal {
+  display: flex !important;
+  align-items: center !important;
+  gap: 1rem !important;
+  margin-bottom: 0.75rem !important;
+  flex-wrap: wrap !important;
+}
+
+.employee-pool-title-horizontal {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  color: #111827 !important;
+  font-weight: 600 !important;
+}
+
+.employee-stats-horizontal {
+  display: flex !important;
+  gap: 1rem !important;
+  font-size: 0.875rem !important;
+}
+
+.stat-item {
+  padding: 0.25rem 0.5rem !important;
+  border-radius: 0.375rem !important;
+  background-color: #f3f4f6 !important;
+  color: #111827 !important;
+  font-weight: 600 !important;
+}
+
+.stat-item.available {
+  background-color: #d1fae5 !important;
+  color: #065f46 !important;
+}
+
+.stat-item.assigned {
+  background-color: #dbeafe !important;
+  color: #1e40af !important;
+}
+
+.employee-search-horizontal {
+  flex: 1 !important;
+  min-width: 200px !important;
+}
+
+.search-input-horizontal {
+  width: 100% !important;
+  padding: 0.5rem 0.75rem 0.5rem 2.5rem !important;
+  border: 1px solid #d1d5db !important;
+  border-radius: 0.5rem !important;
+  font-size: 0.875rem !important;
+  background-color: white !important;
+  color: #111827 !important;
+  font-weight: 500 !important;
+}
+
+.search-input-horizontal:focus {
+  outline: none !important;
+  border-color: #3b82f6 !important;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+}
+
+.search-input-horizontal::placeholder {
+  color: #6b7280 !important;
+}
+
+.search-input-horizontal:focus {
+  outline: none !important;
+  border-color: #3b82f6 !important;
+  box-shadow: 0 0 0 3px rgb(59 130 246 / 0.1) !important;
+}
+
+.upload-button-horizontal {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  padding: 0.5rem 1rem !important;
+  background-color: var(--mcdonalds-red) !important;
+  color: white !important;
+  border: none !important;
+  border-radius: 0.5rem !important;
+  font-size: 0.875rem !important;
+  font-weight: 500 !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease-in-out !important;
+}
+
+.upload-button-horizontal:hover {
+  background-color: #dc2626 !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1) !important;
+}
+
+/* Available Employees Horizontal List */
+.available-employees-horizontal {
+  margin-bottom: 1rem !important;
+}
+
+.employees-list-horizontal {
+  display: flex !important;
+  gap: 0.5rem !important;
+  overflow-x: auto !important;
+  padding: 0.5rem 0 !important;
+  scrollbar-width: thin !important;
+  scrollbar-color: #d1d5db #f9fafb !important;
+}
+
+.employees-list-horizontal::-webkit-scrollbar {
+  height: 6px !important;
+}
+
+.employees-list-horizontal::-webkit-scrollbar-track {
+  background: #f9fafb !important;
+  border-radius: 3px !important;
+}
+
+.employees-list-horizontal::-webkit-scrollbar-thumb {
+  background: #d1d5db !important;
+  border-radius: 3px !important;
+}
+
+.employees-list-horizontal::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af !important;
+}
+
+.employee-card-horizontal-wrapper {
+  flex-shrink: 0 !important;
+  width: 200px !important;
+}
+
+.no-employees-horizontal {
+  text-align: center !important;
+  color: #374151 !important;
+  font-style: italic !important;
+  font-weight: 500 !important;
+  padding: 2rem !important;
+  background-color: #f9fafb !important;
+  border-radius: 0.5rem !important;
+  border: 2px dashed #9ca3af !important;
+}
+
+/* Assigned Employees Section */
+.assigned-employees-section {
+  border-top: 1px solid #e5e7eb !important;
+  padding-top: 0.75rem !important;
+}
+
+.assigned-employees-header {
+  font-weight: 600 !important;
+  color: #111827 !important;
+  cursor: pointer !important;
+  padding: 0.5rem 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+}
+
+.assigned-employees-header::-webkit-details-marker {
+  display: none !important;
+}
+
+.assigned-employees-header::before {
+  content: '▶' !important;
+  font-size: 0.75rem !important;
+  color: #6b7280 !important;
+  transition: transform 0.2s ease-in-out !important;
+}
+
+.assigned-employees-section[open] .assigned-employees-header::before {
+  transform: rotate(90deg) !important;
+}
+
+.assigned-employees-list {
+  display: flex !important;
+  gap: 0.5rem !important;
+  overflow-x: auto !important;
+  padding: 0.5rem 0 !important;
+  margin-top: 0.5rem !important;
+}
+
+.assigned-employee-card {
+  flex-shrink: 0 !important;
+  background-color: #f3f4f6 !important;
+  border: 1px solid #d1d5db !important;
+  border-radius: 0.375rem !important;
+  padding: 0.5rem !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.25rem !important;
+  min-width: 150px !important;
+}
+
+.assigned-employee-card .employee-name {
+  font-weight: 600 !important;
+  color: #111827 !important;
+  font-size: 0.875rem !important;
+}
+
+.assigned-employee-card .employee-time {
+  font-size: 0.75rem !important;
+  color: #374151 !important;
+  font-weight: 500 !important;
+}
+
+.minor-badge-small {
+  background-color: #f59e0b !important;
+  color: #1f2937 !important;
+  font-size: 0.625rem !important;
+  font-weight: 700 !important;
+  padding: 0.125rem 0.25rem !important;
+  border-radius: 0.25rem !important;
+  align-self: flex-start !important;
+  border: 1px solid #d97706 !important;
+}
+
+/* Assignment Grid Container */
+.assignment-grid-container {
+  flex: 1 !important;
+  padding: 0 1rem 1rem 1rem !important;
+  overflow-y: auto !important;
+}
+
+/* Drop zone in 9x9 grid - more compact */
+.station-content-9x9 .drop-zone {
+  min-height: 40px !important;
+  padding: 0.125rem !important;
+  max-height: 80px !important;
+  font-size: 0.625rem !important;
 }
 
 .drop-zone:hover {
@@ -106,6 +1079,14 @@ body {
   background-color: #ecfdf5 !important;
 }
 
+.drop-zone.drag-over {
+  background-color: #dbeafe !important;
+  border-color: #3b82f6 !important;
+  border-style: solid !important;
+  transform: scale(1.02) !important;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1) !important;
+}
+
 .drop-zone-valid {
   background-color: #dbeafe !important;
   border-color: #93c5fd !important;
@@ -116,22 +1097,105 @@ body {
   border-color: #fca5a5 !important;
 }
 
-/* Employee card styling */
+/* Responsive drop zone sizing */
+@media (max-width: 1200px) {
+  .drop-zone {
+    min-height: 50px !important;
+    padding: 0.25rem !important;
+  }
+  
+  .station-content-9x9 .drop-zone {
+    min-height: 35px !important;
+    padding: 0.1rem !important;
+  }
+}
+
+/* Shift Manager drop zone specific styling */
+.shift-manager-card .drop-zone {
+  background-color: rgba(255, 255, 255, 0.9) !important;
+  border: 2px dashed #374151 !important;
+  min-height: 60px !important;
+  padding: 0.375rem !important;
+}
+
+.shift-manager-card .drop-zone .employee-card {
+  font-size: 0.875rem !important;
+  line-height: 1.3 !important;
+  font-weight: 500 !important;
+}
+
+.shift-manager-card .drop-zone:hover {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+  border-color: #111827 !important;
+}
+
+.shift-manager-card .drop-zone.drag-over {
+  background-color: rgba(219, 234, 254, 0.95) !important;
+  border-color: #3b82f6 !important;
+  border-style: solid !important;
+}
+
+@media (max-width: 768px) {
+  .drop-zone {
+    min-height: 40px !important;
+    padding: 0.125rem !important;
+  }
+  
+  .station-content-9x9 .drop-zone {
+    min-height: 30px !important;
+    padding: 0.05rem !important;
+  }
+  
+  .shift-manager-card .drop-zone {
+    min-height: 40px !important;
+    padding: 0.125rem !important;
+  }
+}
+
+/* Employee card styling - enhanced readability */
 .employee-card {
   background-color: white !important;
   border: 1px solid #d1d5db !important;
-  border-radius: 0.5rem !important;
+  border-radius: 0.375rem !important;
   padding: 0.5rem !important;
-  margin-bottom: 0.5rem !important;
+  margin-bottom: 0.25rem !important;
   cursor: move !important;
   box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1) !important;
   transition: all 0.2s ease-in-out !important;
+  font-size: 0.875rem !important;
+  line-height: 1.3 !important;
+  font-weight: 500 !important;
+  color: #111827 !important;
+  user-select: none !important;
+  -webkit-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
+}
+
+/* Employee card in 9x9 grid - improved readability */
+.station-content-9x9 .employee-card {
+  padding: 0.25rem !important;
+  margin-bottom: 0.125rem !important;
+  font-size: 0.625rem !important;
+  line-height: 1.2 !important;
+  border-radius: 0.25rem !important;
+  font-weight: 600 !important;
+  color: #111827 !important;
+  min-height: 28px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
 }
 
 .employee-card:hover {
   box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1) !important;
   border-color: #60a5fa !important;
   transform: scale(1.02) !important;
+}
+
+.employee-card:active {
+  transform: scale(0.98) !important;
 }
 
 .employee-card.assigned {
@@ -141,7 +1205,58 @@ body {
 
 .employee-card.minor {
   background-color: #fef3c7 !important;
-  border-color: #fbbf24 !important;
+  border-color: #f59e0b !important;
+  color: #1f2937 !important;
+  font-weight: 600 !important;
+}
+
+.employee-card.minor-employee {
+  background-color: #fef3c7 !important;
+  border-color: #f59e0b !important;
+  color: #1f2937 !important;
+  font-weight: 600 !important;
+}
+
+/* Employee name and role in 9x9 grid */
+.station-content-9x9 .employee-name {
+  font-size: 0.45rem !important;
+  font-weight: 500 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+.station-content-9x9 .employee-role {
+  font-size: 0.4rem !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+/* Responsive employee card sizing */
+@media (max-width: 1200px) {
+  .employee-card {
+    padding: 0.25rem !important;
+    margin-bottom: 0.125rem !important;
+    font-size: 0.625rem !important;
+  }
+  
+  .station-content-9x9 .employee-card {
+    padding: 0.1rem !important;
+    font-size: 0.45rem !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .employee-card {
+    padding: 0.125rem !important;
+    font-size: 0.5rem !important;
+  }
+  
+  .station-content-9x9 .employee-card {
+    padding: 0.05rem !important;
+    font-size: 0.4rem !important;
+  }
 }
 
 /* McDonald's header branding */
@@ -157,6 +1272,1724 @@ body {
   border-radius: 0.5rem !important;
   font-weight: bold !important;
   margin-right: 1rem !important;
+}
+
+/* Grid container responsive styling */
+.grid-container {
+  width: 100% !important;
+  overflow-x: auto !important;
+  padding: 0.5rem !important;
+}
+
+.assignment-grid-responsive {
+  min-width: 100% !important;
+  overflow: visible !important;
+}
+
+/* Compact PDF Layout Grid Styling */
+.grid-container-compact {
+  width: 100% !important;
+  max-width: 100vw !important;
+  padding: 0.25rem !important;
+  overflow-x: auto !important;
+}
+
+.assignment-grid-compact {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.5rem !important;
+}
+
+.shift-manager-section {
+  width: 100% !important;
+  margin-bottom: 0.5rem !important;
+}
+
+.shift-manager-card {
+  background: linear-gradient(135deg, #DC2626, #EF4444) !important;
+  color: #000000 !important;
+  border: 2px solid #DC2626 !important;
+}
+
+.shift-manager-card .station-title-compact {
+  color: #000000 !important;
+  font-weight: 700 !important;
+  text-shadow: none !important;
+  font-size: 0.675rem !important;
+}
+
+.shift-manager-card .task-name-compact {
+  color: #000000 !important;
+  font-weight: 600 !important;
+  text-shadow: none !important;
+  font-size: 0.675rem !important;
+}
+
+.three-column-layout {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr 1fr !important;
+  gap: 0.5rem !important;
+}
+
+/* Six-column layout for maximum visibility without scroll */
+.six-column-layout {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: flex-start !important;
+  gap: 0.2rem !important;
+  width: 100% !important;
+  height: auto !important;
+  min-height: fit-content !important;
+  overflow-x: auto !important;
+  overflow-y: visible !important;
+  padding: 0.2rem !important;
+}
+
+.station-group.column1,
+.station-group.column2,
+.station-group.column3,
+.station-group.column4,
+.station-group.column5,
+.station-group.column6 {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.25rem !important;
+  min-height: fit-content !important;
+  height: auto !important;
+  overflow: visible !important;
+  padding: 0.3rem 0.1rem 0.3rem 0.3rem !important;
+  flex: 1 1 200px !important;
+  min-width: 180px !important;
+  max-width: none !important;
+  border-radius: 0.5rem !important;
+}
+
+/* Responsive behavior - maintain multi-column layout */
+@media (max-width: 1200px) and (min-width: 769px) {
+  .six-column-layout {
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+  }
+  .station-group.column1,
+  .station-group.column2,
+  .station-group.column3,
+  .station-group.column4,
+  .station-group.column5,
+  .station-group.column6 {
+    flex: 0 0 auto !important;
+    min-width: 250px !important;
+    max-width: 280px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .six-column-layout {
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+  }
+  .station-group.column1,
+  .station-group.column2,
+  .station-group.column3,
+  .station-group.column4,
+  .station-group.column5,
+  .station-group.column6 {
+    flex: 0 0 auto !important;
+    min-width: 200px !important;
+    max-width: 250px !important;
+  }
+}
+
+/* No scrollbars - everything should be visible */
+
+/* Enhanced Modal styling for assignment confirmations */
+.modal-overlay {
+  position: fixed !important;
+  inset: 0 !important; /* shorthand for top/right/bottom/left */
+  background: rgba(0, 0, 0, 0.6) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  z-index: 9999 !important;
+  padding: max(1rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right)) max(1rem, env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-left)) !important;
+  backdrop-filter: blur(4px) !important; /* subtle blur behind modal */
+}
+
+.modal-container {
+  background: white !important;
+  border-radius: 0.75rem !important;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+  width: min(96%, 720px) !important; /* responsive width */
+  max-width: 720px !important;
+  max-height: calc(100vh - 4rem) !important; /* fit within viewport */
+  overflow-y: auto !important;
+  animation: modalSlideIn 0.22s cubic-bezier(.2,.9,.2,1) !important;
+  position: fixed !important; /* fix to viewport so it won't shift on page scroll */
+  left: 50% !important;
+  top: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  will-change: transform, opacity !important;
+}
+
+/* Modal content styling */
+.modal-container .p-6 {
+  padding: 1.5rem !important;
+}
+
+.modal-container h3 {
+  font-size: 1.125rem !important;
+  font-weight: 600 !important;
+  color: #111827 !important;
+  margin-bottom: 1rem !important;
+  margin-top: 0 !important;
+}
+
+.modal-container p {
+  color: #6b7280 !important;
+  margin-bottom: 1rem !important;
+  line-height: 1.5 !important;
+}
+
+.modal-container button {
+  padding: 0.5rem 1rem !important;
+  border-radius: 0.5rem !important;
+  font-weight: 500 !important;
+  border: none !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+}
+
+.modal-container button:hover {
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Break assignment specific styling */
+.modal-container .bg-red-600 {
+  background-color: #dc2626 !important;
+  color: white !important;
+}
+
+.modal-container .bg-red-600:hover {
+  background-color: #b91c1c !important;
+}
+
+.modal-container .bg-gray-100 {
+  background-color: #f3f4f6 !important;
+  color: #6b7280 !important;
+}
+
+.modal-container .bg-gray-100:hover {
+  background-color: #e5e7eb !important;
+}
+
+.modal-container .flex {
+  display: flex !important;
+}
+
+.modal-container .gap-3 {
+  gap: 0.75rem !important;
+}
+
+.modal-container .justify-end {
+  justify-content: flex-end !important;
+}
+
+/* Assignment confirmation dialog specific styles */
+.modal-container .bg-gray-50 {
+  background-color: #f9fafb !important;
+  border: 1px solid #e5e7eb !important;
+  max-height: 200px !important;
+  overflow-y: auto !important;
+}
+
+/* Ensure modal content respects safe-area insets on mobile devices */
+.modal-container > * {
+  padding-left: max(1rem, env(safe-area-inset-left)) !important;
+  padding-right: max(1rem, env(safe-area-inset-right)) !important;
+}
+
+.modal-container .text-gray-800 {
+  color: #1f2937 !important;
+  font-weight: 500 !important;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.modal-header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 1.5rem !important;
+  border-bottom: 1px solid #e5e7eb !important;
+  background: #DA291C !important;
+  color: white !important;
+  border-radius: 1rem 1rem 0 0 !important;
+}
+
+.modal-title {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.75rem !important;
+}
+
+.modal-icon {
+  width: 24px !important;
+  height: 24px !important;
+}
+
+.modal-title h2 {
+  font-size: 1.25rem !important;
+  font-weight: 700 !important;
+  margin: 0 !important;
+}
+
+.modal-title p {
+  font-size: 0.875rem !important;
+  opacity: 0.9 !important;
+  margin: 0 !important;
+}
+
+.modal-close-btn {
+  background: rgba(255, 255, 255, 0.2) !important;
+  border: none !important;
+  border-radius: 0.5rem !important;
+  padding: 0.5rem !important;
+  color: white !important;
+  cursor: pointer !important;
+  transition: background 0.2s !important;
+}
+
+.modal-close-btn:hover {
+  background: rgba(255, 255, 255, 0.3) !important;
+}
+
+.current-assignment {
+  padding: 1rem 1.5rem !important;
+  background: #f9fafb !important;
+  border-bottom: 1px solid #e5e7eb !important;
+}
+
+.current-assignment h3 {
+  font-size: 0.875rem !important;
+  font-weight: 600 !important;
+  color: #374151 !important;
+  margin: 0 0 0.5rem 0 !important;
+}
+
+.current-employee-card {
+  background: #FFC72C !important;
+  padding: 0.75rem !important;
+  border-radius: 0.5rem !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+}
+
+.current-employee-card .employee-name {
+  font-weight: 600 !important;
+  color: #1f2937 !important;
+}
+
+.current-employee-card .employee-time {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.25rem !important;
+  font-size: 0.75rem !important;
+  color: #6b7280 !important;
+}
+
+.employee-stats-modal {
+  display: flex !important;
+  gap: 1rem !important;
+  padding: 1rem 1.5rem !important;
+  background: #f9fafb !important;
+  border-bottom: 1px solid #e5e7eb !important;
+}
+
+.stat-item-modal {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  padding: 0.5rem !important;
+  border-radius: 0.5rem !important;
+  flex: 1 !important;
+}
+
+.stat-item-modal.total {
+  background: #ddd6fe !important;
+  color: #5b21b6 !important;
+}
+
+.stat-item-modal.available {
+  background: #dcfce7 !important;
+  color: #166534 !important;
+}
+
+.stat-item-modal.assigned {
+  background: #fee2e2 !important;
+  color: #991b1b !important;
+}
+
+.stat-number {
+  font-size: 1.5rem !important;
+  font-weight: 700 !important;
+}
+
+.stat-label {
+  font-size: 0.75rem !important;
+  font-weight: 500 !important;
+  opacity: 0.8 !important;
+}
+
+.search-container-modal {
+  position: relative !important;
+  padding: 1rem 1.5rem !important;
+  border-bottom: 1px solid #e5e7eb !important;
+}
+
+.search-icon-modal {
+  position: absolute !important;
+  left: 2rem !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  color: #9ca3af !important;
+}
+
+.search-input-modal {
+  width: 100% !important;
+  padding: 0.75rem 0.75rem 0.75rem 2.5rem !important;
+  border: 2px solid #e5e7eb !important;
+  border-radius: 0.5rem !important;
+  font-size: 0.875rem !important;
+  transition: border-color 0.2s !important;
+}
+
+.search-input-modal:focus {
+  outline: none !important;
+  border-color: #DA291C !important;
+}
+
+.employee-list-modal {
+  max-height: 400px !important;
+  overflow-y: auto !important;
+  padding: 1rem 1.5rem !important;
+}
+
+.employee-card-modal {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 0.75rem !important;
+  margin-bottom: 0.5rem !important;
+  background: white !important;
+  border: 2px solid #e5e7eb !important;
+  border-radius: 0.5rem !important;
+  cursor: pointer !important;
+  transition: all 0.2s !important;
+}
+
+.employee-card-modal:hover {
+  border-color: #DA291C !important;
+  background: #fef2f2 !important;
+  transform: translateY(-1px) !important;
+}
+
+.employee-card-modal.minor {
+  background: #fefce8 !important;
+  border-color: #FFC72C !important;
+}
+
+.employee-card-modal.minor:hover {
+  background: #fbbf24 !important;
+  border-color: #f59e0b !important;
+}
+
+.employee-card-modal.assigned {
+  background: #f0f9ff !important;
+  border-color: #0ea5e9 !important;
+}
+
+.employee-card-modal.assigned:hover {
+  background: #e0f2fe !important;
+  border-color: #0284c7 !important;
+}
+
+.employee-card-modal.assigned.minor {
+  background: linear-gradient(135deg, #fefce8 0%, #f0f9ff 100%) !important;
+  border-color: #0ea5e9 !important;
+}
+
+.employee-info-modal {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.25rem !important;
+  flex: 1 !important;
+}
+
+.current-assignments-indicator {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.25rem !important;
+  font-size: 0.625rem !important;
+  color: #0ea5e9 !important;
+  font-weight: 500 !important;
+  margin-top: 0.125rem !important;
+}
+
+.assignments-text {
+  line-height: 1.2 !important;
+}
+
+.employee-badges-modal {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.25rem !important;
+  align-items: flex-end !important;
+}
+
+.assigned-badge-modal {
+  background: #0ea5e9 !important;
+  color: white !important;
+  padding: 0.25rem 0.5rem !important;
+  border-radius: 0.25rem !important;
+  font-size: 0.625rem !important;
+  font-weight: 600 !important;
+}
+
+.employee-name-modal {
+  font-weight: 600 !important;
+  color: #1f2937 !important;
+  font-size: 0.875rem !important;
+}
+
+.employee-time-modal {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.25rem !important;
+  font-size: 0.75rem !important;
+  color: #6b7280 !important;
+}
+
+.minor-badge-modal {
+  background: #FFC72C !important;
+  color: #1f2937 !important;
+  padding: 0.25rem 0.5rem !important;
+  border-radius: 0.25rem !important;
+  font-size: 0.625rem !important;
+  font-weight: 600 !important;
+}
+
+.no-employees-modal {
+  text-align: center !important;
+  padding: 2rem !important;
+  color: #6b7280 !important;
+}
+
+.confirmation-overlay {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  background: rgba(0, 0, 0, 0.5) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 1rem !important;
+}
+
+.confirmation-dialog {
+  background: white !important;
+  border-radius: 0.75rem !important;
+  padding: 1.5rem !important;
+  box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.1) !important;
+  max-width: 400px !important;
+  width: 100% !important;
+  text-align: center !important;
+}
+
+.confirmation-dialog h3 {
+  font-size: 1.125rem !important;
+  font-weight: 700 !important;
+  color: #1f2937 !important;
+  margin: 0 0 0.75rem 0 !important;
+}
+
+.confirmation-dialog p {
+  color: #6b7280 !important;
+  margin: 0 0 0.5rem 0 !important;
+  line-height: 1.5 !important;
+}
+
+.confirmation-buttons {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.5rem !important;
+  margin-top: 1.5rem !important;
+}
+
+.confirm-btn {
+  padding: 0.75rem 1rem !important;
+  border-radius: 0.5rem !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  transition: all 0.2s !important;
+  border: none !important;
+  font-size: 0.875rem !important;
+}
+
+.confirm-btn.replace {
+  background: #DC2626 !important;
+  color: white !important;
+}
+
+.confirm-btn.replace:hover {
+  background: #B91C1C !important;
+}
+
+.confirm-btn.add {
+  background: #059669 !important;
+  color: white !important;
+}
+
+.confirm-btn.add:hover {
+  background: #047857 !important;
+}
+
+.confirm-btn.cancel {
+  background: #f3f4f6 !important;
+  color: #374151 !important;
+}
+
+.confirm-btn.cancel:hover {
+  background: #e5e7eb !important;
+}
+
+/* Enhanced styling for employee cards in drop zones */
+.employee-card.in-drop-zone {
+  position: relative !important;
+  transition: all 0.2s ease !important;
+}
+
+.employee-card.in-drop-zone:hover {
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15) !important;
+  border-color: #DA291C !important;
+}
+
+.employee-card.in-drop-zone::after {
+  content: "👆 Double-click to change" !important;
+  position: absolute !important;
+  top: -25px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  background: #1f2937 !important;
+  color: white !important;
+  padding: 0.25rem 0.5rem !important;
+  border-radius: 0.25rem !important;
+  font-size: 0.625rem !important;
+  white-space: nowrap !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transition: opacity 0.2s !important;
+  z-index: 10 !important;
+}
+
+.employee-card.in-drop-zone:hover::after {
+  opacity: 1 !important;
+}
+
+/* Empty drop zone styling */
+.drop-zone:empty:hover {
+  border-color: #DA291C !important;
+  background: #fef2f2 !important;
+}
+
+/* Employee assignments container for multiple staff */
+.employee-assignments-container {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.125rem !important;
+  width: 100% !important;
+  height: fit-content !important;
+  overflow: visible !important;
+}
+
+/* Enhanced employee card styling for multiple assignments */
+.six-column-layout .employee-card {
+  padding: 0.25rem !important;
+  font-size: 0.75rem !important;
+  line-height: 1.2 !important;
+  border-radius: 0.25rem !important;
+  margin-bottom: 0.125rem !important;
+  min-height: 20px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  flex-shrink: 0 !important;
+  height: auto !important;
+  overflow: visible !important;
+}
+
+/* Multiple employee handling */
+.six-column-layout .drop-zone .employee-card:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* Five-column layout drop zone specific styling */
+.six-column-layout .drop-zone {
+  min-height: 40px !important;
+  padding: 0.25rem !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.125rem !important;
+  height: auto !important;
+  overflow: visible !important;
+}
+
+/* Adjust spacing when there are multiple employees */
+.six-column-layout .drop-zone:has(.employee-card:nth-child(2)) {
+  padding: 0.375rem !important;
+  gap: 0.25rem !important;
+}
+
+.six-column-layout .drop-zone:has(.employee-card:nth-child(3)) {
+  padding: 0.5rem !important;
+  gap: 0.375rem !important;
+}
+
+.drop-zone[title]:hover::before {
+  content: attr(title) !important;
+  position: absolute !important;
+  bottom: 100% !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  background: #1f2937 !important;
+  color: white !important;
+  padding: 0.5rem !important;
+  border-radius: 0.25rem !important;
+  font-size: 0.75rem !important;
+  white-space: nowrap !important;
+  z-index: 10 !important;
+  margin-bottom: 0.25rem !important;
+}
+
+.station-group {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.375rem !important;
+}
+
+/* Grid container for full viewport utilization */
+.grid-container-compact {
+  height: auto !important;
+  min-height: fit-content !important;
+  width: 100% !important;
+  overflow: visible !important;
+}
+
+.assignment-grid-container {
+  height: auto !important;
+  min-height: fit-content !important;
+  width: 100% !important;
+  overflow: visible !important;
+  padding: 0 1rem 1rem 1rem !important;
+}
+
+/* Compact station cards */
+.station-card-compact {
+  background: white !important;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 0.375rem !important;
+  padding: 0.25rem !important;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05) !important;
+  min-height: auto !important;
+  font-size: 0.75rem !important;
+}
+
+/* Compact styling for 6-column layout */
+.six-column-layout .station-card-compact {
+  background: white !important;
+  border: 2px solid #e5e5e5 !important;
+  border-radius: 0.375rem !important;
+  padding: 0.3rem !important;
+  font-size: 0.8rem !important;
+  width: 100% !important;
+  height: fit-content !important;
+  min-height: 100px !important;
+  max-height: none !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: visible !important;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+  margin-bottom: 0.1rem !important;
+}
+
+/* Alternating light colors for station cards by column */
+
+.station-group.column2 .station-card-compact {
+  background: #fefce8 !important; /* Very light yellow */
+  border-color: #fde047 !important;
+}
+
+.station-group.column3 .station-card-compact {
+  background: #f0fdf4 !important; /* Very light green */
+  border-color: #86efac !important;
+}
+
+.station-group.column4 .station-card-compact {
+  background: #fef2f2 !important; /* Very light red */
+  border-color: #fca5a5 !important;
+}
+
+.station-group.column5 .station-card-compact {
+  background: #faf5ff !important; /* Very light purple */
+  border-color: #c4b5fd !important;
+}
+
+.station-group.column6 .station-card-compact {
+  background: #f0f9ff !important; /* Very light blue */
+  border-color: #7dd3fc !important;
+}
+
+/* Keep shift manager card styling consistent */
+.station-group .shift-manager-card {
+  background: linear-gradient(135deg, #DC2626, #EF4444) !important;
+  color: #000000 !important;
+  border: 2px solid #DC2626 !important;
+}
+
+.six-column-layout .station-title-compact {
+  font-size: 0.8rem !important;
+  font-weight: 700 !important;
+  color: #1f2937 !important;
+  margin-bottom: 0.3rem !important;
+  text-align: center !important;
+  background: #f3f4f6 !important;
+  padding: 0.25rem !important;
+  border-radius: 0.25rem !important;
+  line-height: 1.1 !important;
+  min-height: 32px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* Alternating colors for station title backgrounds by column */
+
+.station-group.column2 .station-title-compact {
+  background: #fef08a !important; /* Darker yellow */
+  color: #713f12 !important;
+}
+
+.station-group.column3 .station-title-compact {
+  background: #bbf7d0 !important; /* Darker green */
+  color: #166534 !important;
+}
+
+.station-group.column4 .station-title-compact {
+  background: #fecaca !important; /* Darker red */
+  color: #991b1b !important;
+}
+
+.station-group.column5 .station-title-compact {
+  background: #ddd6fe !important; /* Darker purple */
+  color: #6b21a8 !important;
+}
+
+.station-group.column6 .station-title-compact {
+  background: #bae6fd !important; /* Darker blue */
+  color: #0c4a6e !important;
+}
+
+.six-column-layout .station-content-compact {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.15rem !important;
+  flex: 1 !important;
+  min-height: fit-content !important;
+  height: auto !important;
+  overflow: visible !important;
+}
+
+.six-column-layout .task-column-compact {
+  display: flex !important;
+  flex-direction: column !important;
+  min-height: 40px !important;
+  height: auto !important;
+  flex: 1 !important;
+  margin-bottom: 0.1rem !important;
+  overflow: visible !important;
+  min-height: fit-content !important;
+}
+
+.six-column-layout .task-header-compact {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 18px !important;
+  margin-bottom: 0.1rem !important;
+  flex-shrink: 0 !important;
+}
+
+.six-column-layout .task-name-compact {
+  font-size: 0.75rem !important;
+  font-weight: 600 !important;
+  color: #374151 !important;
+  text-align: center !important;
+  background: #f9fafb !important;
+  padding: 0.125rem 0.25rem !important;
+  border-radius: 0.125rem !important;
+  border: 1px solid #e5e7eb !important;
+}
+
+.six-column-layout .task-assignments-compact {
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: visible !important;
+  height: fit-content !important;
+  min-height: 30px !important;
+}
+
+/* PROPER CSS - All styles working correctly */
+html body .six-column-layout .drop-zone,
+html body .drop-zone {
+  min-height: 30px !important;
+  height: fit-content !important;
+  max-height: none !important;
+  padding: 0.25rem !important;
+  font-size: 0.75rem !important;
+  border: 2px dashed #d1d5db !important;
+  border-radius: 0.25rem !important;
+  background: #f9fafb !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.125rem !important;
+  overflow: visible !important;
+  box-sizing: border-box !important;
+}
+
+/* ULTRA HIGH SPECIFICITY for container hierarchy */
+html body .six-column-layout .station-card-compact,
+html body .station-card-compact {
+  height: fit-content !important;
+  max-height: none !important;
+  overflow: visible !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+html body .six-column-layout .task-column-compact,
+html body .task-column-compact {
+  height: fit-content !important;
+  max-height: none !important;
+  overflow: visible !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+html body .six-column-layout .task-assignments-compact,
+html body .task-assignments-compact {
+  height: fit-content !important;
+  max-height: none !important;
+  overflow: visible !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+html body .six-column-layout .employee-assignments-container,
+html body .employee-assignments-container {
+  height: fit-content !important;
+  max-height: none !important;
+  overflow: visible !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.125rem !important;
+}
+
+/* Content-driven height adjustment - only grows when needed */
+.six-column-layout * {
+  max-height: none !important;
+}
+
+/* Allow natural overflow for specific elements that need it */
+.modal-container,
+.employees-list-horizontal {
+  overflow: auto !important;
+  max-height: 90vh !important;
+}
+
+.six-column-layout .employee-card {
+  padding: 0.25rem !important;
+  font-size: 0.75rem !important;
+  line-height: 1.2 !important;
+  border-radius: 0.25rem !important;
+  margin-bottom: 0.125rem !important;
+  min-height: 20px !important;
+}
+
+.six-column-layout .employee-name {
+  font-size: 0.75rem !important;
+  font-weight: 600 !important;
+}
+
+.six-column-layout .employee-time {
+  font-size: 0.625rem !important;
+  opacity: 0.8 !important;
+}
+
+/* DFS specific styling for square layout */
+.six-column-layout .dfs-info-compact {
+  flex: 1 !important;
+  height: auto !important;
+  overflow: visible !important;
+}
+
+.six-column-layout .dfs-items-compact {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.125rem !important;
+}
+
+.six-column-layout .dfs-item-compact {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  padding: 0.125rem 0.25rem !important;
+  background: #f3f4f6 !important;
+  border-radius: 0.125rem !important;
+  font-size: 0.625rem !important;
+  border: 1px solid #e5e7eb !important;
+}
+
+.six-column-layout .dfs-task-compact {
+  font-weight: 500 !important;
+  color: #374151 !important;
+  flex: 1 !important;
+}
+
+.six-column-layout .dfs-day-compact {
+  font-weight: 600 !important;
+  color: #DC2626 !important;
+  background: #FEF2F2 !important;
+  padding: 0.0625rem 0.25rem !important;
+  border-radius: 0.125rem !important;
+  font-size: 0.5625rem !important;
+}
+
+.station-header-compact {
+  background-color: #f3f4f6 !important;
+  padding: 0.25rem !important;
+  border-radius: 0.25rem !important;
+  margin-bottom: 0.25rem !important;
+  border-bottom: 2px solid #d1d5db !important;
+  border: 1px solid #e5e7eb !important;
+}
+
+.station-title-compact {
+  font-size: 0.675rem !important;
+  font-weight: 700 !important;
+  color: #111827 !important;
+  text-align: center !important;
+  margin: 0 !important;
+  line-height: 1.1 !important;
+}
+
+.station-content-compact {
+  padding: 0.125rem !important;
+}
+
+.task-column-compact {
+  margin-bottom: 0.25rem !important;
+}
+
+.task-header-compact {
+  background-color: #e5e7eb !important;
+  padding: 0.125rem 0.25rem !important;
+  border-radius: 0.125rem !important;
+  margin-bottom: 0.125rem !important;
+  border: 1px solid #d1d5db !important;
+}
+
+.task-name-compact {
+  font-size: 0.625rem !important;
+  font-weight: 600 !important;
+  color: #111827 !important;
+  line-height: 1.1 !important;
+}
+
+.task-assignments-compact {
+  margin-bottom: 0.125rem !important;
+}
+
+/* DFS compact styling */
+.dfs-info-compact {
+  font-size: 0.5rem !important;
+  line-height: 1.1 !important;
+}
+
+.dfs-items-compact {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.125rem !important;
+}
+
+.dfs-item-compact {
+  display: flex !important;
+  justify-content: space-between !important;
+  padding: 0.125rem !important;
+  background-color: #f9fafb !important;
+  border-radius: 0.125rem !important;
+  border: 1px solid #e5e7eb !important;
+}
+
+.dfs-task-compact {
+  font-size: 0.5rem !important;
+  color: #374151 !important;
+  flex: 1 !important;
+}
+
+.dfs-day-compact {
+  font-size: 0.5rem !important;
+  color: #6b7280 !important;
+  font-weight: 500 !important;
+}
+
+/* Compact drop zones */
+.station-content-compact .drop-zone {
+  min-height: 25px !important;
+  padding: 0.125rem !important;
+  max-height: 60px !important;
+  font-size: 0.5rem !important;
+  border-width: 1px !important;
+}
+
+/* Compact employee cards */
+.station-content-compact .employee-card {
+  padding: 0.125rem !important;
+  margin-bottom: 0.0625rem !important;
+  font-size: 0.5rem !important;
+  line-height: 1.1 !important;
+  border-radius: 0.125rem !important;
+}
+
+/* 9x9 Grid specific styling */
+.grid-container-9x9 {
+  width: 100% !important;
+  height: calc(100vh - 200px) !important;
+  overflow: auto !important;
+  padding: 0.5rem !important;
+  background-color: #f9fafb !important;
+}
+
+.assignment-grid-9x9 {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.25rem !important;
+  min-height: 100% !important;
+}
+
+.grid-row {
+  display: flex !important;
+  gap: 0.25rem !important;
+  flex: 1 !important;
+}
+
+.grid-cell {
+  flex: 1 !important;
+  min-height: 120px !important;
+  max-height: 120px !important;
+  overflow: hidden !important;
+}
+
+.station-card-9x9 {
+  background: white !important;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 0.25rem !important;
+  padding: 0.25rem !important;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05) !important;
+  height: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+}
+
+.station-header-9x9 {
+  background-color: #e5e7eb !important;
+  padding: 0.125rem 0.25rem !important;
+  border-radius: 0.125rem !important;
+  margin-bottom: 0.25rem !important;
+  border-bottom: 2px solid #d1d5db !important;
+  border: 1px solid #d1d5db !important;
+  flex-shrink: 0 !important;
+}
+
+.station-title-9x9 {
+  font-size: 0.625rem !important;
+  font-weight: 700 !important;
+  color: #111827 !important;
+  text-align: center !important;
+  margin: 0 !important;
+  line-height: 1.2 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+.station-content-9x9 {
+  flex: 1 !important;
+  overflow-y: auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.125rem !important;
+}
+
+.task-column-9x9 {
+  margin-bottom: 0.25rem !important;
+  flex: 1 !important;
+}
+
+.task-header-9x9 {
+  background-color: #e5e7eb !important;
+  padding: 0.125rem 0.25rem !important;
+  border-radius: 0.125rem !important;
+  margin-bottom: 0.125rem !important;
+  border: 1px solid #d1d5db !important;
+}
+
+.task-name-9x9 {
+  font-size: 0.5rem !important;
+  font-weight: 600 !important;
+  color: #111827 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+.task-assignments-9x9 {
+  flex: 1 !important;
+}
+
+.empty-cell {
+  background-color: #f9fafb !important;
+  border: 1px dashed #d1d5db !important;
+  border-radius: 0.25rem !important;
+  height: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: #9ca3af !important;
+  font-size: 0.5rem !important;
+}
+
+/* Grid layout and horizontal scroll improvements */
+.overflow-x-auto {
+  -webkit-overflow-scrolling: touch !important;
+  scroll-behavior: smooth !important;
+}
+
+.min-w-max {
+  min-width: max-content !important;
+}
+
+/* Station card responsive improvements */
+.station-card {
+  flex-shrink: 0 !important;
+  width: 100% !important;
+}
+
+/* Ensure proper grid cell sizing */
+.grid-cols-4 > * {
+  min-width: 250px !important;
+}
+
+.grid-cols-3 > * {
+  min-width: 280px !important;
+}
+
+@media (max-width: 1024px) {
+  .grid-cols-4 > * {
+    min-width: 220px !important;
+  }
+  
+  .grid-cols-3 > * {
+    min-width: 250px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .grid-cols-4 > * {
+    min-width: 200px !important;
+  }
+  
+  .grid-cols-3 > * {
+    min-width: 220px !important;
+  }
+}
+
+/* Responsive adjustments for 9x9 grid */
+
+/* Tablet landscape - optimized for 4-column view */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .grid-cell {
+    min-height: 110px !important;
+    max-height: 110px !important;
+  }
+  
+  .station-title-9x9 {
+    font-size: 0.55rem !important;
+  }
+  
+  .task-name-9x9 {
+    font-size: 0.45rem !important;
+  }
+  
+  .station-card-9x9 {
+    padding: 0.1875rem !important;
+  }
+}
+
+/* Tablet portrait and mobile adjustments */
+@media (max-width: 768px) {
+  .grid-cell {
+    min-height: 90px !important;
+    max-height: 90px !important;
+  }
+  
+  .station-title-9x9 {
+    font-size: 0.5rem !important;
+  }
+  
+  .task-name-9x9 {
+    font-size: 0.4rem !important;
+  }
+  
+  .station-card-9x9 {
+    padding: 0.15rem !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .grid-cell {
+    min-height: 80px !important;
+    max-height: 80px !important;
+  }
+  
+  .station-card-9x9 {
+    padding: 0.125rem !important;
+  }
+  
+  .station-title-9x9 {
+    font-size: 0.4rem !important;
+  }
+  
+  .task-name-9x9 {
+    font-size: 0.35rem !important;
+  }
+}
+
+/* Responsive DFS table styles */
+@media (max-width: 1024px) {
+  .dfs-info-table {
+    padding: 0.75rem !important;
+  }
+  
+  .dfs-item {
+    padding: 0.5rem !important;
+    font-size: 0.8rem !important;
+  }
+  
+  .dfs-task {
+    font-size: 0.8rem !important;
+  }
+  
+  .dfs-day {
+    font-size: 0.7rem !important;
+    padding: 2px 6px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .dfs-info-table {
+    padding: 0.5rem !important;
+  }
+  
+  .dfs-item {
+    padding: 0.375rem !important;
+    font-size: 0.75rem !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 0.25rem !important;
+  }
+  
+  .dfs-task {
+    font-size: 0.75rem !important;
+    width: 100% !important;
+  }
+  
+  .dfs-day {
+    font-size: 0.65rem !important;
+    padding: 2px 4px !important;
+    align-self: flex-end !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .dfs-info-table {
+    padding: 0.375rem !important;
+  }
+  
+  .dfs-items {
+    gap: 0.25rem !important;
+  }
+  
+  .dfs-item {
+    padding: 0.25rem !important;
+    font-size: 0.7rem !important;
+  }
+  
+  .dfs-task {
+    font-size: 0.7rem !important;
+  }
+  
+  .dfs-day {
+    font-size: 0.6rem !important;
+    padding: 1px 3px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .dfs-info-table {
+    padding: 0.25rem !important;
+  }
+  
+  .dfs-item {
+    padding: 0.2rem !important;
+    font-size: 0.65rem !important;
+  }
+  
+  .dfs-task {
+    font-size: 0.65rem !important;
+  }
+  
+  .dfs-day {
+    font-size: 0.55rem !important;
+    padding: 1px 2px !important;
+  }
+}
+
+/* Station card responsive styling */
+.station-card {
+  background: white !important;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 0.5rem !important;
+  padding: 0.5rem !important;
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1) !important;
+  min-height: 200px !important;
+}
+
+.station-header {
+  background-color: #f9fafb !important;
+  padding: 0.375rem !important;
+  border-radius: 0.25rem !important;
+  margin-bottom: 0.5rem !important;
+  border-bottom: 2px solid #e5e7eb !important;
+}
+
+.station-title {
+  font-size: 0.875rem !important;
+  font-weight: 600 !important;
+  color: #374151 !important;
+  text-align: center !important;
+  margin: 0 !important;
+}
+
+.task-column {
+  margin-bottom: 0.75rem !important;
+}
+
+.task-header {
+  background-color: #f3f4f6 !important;
+  padding: 0.25rem 0.5rem !important;
+  border-radius: 0.25rem !important;
+  margin-bottom: 0.25rem !important;
+  border: 1px solid #d1d5db !important;
+}
+
+.task-name {
+  font-size: 0.75rem !important;
+  font-weight: 500 !important;
+  color: #4b5563 !important;
+}
+
+/* Responsive adjustments for horizontal layout */
+@media (min-width: 1600px) {
+  .six-column-layout {
+    flex-wrap: nowrap !important;
+    gap: 0.75rem !important;
+  }
+  .station-group.column1,
+  .station-group.column2,
+  .station-group.column3,
+  .station-group.column4,
+  .station-group.column5,
+  .station-group.column6 {
+    flex: 0 0 auto !important;
+    min-width: 200px !important;
+    max-width: none !important;
+  }
+}
+
+@media (min-width: 1400px) and (max-width: 1599px) {
+  .six-column-layout {
+    flex-wrap: nowrap !important;
+    gap: 0.75rem !important;
+  }
+  .station-group.column1,
+  .station-group.column2,
+  .station-group.column3,
+  .station-group.column4,
+  .station-group.column5,
+  .station-group.column6 {
+    flex: 0 0 auto !important;
+    min-width: 220px !important;
+    max-width: none !important;
+  }
+}
+
+@media (max-width: 1200px) {
+  .employee-pool-header-horizontal {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 0.75rem !important;
+  }
+  
+  .employee-pool-title-horizontal {
+    justify-content: center !important;
+  }
+  
+  .employee-stats-horizontal {
+    justify-content: center !important;
+  }
+  
+  .employee-card-horizontal-wrapper {
+    width: 180px !important;
+  }
+  
+  /* Removed conflicting grid rules to use flexbox layout */
+}
+
+/* Tablet landscape breakpoint - 4 columns with horizontal scroll */
+@media (min-width: 769px) and (max-width: 1024px) {
+  /* Removed conflicting grid rules to use flexbox layout */
+  
+  .employee-card-horizontal-wrapper {
+    width: 200px !important;
+  }
+  
+  .station-card {
+    min-height: 180px !important;
+    min-width: 220px !important;
+  }
+  
+  .station-title {
+    font-size: 0.8rem !important;
+  }
+  
+  .task-name {
+    font-size: 0.7rem !important;
+  }
+  
+  .six-column-layout .station-card-compact {
+    min-height: 140px !important;
+    min-width: 200px !important;
+  }
+  
+  .six-column-layout .station-title-compact {
+    font-size: 0.8rem !important;
+  }
+  
+  .six-column-layout .task-name-compact {
+    font-size: 0.7rem !important;
+  }
+  
+  /* Horizontal scroll styling */
+  .overflow-x-auto {
+    scrollbar-width: thin !important;
+    scrollbar-color: #DA291C #f1f1f1 !important;
+  }
+  
+  .overflow-x-auto::-webkit-scrollbar {
+    height: 8px !important;
+  }
+  
+  .overflow-x-auto::-webkit-scrollbar-track {
+    background: #f1f1f1 !important;
+    border-radius: 4px !important;
+  }
+  
+  .overflow-x-auto::-webkit-scrollbar-thumb {
+    background: #DA291C !important;
+    border-radius: 4px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .employee-pool-horizontal-container {
+    padding: 0.75rem !important;
+  }
+  
+  .employee-pool-header-horizontal {
+    gap: 0.5rem !important;
+  }
+  
+  .employee-stats-horizontal {
+    flex-wrap: wrap !important;
+    gap: 0.5rem !important;
+    font-size: 0.75rem !important;
+  }
+  
+  .stat-item {
+    padding: 0.125rem 0.375rem !important;
+  }
+  
+  .employee-card-horizontal-wrapper {
+    width: 160px !important;
+  }
+  
+  .search-input-horizontal {
+    font-size: 0.75rem !important;
+    padding: 0.375rem 0.5rem 0.375rem 2rem !important;
+  }
+  
+  .upload-button-horizontal {
+    padding: 0.375rem 0.75rem !important;
+    font-size: 0.75rem !important;
+  }
+  
+  .assigned-employee-card {
+    min-width: 120px !important;
+    padding: 0.375rem !important;
+  }
+  
+  .assigned-employee-card .employee-name {
+    font-size: 0.75rem !important;
+  }
+  
+  .assigned-employee-card .employee-time {
+    font-size: 0.625rem !important;
+  }
+  
+  .assignment-grid-container {
+    padding: 0 0.75rem 0.75rem 0.75rem !important;
+  }
+  
+  /* Removed conflicting grid-template-columns rule to use flexbox layout */
+  
+  .six-column-layout .station-card-compact {
+    min-height: 100px !important;
+  }
+  
+  .six-column-layout .station-title-compact {
+    font-size: 0.75rem !important;
+    min-height: 35px !important;
+  }
+  
+  .six-column-layout .task-name-compact {
+    font-size: 0.625rem !important;
+  }
+  
+  .six-column-layout .employee-name {
+    font-size: 0.625rem !important;
+  }
+  
+  .six-column-layout .employee-card {
+    padding: 0.1875rem !important;
+    font-size: 0.625rem !important;
+    min-height: 18px !important;
+  }
+  
+  .six-column-layout .drop-zone {
+    min-height: 25px !important;
+    padding: 0.1875rem !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .employee-pool-horizontal-container {
+    padding: 0.5rem !important;
+  }
+  
+  .employee-card-horizontal-wrapper {
+    width: 140px !important;
+  }
+  
+  .employee-stats-horizontal {
+    font-size: 0.625rem !important;
+  }
+  
+  .assigned-employee-card {
+    min-width: 100px !important;
+  }
+  
+  .assignment-grid-container {
+    padding: 0 0.5rem 0.5rem 0.5rem !important;
+  }
+  
+  /* Removed conflicting grid rules to use flexbox layout */
+  
+  .six-column-layout .station-card-compact {
+    min-height: 80px !important;
+  }
+  
+  .six-column-layout .station-title-compact {
+    font-size: 0.625rem !important;
+    min-height: 30px !important;
+    padding: 0.25rem !important;
+  }
+  
+  .six-column-layout .task-name-compact {
+    font-size: 0.5rem !important;
+  }
+  
+  .six-column-layout .employee-name {
+    font-size: 0.5rem !important;
+  }
+  
+  .six-column-layout .employee-time {
+    font-size: 0.4375rem !important;
+  }
+  
+  .six-column-layout .employee-card {
+    padding: 0.125rem !important;
+    font-size: 0.5rem !important;
+    min-height: 16px !important;
+  }
+  
+  .six-column-layout .drop-zone {
+    min-height: 20px !important;
+    padding: 0.125rem !important;
+    gap: 0.0625rem !important;
+  }
+  
+  .six-column-layout .drop-zone:has(.employee-card:nth-child(2)) {
+    padding: 0.25rem !important;
+  }
+  
+  .six-column-layout .drop-zone:has(.employee-card:nth-child(3)) {
+    padding: 0.375rem !important;
+  }
 }
 
 /* Animation for smooth transitions */
@@ -239,4 +3072,1175 @@ input:focus {
 
 .scrollbar-thin::-webkit-scrollbar-thumb:hover {
   background: rgb(107 114 128);
+}
+
+/* Bottom Navigation Bar Styles */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  border-top: 1px solid #e5e7eb;
+  box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.1), 0 -2px 4px -1px rgba(0, 0, 0, 0.06);
+  z-index: 50;
+  padding: 12px 16px;
+}
+
+.bottom-nav-container {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  max-width: 36rem;
+  margin: 0 auto;
+  gap: 8px;
+}
+
+.bottom-nav-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  color: #6b7280;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color 0.2s ease-in-out;
+  padding: 8px 12px;
+  border-radius: 8px;
+  min-width: 72px;
+  flex: 1;
+}
+
+.bottom-nav-button:hover {
+  color: var(--mcdonalds-red);
+  background-color: #fef2f2;
+}
+
+.bottom-nav-button:active {
+  transform: scale(0.95);
+}
+
+.bottom-nav-icon {
+  width: 24px;
+  height: 24px;
+  stroke-width: 2;
+}
+
+.bottom-nav-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1;
+}
+
+/* Ensure main content has bottom padding to avoid overlap */
+.app-container-responsive {
+  padding-bottom: 80px;
+}
+
+/* Print styles - hide bottom nav when printing */
+@media print {
+  .bottom-nav {
+    display: none !important;
+  }
+  
+  .app-container-responsive {
+    padding-bottom: 0 !important;
+  }
+}
+
+/* Employee Addition Form Styles */
+.add-employee-form {
+  padding: 1.5rem !important;
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%) !important;
+  border-radius: 0.75rem !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+.add-employee-form::before {
+  content: '' !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 4px !important;
+  background: linear-gradient(90deg, var(--mcdonalds-red) 0%, var(--mcdonalds-yellow) 50%, var(--mcdonalds-red) 100%) !important;
+}
+
+.form-group {
+  margin-bottom: 1.5rem !important;
+  position: relative !important;
+  padding: 0 !important;
+}
+
+.form-label {
+  display: block !important;
+  font-weight: 700 !important;
+  color: #1e293b !important;
+  font-size: 0.95rem !important;
+  margin-bottom: 0.5rem !important;
+  margin-top: 0 !important;
+  padding: 0 !important;
+  letter-spacing: -0.01em !important;
+  transition: color 0.2s ease !important;
+}
+
+.form-label.required::after {
+  content: ' *' !important;
+  color: var(--mcdonalds-red) !important;
+  font-weight: 800 !important;
+  font-size: 1.1em !important;
+}
+
+.form-input {
+  width: 100% !important;
+  padding: 1rem 1.25rem !important;
+  border: 2px solid #e2e8f0 !important;
+  border-radius: 0.75rem !important;
+  font-size: 0.95rem !important;
+  background-color: #ffffff !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  box-sizing: border-box !important;
+  font-weight: 500 !important;
+  color: #334155 !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+}
+
+.form-input:hover {
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+}
+
+.form-input:focus {
+  outline: none !important;
+  border-color: var(--mcdonalds-red) !important;
+  box-shadow: 0 0 0 3px rgba(218, 41, 28, 0.1), 0 4px 12px rgba(218, 41, 28, 0.15) !important;
+  background-color: #fefefe !important;
+  transform: translateY(-1px) !important;
+}
+
+.form-input:invalid {
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1) !important;
+}
+
+.form-input::placeholder {
+  color: #94a3b8 !important;
+  font-weight: 400 !important;
+  font-style: italic !important;
+}
+
+.form-select {
+  width: 100% !important;
+  padding: 1rem 1.25rem !important;
+  border: 2px solid #e2e8f0 !important;
+  border-radius: 0.75rem !important;
+  font-size: 0.95rem !important;
+  background-color: #ffffff !important;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m6 8 4 4 4-4'/%3e%3c/svg%3e") !important;
+  background-position: right 1rem center !important;
+  background-repeat: no-repeat !important;
+  background-size: 1.5em 1.5em !important;
+  padding-right: 3rem !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  appearance: none !important;
+  cursor: pointer !important;
+  font-weight: 500 !important;
+  color: #334155 !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+}
+
+.form-select:hover {
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+}
+
+.form-select:focus {
+  outline: none !important;
+  border-color: var(--mcdonalds-red) !important;
+  box-shadow: 0 0 0 3px rgba(218, 41, 28, 0.1), 0 4px 12px rgba(218, 41, 28, 0.15) !important;
+  background-color: #fefefe !important;
+  transform: translateY(-1px) !important;
+}
+
+.form-checkbox-group {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.875rem !important;
+  margin-top: 0.5rem !important;
+  margin-bottom: 0.5rem !important;
+  padding: 0.75rem !important;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%) !important;
+  border-radius: 0.75rem !important;
+  border: 1px solid #e2e8f0 !important;
+  transition: all 0.2s ease !important;
+}
+
+.form-checkbox-group:hover {
+  background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%) !important;
+  border-color: #cbd5e1 !important;
+}
+
+.form-checkbox {
+  width: 1.5rem !important;
+  height: 1.5rem !important;
+  border: 2px solid #cbd5e1 !important;
+  border-radius: 0.5rem !important;
+  appearance: none !important;
+  background-color: #ffffff !important;
+  cursor: pointer !important;
+  position: relative !important;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+}
+
+.form-checkbox:hover {
+  border-color: var(--mcdonalds-red) !important;
+  box-shadow: 0 2px 8px rgba(218, 41, 28, 0.2) !important;
+}
+
+.form-checkbox:checked {
+  background-color: var(--mcdonalds-red) !important;
+  border-color: var(--mcdonalds-red) !important;
+  box-shadow: 0 2px 8px rgba(218, 41, 28, 0.3) !important;
+}
+
+.form-checkbox:checked::after {
+  content: '✓' !important;
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  color: white !important;
+  font-weight: 900 !important;
+  font-size: 1rem !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2) !important;
+}
+
+.form-checkbox:focus {
+  outline: none !important;
+  box-shadow: 0 0 0 3px rgba(218, 41, 28, 0.2), 0 2px 8px rgba(218, 41, 28, 0.3) !important;
+}
+
+.checkbox-label {
+  font-weight: 600 !important;
+  color: #334155 !important;
+  font-size: 0.95rem !important;
+  cursor: pointer !important;
+  user-select: none !important;
+  letter-spacing: -0.01em !important;
+}
+
+.form-row {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 1.25rem !important;
+}
+
+.form-help {
+  color: #64748b !important;
+  font-size: 0.8rem !important;
+  margin-top: 0.25rem !important;
+  margin-bottom: 0 !important;
+  font-style: italic !important;
+  font-weight: 500 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.25rem !important;
+  padding: 0 !important;
+}
+
+.form-help::before {
+  content: '💡' !important;
+  font-size: 0.9rem !important;
+}
+
+.form-buttons {
+  display: flex !important;
+  justify-content: flex-end !important;
+  gap: 1rem !important;
+  margin-top: 2.5rem !important;
+  padding-top: 2rem !important;
+  border-top: 2px solid #f1f5f9 !important;
+  position: relative !important;
+}
+
+.form-buttons::before {
+  content: '' !important;
+  position: absolute !important;
+  top: -2px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  width: 60px !important;
+  height: 2px !important;
+  background: linear-gradient(90deg, transparent 0%, var(--mcdonalds-red) 50%, transparent 100%) !important;
+}
+
+.btn-cancel {
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%) !important;
+  color: #64748b !important;
+  font-weight: 600 !important;
+  padding: 0.875rem 2rem !important;
+  border-radius: 0.75rem !important;
+  border: 2px solid #e2e8f0 !important;
+  cursor: pointer !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  font-size: 0.95rem !important;
+  position: relative !important;
+  overflow: hidden !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05) !important;
+}
+
+.btn-cancel::before {
+  content: '' !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: -100% !important;
+  width: 100% !important;
+  height: 100% !important;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent) !important;
+  transition: left 0.5s ease !important;
+}
+
+.btn-cancel:hover {
+  background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%) !important;
+  border-color: #cbd5e1 !important;
+  color: #475569 !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12) !important;
+}
+
+.btn-cancel:hover::before {
+  left: 100% !important;
+}
+
+.btn-save {
+  background: linear-gradient(135deg, var(--mcdonalds-red) 0%, #c53030 100%) !important;
+  color: white !important;
+  font-weight: 700 !important;
+  padding: 0.875rem 2rem !important;
+  border-radius: 0.75rem !important;
+  border: none !important;
+  cursor: pointer !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  font-size: 0.95rem !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  position: relative !important;
+  overflow: hidden !important;
+  box-shadow: 0 4px 12px rgba(218, 41, 28, 0.3) !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2) !important;
+}
+
+.btn-save::before {
+  content: '' !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: -100% !important;
+  width: 100% !important;
+  height: 100% !important;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent) !important;
+  transition: left 0.5s ease !important;
+}
+
+.btn-save:hover {
+  background: linear-gradient(135deg, #c53030 0%, var(--mcdonalds-red) 100%) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 12px 24px rgba(218, 41, 28, 0.4) !important;
+}
+
+.btn-save:hover::before {
+  left: 100% !important;
+}
+
+.btn-save:disabled {
+  background: linear-gradient(135deg, #9ca3af 0%, #6b7280 100%) !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+}
+
+.btn-save:disabled:hover {
+  transform: none !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+}
+
+.add-staff-button {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  background-color: var(--mcdonalds-yellow) !important;
+  color: #111827 !important;
+  font-weight: 600 !important;
+  padding: 0.75rem 1rem !important;
+  border-radius: 0.5rem !important;
+  border: none !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease-in-out !important;
+  font-size: 0.875rem !important;
+  margin-bottom: 1rem !important;
+  width: fit-content !important;
+}
+
+.add-staff-button:hover {
+  background-color: #f59e0b !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+}
+
+.form-error {
+  color: #ef4444 !important;
+  font-size: 0.75rem !important;
+  margin-top: 0.25rem !important;
+  font-weight: 500 !important;
+}
+
+.form-help {
+  color: #6b7280 !important;
+  font-size: 0.75rem !important;
+  margin-top: 0.25rem !important;
+  font-style: italic !important;
+}
+
+/* Enhanced Modal Styling */
+.modal-overlay {
+  position: fixed !important;
+  inset: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: rgba(15, 23, 42, 0.6) !important;
+  backdrop-filter: blur(8px) !important;
+  z-index: 10000 !important;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left) !important;
+  animation: modalFadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    backdrop-filter: blur(0px);
+  }
+  to {
+    opacity: 1;
+    backdrop-filter: blur(8px);
+  }
+}
+
+.modal-container {
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%) !important;
+  border-radius: 1rem !important;
+  width: min(95%, 500px) !important;
+  max-width: 520px !important;
+  max-height: calc(100vh - 3rem) !important;
+  overflow: hidden !important;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  animation: modalSlideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  position: relative !important;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.modal-header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 1.5rem 2rem !important;
+  border-bottom: 1px solid #f1f5f9 !important;
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%) !important;
+  position: relative !important;
+}
+
+.modal-title {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.875rem !important;
+  color: #1e293b !important;
+  font-weight: 700 !important;
+  font-size: 1.25rem !important;
+  letter-spacing: -0.02em !important;
+}
+
+.modal-title h2 {
+  margin: 0 !important;
+  background: linear-gradient(135deg, #1e293b 0%, #334155 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+}
+
+.modal-close-btn {
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%) !important;
+  border: 2px solid #e2e8f0 !important;
+  padding: 0.5rem !important;
+  border-radius: 0.5rem !important;
+  cursor: pointer !important;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  color: #64748b !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05) !important;
+}
+
+.modal-close-btn:hover {
+  background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%) !important;
+  border-color: #cbd5e1 !important;
+  color: #475569 !important;
+  transform: scale(1.05) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Modal specific adjustments for employee form */
+.modal-container .add-employee-form {
+  padding: 0 !important;
+}
+
+.modal-container .form-buttons {
+  margin-top: 1.5rem !important;
+  padding-top: 1rem !important;
+}
+
+/* Enhanced Form Animations and Effects */
+.form-group {
+  margin-bottom: 1.75rem !important;
+  position: relative !important;
+  animation: formGroupFadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  animation-fill-mode: both !important;
+}
+
+.form-group:nth-child(1) { animation-delay: 0.1s !important; }
+.form-group:nth-child(2) { animation-delay: 0.2s !important; }
+.form-group:nth-child(3) { animation-delay: 0.3s !important; }
+.form-group:nth-child(4) { animation-delay: 0.4s !important; }
+.form-group:nth-child(5) { animation-delay: 0.5s !important; }
+
+@keyframes formGroupFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Enhanced Input Focus Effects */
+.form-input:focus + .form-help,
+.form-input:focus ~ .form-help {
+  color: var(--mcdonalds-red) !important;
+  font-weight: 600 !important;
+}
+
+/* Floating Label Effect (Optional Enhancement) */
+.form-input:focus ~ .form-label,
+.form-input:not(:placeholder-shown) ~ .form-label {
+  transform: translateY(-0.5rem) scale(0.85) !important;
+  color: var(--mcdonalds-red) !important;
+}
+
+/* Enhanced Button Interactions */
+.btn-save:active {
+  transform: translateY(0) scale(0.98) !important;
+  box-shadow: 0 2px 8px rgba(218, 41, 28, 0.3) !important;
+}
+
+.btn-cancel:active {
+  transform: translateY(0) scale(0.98) !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Success Animation for Form Submission */
+@keyframes successPulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+.btn-save.success {
+  animation: successPulse 0.6s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* Loading State for Buttons */
+.btn-save.loading,
+.btn-cancel.loading {
+  position: relative !important;
+  color: transparent !important;
+}
+
+.btn-save.loading::after,
+.btn-cancel.loading::after {
+  content: '' !important;
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  width: 20px !important;
+  height: 20px !important;
+  margin: -10px 0 0 -10px !important;
+  border: 2px solid rgba(255, 255, 255, 0.3) !important;
+  border-top: 2px solid currentColor !important;
+  border-radius: 50% !important;
+  animation: spin 1s linear infinite !important;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Enhanced Checkbox Animation */
+.form-checkbox {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.form-checkbox:checked {
+  animation: checkboxCheck 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+@keyframes checkboxCheck {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Enhanced Modal Close Animation */
+.modal-close-btn:active {
+  transform: scale(0.95) !important;
+}
+
+/* Form Validation States */
+.form-input.error {
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1) !important;
+  animation: shake 0.5s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+.form-input.success {
+  border-color: #10b981 !important;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1) !important;
+}
+
+/* Enhanced Tooltip for Help Text */
+.form-help {
+  position: relative !important;
+  cursor: help !important;
+}
+
+.form-help:hover::after {
+  content: attr(title) !important;
+  position: absolute !important;
+  bottom: 100% !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  background: #1e293b !important;
+  color: white !important;
+  padding: 0.5rem 0.75rem !important;
+  border-radius: 0.5rem !important;
+  font-size: 0.75rem !important;
+  white-space: nowrap !important;
+  z-index: 1000 !important;
+  opacity: 0 !important;
+  animation: tooltipFadeIn 0.3s ease forwards !important;
+}
+
+@keyframes tooltipFadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+/* Form Error States */
+.form-error {
+  color: #ef4444 !important;
+  font-size: 0.875rem !important;
+  margin-top: 0.5rem !important;
+  font-weight: 500 !important;
+  animation: errorFadeIn 0.3s ease !important;
+}
+
+@keyframes errorFadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.form-input.error {
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1) !important;
+  animation: shake 0.5s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.general-error {
+  background-color: #fef2f2 !important;
+  border: 1px solid #fecaca !important;
+  border-radius: 0.5rem !important;
+  padding: 0.75rem 1rem !important;
+  margin-bottom: 1rem !important;
+  text-align: center !important;
+  font-weight: 600 !important;
+  color: #dc2626 !important;
+}
+
+/* Dark Mode Support (Optional) */
+@media (prefers-color-scheme: dark) {
+  .add-employee-form {
+    background: linear-gradient(135deg, #1e293b 0%, #334155 100%) !important;
+  }
+
+  .form-label {
+    color: #f1f5f9 !important;
+  }
+
+  .form-input {
+    background-color: #334155 !important;
+    border-color: #475569 !important;
+    color: #f1f5f9 !important;
+  }
+
+  .form-input::placeholder {
+    color: #94a3b8 !important;
+  }
+
+  .modal-container {
+    background: linear-gradient(135deg, #1e293b 0%, #334155 100%) !important;
+  }
+}
+
+/* Print Styles */
+@media print {
+  .add-employee-form {
+    box-shadow: none !important;
+    border: 1px solid #e2e8f0 !important;
+  }
+
+  .btn-save,
+  .btn-cancel {
+    display: none !important;
+  }
+}
+
+/* Enhanced Mobile Responsiveness for Modals */
+@media (max-width: 640px) {
+  .modal-overlay {
+    padding: 1rem !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .modal-container {
+    width: calc(100vw - 2rem) !important;
+    max-width: none !important;
+    max-height: calc(100vh - 4rem) !important;
+    border-radius: 0.5rem !important;
+    margin: 0 !important;
+  }
+
+  .modal-header {
+    padding: 0.875rem 1rem !important;
+  }
+
+  .modal-title h2 {
+    font-size: 1rem !important;
+  }
+
+  .add-employee-form {
+    padding: 1rem !important;
+  }
+
+  .form-checkbox-group {
+    padding: 0.5rem !important;
+    margin-top: 0.25rem !important;
+    margin-bottom: 0.25rem !important;
+  }
+}
+
+/* Tablet Responsiveness for Modals */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .modal-overlay {
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .modal-container {
+    width: min(85vw, 700px) !important;
+    max-height: calc(100vh - 3rem) !important;
+  }
+}
+
+/* Large Screen Modal Optimization */
+@media (min-width: 1025px) {
+  .modal-overlay {
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .modal-container {
+    width: min(80vw, 800px) !important;
+  }
+}
+
+/* Force Center Alignment - Fallback */
+.modal-overlay {
+  place-items: center !important;
+  place-content: center !important;
+}
+
+.modal-container {
+  place-self: center !important;
+}
+
+/* Landscape Mobile Modal Handling */
+@media (max-height: 500px) and (orientation: landscape) {
+  .modal-overlay {
+    align-items: stretch !important;
+    padding: 0.25rem !important;
+  }
+
+  .modal-container {
+    max-height: calc(100vh - 0.5rem) !important;
+    border-radius: 0.375rem !important;
+  }
+}
+
+/* High DPI Screen Modal Support */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .modal-container {
+    border-width: 0.5px !important;
+  }
+}
+
+/* Body Scroll Prevention for Modals */
+body.modal-open {
+  overflow: hidden !important;
+  position: fixed !important;
+  width: 100% !important;
+}
+
+/* Modal Accessibility Enhancements */
+.modal-container:focus {
+  outline: none !important;
+}
+
+.modal-container * {
+  box-sizing: border-box !important;
+}
+
+/* ============================================ */
+/* FINAL MODAL CENTER OVERRIDE - HIGHEST PRIORITY */
+/* ============================================ */
+
+/* Override all other modal positioning - FINAL */
+body .modal-overlay,
+html .modal-overlay,
+* .modal-overlay {
+  position: fixed !important;
+  inset: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  z-index: 99999 !important;
+  background: rgba(15, 23, 42, 0.5) !important;
+}
+
+/* Override all modal container positioning - FINAL */
+body .modal-overlay .modal-container,
+html .modal-overlay .modal-container,
+* .modal-overlay .modal-container {
+  position: relative !important;
+  margin: 0 auto !important;
+  transform: none !important;
+  top: auto !important;
+  left: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+  width: min(90vw, 700px) !important;
+  max-height: 85vh !important;
+}
+
+/* ============================================ */
+/* ENHANCED RESPONSIVE ASSIGNMENT GRID STYLES */
+/* ============================================ */
+
+/* Enhanced Responsive Assignment Grid - Maintain Desktop Style */
+@media (max-width: 1024px) and (min-width: 769px) {
+  /* Tablet Landscape - Show maximum columns with reduced size */
+  .assignment-grid-9x9 {
+    gap: 0.125rem !important;
+  }
+
+  .grid-row {
+    gap: 0.125rem !important;
+  }
+
+  .grid-cell {
+    min-height: 100px !important;
+    max-height: 100px !important;
+  }
+
+  .station-card-9x9 {
+    padding: 0.1875rem !important;
+  }
+
+  .station-header-9x9 {
+    padding: 0.09375rem 0.1875rem !important;
+    margin-bottom: 0.1875rem !important;
+  }
+
+  .station-title-9x9 {
+    font-size: 0.5625rem !important;
+    line-height: 1.1 !important;
+  }
+
+  .task-header-9x9 {
+    padding: 0.09375rem 0.1875rem !important;
+    margin-bottom: 0.09375rem !important;
+  }
+
+  .task-name-9x9 {
+    font-size: 0.4375rem !important;
+  }
+
+  .station-content-9x9 {
+    gap: 0.09375rem !important;
+  }
+
+  .task-column-9x9 {
+    margin-bottom: 0.1875rem !important;
+  }
+}
+
+@media (max-width: 768px) and (min-width: 641px) {
+  /* Tablet Portrait - Maintain 9x9 but smaller */
+  .assignment-grid-9x9 {
+    gap: 0.09375rem !important;
+  }
+
+  .grid-row {
+    gap: 0.09375rem !important;
+  }
+
+  .grid-cell {
+    min-height: 85px !important;
+    max-height: 85px !important;
+  }
+
+  .station-card-9x9 {
+    padding: 0.125rem !important;
+  }
+
+  .station-header-9x9 {
+    padding: 0.0625rem 0.125rem !important;
+    margin-bottom: 0.125rem !important;
+  }
+
+  .station-title-9x9 {
+    font-size: 0.5rem !important;
+    line-height: 1 !important;
+  }
+
+  .task-header-9x9 {
+    padding: 0.0625rem 0.125rem !important;
+    margin-bottom: 0.0625rem !important;
+  }
+
+  .task-name-9x9 {
+    font-size: 0.375rem !important;
+  }
+
+  .station-content-9x9 {
+    gap: 0.0625rem !important;
+  }
+
+  .task-column-9x9 {
+    margin-bottom: 0.125rem !important;
+  }
+}
+
+@media (max-width: 640px) and (min-width: 481px) {
+  /* Large Mobile - Still show 9x9 but very compact */
+  .assignment-grid-9x9 {
+    gap: 0.0625rem !important;
+  }
+
+  .grid-row {
+    gap: 0.0625rem !important;
+  }
+
+  .grid-cell {
+    min-height: 70px !important;
+    max-height: 70px !important;
+  }
+
+  .station-card-9x9 {
+    padding: 0.09375rem !important;
+  }
+
+  .station-header-9x9 {
+    padding: 0.046875rem 0.09375rem !important;
+    margin-bottom: 0.09375rem !important;
+  }
+
+  .station-title-9x9 {
+    font-size: 0.4375rem !important;
+    line-height: 0.9 !important;
+  }
+
+  .task-header-9x9 {
+    padding: 0.046875rem 0.09375rem !important;
+    margin-bottom: 0.046875rem !important;
+  }
+
+  .task-name-9x9 {
+    font-size: 0.3125rem !important;
+  }
+
+  .station-content-9x9 {
+    gap: 0.046875rem !important;
+  }
+
+  .task-column-9x9 {
+    margin-bottom: 0.09375rem !important;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Small Mobile - Compact but maintain 9x9 layout */
+  .assignment-grid-9x9 {
+    gap: 0.046875rem !important;
+  }
+
+  .grid-row {
+    gap: 0.046875rem !important;
+  }
+
+  .grid-cell {
+    min-height: 60px !important;
+    max-height: 60px !important;
+  }
+
+  .station-card-9x9 {
+    padding: 0.0625rem !important;
+  }
+
+  .station-header-9x9 {
+    padding: 0.03125rem 0.0625rem !important;
+    margin-bottom: 0.0625rem !important;
+  }
+
+  .station-title-9x9 {
+    font-size: 0.375rem !important;
+    line-height: 0.8 !important;
+  }
+
+  .task-header-9x9 {
+    padding: 0.03125rem 0.0625rem !important;
+    margin-bottom: 0.03125rem !important;
+  }
+
+  .task-name-9x9 {
+    font-size: 0.25rem !important;
+  }
+
+  .station-content-9x9 {
+    gap: 0.03125rem !important;
+  }
+
+  .task-column-9x9 {
+    margin-bottom: 0.0625rem !important;
+  }
+}
+
+/* Landscape Mobile Optimization for Assignment Grid */
+@media (max-height: 500px) and (orientation: landscape) {
+  .assignment-grid-9x9 {
+    gap: 0.03125rem !important;
+  }
+
+  .grid-row {
+    gap: 0.03125rem !important;
+  }
+
+  .grid-cell {
+    min-height: 50px !important;
+    max-height: 50px !important;
+  }
+
+  .station-card-9x9 {
+    padding: 0.046875rem !important;
+  }
+
+  .station-header-9x9 {
+    padding: 0.0234375rem 0.046875rem !important;
+    margin-bottom: 0.046875rem !important;
+  }
+
+  .station-title-9x9 {
+    font-size: 0.3125rem !important;
+  }
+
+  .task-header-9x9 {
+    padding: 0.0234375rem 0.046875rem !important;
+    margin-bottom: 0.0234375rem !important;
+  }
+
+  .task-name-9x9 {
+    font-size: 0.1875rem !important;
+  }
+}
+
+/* High DPI Screen Support for Assignment Grid */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .station-card-9x9 {
+    border-width: 0.5px !important;
+  }
+
+  .station-header-9x9 {
+    border-width: 0.5px !important;
+  }
+
+  .task-header-9x9 {
+    border-width: 0.5px !important;
+  }
+}
+
+/* Ensure Assignment Grid Container is Responsive */
+.assignment-grid-main {
+  overflow-x: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+}
+
+@media (max-width: 1024px) {
+  .assignment-grid-main {
+    padding: 0.25rem !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .assignment-grid-main {
+    padding: 0.125rem !important;
+  }
 }

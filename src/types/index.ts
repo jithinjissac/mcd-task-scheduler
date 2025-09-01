@@ -38,7 +38,7 @@ export interface Layouts {
 }
 
 // Day part enumeration
-export type DayPart = 'Breakfast' | 'Day Part 1' | 'Day Part 2';
+export type DayPart = 'Breakfast' | 'Lunch';
 
 // File upload types
 export interface FileUploadResult {

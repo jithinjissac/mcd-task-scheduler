@@ -1,5 +1,6 @@
-import TaskScheduler from './TaskScheduler';
+
+import Landing from './landing';
 
 export default function Home() {
-  return <TaskScheduler />;
+  return <Landing />;
 }

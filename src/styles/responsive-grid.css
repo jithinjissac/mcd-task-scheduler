@@ -1,0 +1,447 @@
+/* Responsive Assignment Grid Styles */
+.responsive-assignment-grid {
+  @apply w-full max-w-7xl mx-auto px-4;
+}
+
+.assignment-header {
+  @apply border-b border-gray-200 pb-4;
+}
+
+/* Station Areas */
+.station-area {
+  @apply relative;
+}
+
+.area-title {
+  @apply sticky top-0 bg-white/95 backdrop-blur-sm z-10 py-2 border-b border-gray-100;
+}
+
+/* Station Cards */
+.station-card {
+  @apply bg-white rounded-xl shadow-lg border-2 border-gray-100 transition-all duration-200 hover:shadow-xl;
+  min-height: 200px;
+}
+
+.station-card.drag-mode {
+  @apply border-mcdonalds-yellow bg-yellow-50/50;
+}
+
+.station-card:hover {
+  @apply border-mcdonalds-yellow/50 transform -translate-y-1;
+}
+
+.station-header {
+  @apply bg-gradient-to-r from-mcdonalds-red to-red-600 text-white p-3 rounded-t-xl;
+}
+
+.station-title {
+  @apply text-white font-bold text-sm sm:text-base;
+}
+
+.station-count {
+  @apply text-red-100 text-xs mt-1;
+}
+
+.station-columns {
+  @apply p-3;
+}
+
+.column-section {
+  @apply border border-gray-100 rounded-lg p-2 bg-gray-50;
+}
+
+.column-header {
+  @apply bg-white px-2 py-1 rounded text-gray-700 border-b border-gray-200;
+}
+
+/* DFS Card Special Styling */
+.dfs-card {
+  @apply bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200;
+}
+
+.dfs-card .station-header {
+  @apply bg-gradient-to-r from-blue-600 to-indigo-600;
+}
+
+.dfs-content {
+  @apply text-gray-700;
+}
+
+.dfs-item {
+  @apply py-1 border-b border-blue-100 last:border-b-0;
+}
+
+/* Enhanced Drop Zone */
+.enhanced-drop-zone {
+  @apply min-h-16 border-2 border-dashed border-gray-300 rounded-lg p-2 transition-all duration-200;
+}
+
+.enhanced-drop-zone.drag-over {
+  @apply border-mcdonalds-yellow bg-yellow-50 scale-105;
+}
+
+.enhanced-drop-zone.compact {
+  @apply min-h-12 p-1;
+}
+
+/* Empty Zone */
+.empty-zone {
+  @apply flex flex-col items-center justify-center text-center py-4;
+}
+
+.empty-icon {
+  @apply mb-2 opacity-50;
+}
+
+.empty-text {
+  @apply text-gray-400;
+}
+
+/* Employee List */
+.employee-list {
+  @apply space-y-1;
+}
+
+/* Assigned Employee */
+.assigned-employee {
+  @apply bg-white border border-gray-200 rounded-lg p-2 cursor-move transition-all duration-200 hover:shadow-md hover:border-mcdonalds-yellow;
+}
+
+.assigned-employee:hover {
+  @apply transform -translate-y-0.5 shadow-lg;
+}
+
+.assigned-employee:active {
+  @apply scale-95;
+}
+
+.employee-content {
+  @apply flex items-start justify-between gap-2;
+}
+
+.employee-main {
+  @apply flex-1 min-w-0;
+}
+
+.employee-name {
+  @apply font-semibold text-gray-800 text-sm block truncate;
+}
+
+.employee-details {
+  @apply mt-1 space-y-1;
+}
+
+.shift-time {
+  @apply flex items-center gap-1 text-xs text-gray-600;
+}
+
+.employee-task {
+  @apply text-xs text-blue-600 bg-blue-50 px-2 py-0.5 rounded;
+}
+
+.compact-details {
+  @apply mt-1;
+}
+
+.shift-time-compact {
+  @apply text-xs text-gray-500;
+}
+
+/* Remove Button */
+.remove-button {
+  @apply p-1 rounded-full bg-red-50 text-red-500 hover:bg-red-100 hover:text-red-600 transition-colors duration-200 flex-shrink-0;
+}
+
+.remove-button:hover {
+  @apply scale-110;
+}
+
+/* Responsive Breakpoints */
+
+/* Tablet and mobile - maintain multi-column layout with horizontal scroll */
+@media (max-width: 1024px) {
+  .responsive-assignment-grid {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+  
+  /* Ensure cards maintain minimum width for readability */
+  .station-card {
+    min-width: 250px;
+    min-height: 180px;
+  }
+  
+  /* Smooth horizontal scrolling */
+  .overflow-x-auto {
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: #DA291C #f1f1f1;
+  }
+  
+  .overflow-x-auto::-webkit-scrollbar {
+    height: 8px;
+  }
+  
+  .overflow-x-auto::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+  }
+  
+  .overflow-x-auto::-webkit-scrollbar-thumb {
+    background: #DA291C;
+    border-radius: 4px;
+  }
+  
+  .overflow-x-auto::-webkit-scrollbar-thumb:hover {
+    background: #b8241a;
+  }
+}
+
+/* Tablet landscape - 4 columns */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .station-card {
+    min-width: 220px;
+    min-height: 180px;
+  }
+  
+  .station-header {
+    padding: 0.625rem;
+  }
+  
+  .station-columns {
+    padding: 0.625rem;
+  }
+  
+  .column-section {
+    padding: 0.375rem;
+  }
+  
+  .assigned-employee {
+    padding: 0.375rem;
+  }
+  
+  .employee-name {
+    font-size: 0.8rem;
+  }
+  
+  /* DFS card tablet styles */
+  .dfs-card {
+    padding: 0.625rem;
+    min-height: 160px;
+    min-width: 220px;
+  }
+  
+  .dfs-card .station-header {
+    padding: 0.625rem;
+  }
+  
+  .dfs-content {
+    font-size: 0.8rem;
+  }
+  
+  .dfs-item {
+    padding: 0.375rem;
+  }
+}
+
+/* Mobile and small tablets */
+@media (max-width: 768px) {
+  .responsive-assignment-grid {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+  
+  .station-card {
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+    min-height: 150px;
+    min-width: 200px;
+  }
+  
+  .station-header {
+    padding: 0.5rem;
+  }
+  
+  .station-columns {
+    padding: 0.5rem;
+  }
+  
+  .column-section {
+    padding: 0.25rem;
+  }
+  
+  .assigned-employee {
+    padding: 0.25rem;
+  }
+  
+  .employee-name {
+    font-size: 0.75rem;
+  }
+  
+  /* DFS card responsive styles */
+  .dfs-card {
+    padding: 0.5rem;
+    min-height: 120px;
+    min-width: 200px;
+  }
+  
+  .dfs-card .station-header {
+    padding: 0.5rem;
+  }
+  
+  .dfs-content {
+    font-size: 0.75rem;
+  }
+  
+  .dfs-item {
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .responsive-assignment-grid {
+    padding-left: 0.375rem;
+    padding-right: 0.375rem;
+  }
+  
+  .station-card {
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+    min-height: 120px;
+  }
+  
+  .station-header {
+    padding: 0.375rem;
+  }
+  
+  .station-columns {
+    padding: 0.375rem;
+  }
+  
+  .column-section {
+    padding: 0.1875rem;
+  }
+  
+  .assigned-employee {
+    padding: 0.1875rem;
+  }
+  
+  .employee-name {
+    font-size: 0.7rem;
+  }
+  
+  /* DFS card mobile styles */
+  .dfs-card {
+    padding: 0.375rem;
+    min-height: 100px;
+  }
+  
+  .dfs-card .station-header {
+    padding: 0.375rem;
+  }
+  
+  .dfs-content {
+    font-size: 0.7rem;
+  }
+  
+  .dfs-item {
+    padding-top: 0.1875rem;
+    padding-bottom: 0.1875rem;
+    padding-left: 0.375rem;
+    padding-right: 0.375rem;
+  }
+}
+
+@media (min-width: 641px) and (max-width: 768px) {
+  .station-card {
+    min-height: 180px;
+  }
+  
+  /* DFS card tablet styles */
+  .dfs-card {
+    min-height: 140px;
+  }
+  
+  .dfs-card .station-header {
+    padding: 0.75rem;
+  }
+  
+  .dfs-content {
+    font-size: 0.875rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .station-card {
+    min-height: 250px;
+  }
+  
+  /* DFS card desktop styles */
+  .dfs-card {
+    min-height: 200px;
+  }
+}
+
+/* Touch-friendly interactions for mobile */
+@media (hover: none) and (pointer: coarse) {
+  .assigned-employee {
+    padding: 0.75rem;
+  }
+  
+  .remove-button {
+    padding: 0.5rem;
+    font-size: 1rem;
+  }
+  
+  .enhanced-drop-zone {
+    min-height: 5rem;
+  }
+  
+  .empty-zone {
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+  }
+}
+
+/* Drag feedback animations */
+@keyframes dragPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.assigned-employee[draggable="true"]:active {
+  animation: dragPulse 0.5s ease-in-out;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .station-card {
+    border-width: 4px;
+    border-color: black;
+  }
+  
+  .enhanced-drop-zone {
+    border-width: 4px;
+  }
+  
+  .assigned-employee {
+    border-width: 2px;
+    border-color: #1f2937;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .station-card,
+  .assigned-employee,
+  .enhanced-drop-zone,
+  .remove-button {
+    transition: none;
+  }
+  
+  .station-card:hover,
+  .assigned-employee:hover {
+    transform: none;
+  }
+}
