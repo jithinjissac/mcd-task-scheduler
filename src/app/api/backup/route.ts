@@ -1,14 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { fileManager } from '@/services/fileManager';
+import { cloudFileManager } from '@/services/cloudFileManager';
 
 export async function POST(request: NextRequest) {
   try {
-    const backupPath = await fileManager.backup();
+    const backupData = await cloudFileManager.backup();
     
     return NextResponse.json({
       success: true,
       message: 'Backup created successfully',
-      backupPath
+      backupData
     });
   } catch (error) {
     console.error('Error creating backup:', error);

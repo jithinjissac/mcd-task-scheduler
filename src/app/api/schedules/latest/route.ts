@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server';
-import { fileManager } from '@/services/fileManager';
+import { cloudFileManager } from '@/services/cloudFileManager';
 
 export async function GET() {
   try {
-    const scheduleFiles = await fileManager.listFiles('schedules');
+    const scheduleFiles = await cloudFileManager.listFiles('schedules');
     
     if (scheduleFiles.length === 0) {
       return NextResponse.json({ schedule: null });
@@ -13,7 +13,7 @@ export async function GET() {
     scheduleFiles.sort().reverse();
     const latestDate = scheduleFiles[0];
     
-    const scheduleData = await fileManager.readJSON('schedules', latestDate);
+    const scheduleData = await cloudFileManager.readJSON('schedules', latestDate);
     
     return NextResponse.json({
       schedule: scheduleData,

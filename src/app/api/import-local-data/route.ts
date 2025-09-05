@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { fileManager } from '@/services/fileManager';
+import { cloudFileManager } from '@/services/cloudFileManager';
 
 export async function POST(request: NextRequest) {
   try {
@@ -25,17 +25,17 @@ export async function POST(request: NextRequest) {
         if (key.startsWith('schedule_')) {
           const date = key.replace('schedule_', '');
           const data = typeof value === 'string' ? JSON.parse(value as string) : value;
-          await fileManager.writeJSON('schedules', date, data);
+          await cloudFileManager.writeJSON('schedules', date, data);
           results.schedules++;
         } else if (key.startsWith('assignments_')) {
           const date = key.replace('assignments_', '');
           const data = typeof value === 'string' ? JSON.parse(value as string) : value;
-          await fileManager.writeJSON('assignments', date, data);
+          await cloudFileManager.writeJSON('assignments', date, data);
           results.assignments++;
         } else if (key.startsWith('lastDayPart_')) {
           const date = key.replace('lastDayPart_', '');
           const dayPart = typeof value === 'string' ? value : value?.toString();
-          await fileManager.writeJSON('dayparts', date, { 
+          await cloudFileManager.writeJSON('dayparts', date, { 
             dayPart, 
             savedAt: new Date().toISOString(),
             importedFromLocal: true 

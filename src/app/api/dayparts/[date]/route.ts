@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { fileManager } from '@/services/fileManager';
+import { cloudFileManager } from '@/services/cloudFileManager';
 
 interface RouteParams {
   params: Promise<{ date: string }>;
@@ -20,7 +20,7 @@ export async function GET(
       );
     }
 
-    const dayPartData = await fileManager.readJSON('dayparts', date);
+    const dayPartData = await cloudFileManager.readJSON('dayparts', date);
     
     return NextResponse.json({
       dayPart: dayPartData?.dayPart || 'Breakfast',
@@ -68,7 +68,7 @@ export async function POST(
     };
 
     // Save daypart
-    const savedDayPart = await fileManager.writeJSON('dayparts', date, dayPartData);
+    const savedDayPart = await cloudFileManager.writeJSON('dayparts', date, dayPartData);
 
     return NextResponse.json({
       success: true,

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { fileManager } from '@/services/fileManager';
+import { cloudFileManager } from '@/services/cloudFileManager';
 
 interface RouteParams {
   params: Promise<{ date: string }>;
@@ -20,7 +20,7 @@ export async function GET(
       );
     }
 
-    const assignmentData = await fileManager.readJSON('assignments', date);
+    const assignmentData = await cloudFileManager.readJSON('assignments', date);
     
     return NextResponse.json({
       assignments: assignmentData?.assignments || {},
@@ -68,7 +68,7 @@ export async function POST(
     };
 
     // Save assignments
-    const savedAssignments = await fileManager.writeJSON('assignments', date, assignmentData);
+    const savedAssignments = await cloudFileManager.writeJSON('assignments', date, assignmentData);
 
     return NextResponse.json({
       success: true,
