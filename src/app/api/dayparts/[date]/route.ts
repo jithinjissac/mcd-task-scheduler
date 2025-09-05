@@ -6,10 +6,10 @@ const DATA_DIR = path.join(process.cwd(), 'server', 'data', 'dayparts');
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { date: string } }
+  { params }: { params: Promise<{ date: string }> }
 ) {
   try {
-    const { date } = params;
+    const { date } = await params;
     const filePath = path.join(DATA_DIR, `${date}.json`);
     
     try {
@@ -27,10 +27,10 @@ export async function GET(
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { date: string } }
+  { params }: { params: Promise<{ date: string }> }
 ) {
   try {
-    const { date } = params;
+    const { date } = await params;
     const body = await request.json();
     const filePath = path.join(DATA_DIR, `${date}.json`);
     
