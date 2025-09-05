@@ -1,0 +1,14 @@
+{
+  "employees": [
+    {
+      "name": "Test Employee",
+      "minor": false,
+      "shiftStart": "9",
+      "shiftEnd": "17",
+      "task": "Test"
+    }
+  ],
+  "uploadedAt": "2025-09-01T05:50:51.169Z",
+  "fileName": "test.csv",
+  "lastUpdated": "2025-09-01T05:50:51.177Z"
+}

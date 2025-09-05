@@ -40,8 +40,15 @@ const StationSelectionModal: React.FC<Props> = ({ isOpen, onClose, layout, assig
     onClose();
   };
 
+  const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    // Close modal if clicking on the overlay (not on the modal content)
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
+  };
+
   const modal = (
-    <div className="modal-overlay" role="dialog" aria-modal="true">
+    <div className="modal-overlay" role="dialog" aria-modal="true" onClick={handleOverlayClick}>
       <div className="modal-container">
         <div className="modal-header">
           <div className="modal-title">

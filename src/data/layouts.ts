@@ -87,11 +87,6 @@ export const defaultLayouts: Layouts = {
         id: "dive",
         name: "DIVE",
         columns: ["09:00", "11:00"]
-      },
-      {
-        id: "dfs_discards",
-        name: "DFS discards and Calibrations",
-        columns: ["Monday", "Tuesday", "Wednesday", "Friday", "Sunday"]
       }
     ]
   },

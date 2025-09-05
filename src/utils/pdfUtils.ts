@@ -156,66 +156,6 @@ export const generatePDF = (
       return currentY;
     };
 
-    // Helper function to draw DFS section (informational text only)
-    const drawDFSSection = (x: number, y: number, width: number) => {
-      const title = "DFS discards and Calibrations";
-      const columns = ["Item", "Day"];
-      const dfsItems = [
-        { label: "milk and hot chocolate discard", day: "Monday" },
-        { label: "Shakes, sunday and topping discard", day: "Tuesday" }, 
-        { label: "Oil drop temperatures recorded", day: "Wednesday" },
-        { label: "Muffin, Toaster calibration", day: "Friday" },
-        { label: "Egg cookers calibrations", day: "Sunday" }
-      ];
-      
-      // Draw title box
-      pdf.setLineWidth(0.5);
-      pdf.rect(x, y, width, 6, 'S');
-      pdf.setFontSize(8);
-      pdf.setFont('helvetica', 'bold');
-      
-      // Center the title text
-      const textWidth = pdf.getTextWidth(title);
-      const textX = x + (width - textWidth) / 2;
-      pdf.text(title, textX, y + 4);
-
-      let currentY = y + 6;
-      const columnWidth = width / 2; // Two columns: Item and Day
-      
-      // Draw column headers
-      columns.forEach((column, index) => {
-        const colX = x + (index * columnWidth);
-        pdf.rect(colX, currentY, columnWidth, 4, 'S');
-        pdf.setFont('helvetica', 'bold');
-        pdf.setFontSize(7);
-        const colTextWidth = pdf.getTextWidth(column);
-        const colTextX = colX + (columnWidth - colTextWidth) / 2;
-        pdf.text(column, colTextX, currentY + 3);
-      });
-      
-      currentY += 4;
-      
-      // Draw content rows with DFS items and days
-      dfsItems.forEach((item, rowIndex) => {
-        // Item column
-        pdf.rect(x, currentY, columnWidth, 5, 'S');
-        pdf.setFont('helvetica', 'normal');
-        pdf.setFontSize(6);
-        const lines = pdf.splitTextToSize(item.label, columnWidth - 2);
-        pdf.text(lines, x + 1, currentY + 3);
-        
-        // Day column with the day value
-        pdf.rect(x + columnWidth, currentY, columnWidth, 5, 'S');
-        pdf.setFont('helvetica', 'normal');
-        pdf.setFontSize(6);
-        pdf.text(item.day, x + columnWidth + 1, currentY + 3);
-        
-        currentY += 5;
-      });
-      
-      return currentY;
-    };
-
     // Generate Breakfast page (first page)
     if (assignments['Breakfast']) {
       // Add header
@@ -287,9 +227,6 @@ export const generatePDF = (
       
       // DIVE
       rightY = drawStationBox(rightX, rightY, stationWidth, 20, "DIVE", ["09:00", "11:00"], "dive", breakfastAssignments) + 3;
-      
-      // DFS discards and Calibrations
-      drawDFSSection(rightX, rightY, stationWidth);
       
       // Add footer
       addFooter(1);
@@ -452,7 +389,6 @@ export const printSchedule = (
               ${generateStationHTML("Beverage Cell", ["Soft Drinks", "Shakes", "Hot Drinks"], "beverage_cell", breakfastAssignments, employees)}
               ${generateStationHTML("Breaks", ["Kitchen", "Front"], "breaks", breakfastAssignments, employees)}
               ${generateStationHTML("DIVE", ["09:00", "11:00"], "dive", breakfastAssignments, employees)}
-              ${generateDFSHTML()}
             </div>
           </div>
           <div class="page-footer">
@@ -682,20 +618,6 @@ export const printSchedule = (
               line-height: 1.2;
               color: black;
             }
-            .dfs-table { 
-              width: 100%; 
-              border-collapse: collapse; 
-            }
-            .dfs-table td, .dfs-table th { 
-              border: 1px solid black; 
-              padding: 2px; 
-              text-align: center; 
-              font-size: 8px; 
-            }
-            .dfs-table th {
-              background: #f0f0f0;
-              font-weight: bold;
-            }
           </style>
         </head>
         <body>
@@ -746,43 +668,6 @@ const generateStationHTML = (title: string, columns: string[], stationId: string
     <div class="station">
       <div class="station-title">${title}</div>
       ${columnsHTML}
-    </div>
-  `;
-};
-
-// Helper function to generate DFS HTML (informational text only)
-const generateDFSHTML = (): string => {
-  const columns = ["Item", "Day"];
-  const dfsItems = [
-    { label: "milk and hot chocolate discard", day: "Monday" },
-    { label: "Shakes, sunday and topping discard", day: "Tuesday" }, 
-    { label: "Oil drop temperatures recorded", day: "Wednesday" },
-    { label: "Muffin, Toaster calibration", day: "Friday" },
-    { label: "Egg cookers calibrations", day: "Sunday" }
-  ];
-  
-  const headerRow = `
-    <tr>
-      <th colspan="2">DFS discards and Calibrations</th>
-    </tr>
-    <tr>
-      ${columns.map(column => `<th>${column}</th>`).join('')}
-    </tr>
-  `;
-  
-  const rows = dfsItems.map(item => {
-    return `<tr>
-      <td style="text-align: left; font-size: 12px; padding: 4px;">${item.label}</td>
-      <td style="text-align: left; font-size: 12px; padding: 4px;">${item.day}</td>
-    </tr>`;
-  }).join('');
-
-  return `
-    <div class="station">
-      <table class="dfs-table">
-        ${headerRow}
-        ${rows}
-      </table>
     </div>
   `;
 };

@@ -7,3 +7,6 @@
 
 /* Import custom McDonald's styles */
 @import './custom.css';
+
+/* Import remove button styles */
+@import '../styles/remove-button.css';

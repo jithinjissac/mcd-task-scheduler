@@ -71,9 +71,6 @@ const ResponsiveAssignmentGrid: React.FC<ResponsiveAssignmentGridProps> = ({
     ),
     scheduling: layout.tables.filter(table => 
       ['breaks', 'dive', 'delivery'].includes(table.id)
-    ),
-    maintenance: layout.tables.filter(table => 
-      ['dfs_discards'].includes(table.id)
     )
   };
 
@@ -226,31 +223,6 @@ const ResponsiveAssignmentGrid: React.FC<ResponsiveAssignmentGridProps> = ({
           </div>
         </div>
 
-        {/* Maintenance Area */}
-        <div className="relative">
-          <h3 className="sticky top-0 bg-white/95 backdrop-blur-sm z-10 py-2 border-b border-gray-100 text-lg font-semibold text-mcdonalds-red mb-4 flex items-center gap-2">
-            <div className="w-3 h-3 bg-gray-500 rounded-full"></div>
-            Maintenance & Calibrations
-          </h3>
-          <div className="overflow-x-auto">
-            <div className="grid grid-cols-3 lg:grid-cols-4 xl:grid-cols-3 gap-4 min-w-max">
-              {stationAreas.maintenance.map((table) => (
-                <StationCard
-                  key={table.id}
-                  table={table}
-                  assignments={assignments}
-                  employees={employees}
-                  onDrop={onDrop}
-                  onRemove={onRemove}
-                  onInternalDragStart={handleInternalDragStart}
-                  onInternalDrop={handleInternalDrop}
-                  onDragEnd={handleDragEnd}
-                  isDragMode={!!draggedEmployee}
-                />
-              ))}
-            </div>
-          </div>
-        </div>
       </div>
 
       {/* Drag Indicator */}
@@ -290,38 +262,6 @@ const StationCard: React.FC<StationCardProps> = ({
   onDragEnd,
   isDragMode
 }) => {
-  if (table.id === "dfs_discards") {
-    return (
-      <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200 bg-white rounded-xl shadow-lg border-2 transition-all duration-200 hover:shadow-xl" style={{minHeight: '200px'}}>
-        <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-3 rounded-t-xl">
-          <h3 className="text-white font-bold text-sm sm:text-base">{table.name}</h3>
-        </div>
-        <div className="p-3 text-gray-700 text-xs space-y-2">
-          <div className="py-1 border-b border-blue-100 flex justify-between">
-            <span>Milk/Hot Chocolate</span>
-            <span className="text-gray-500">Mon</span>
-          </div>
-          <div className="py-1 border-b border-blue-100 flex justify-between">
-            <span>Shakes/Sundaes</span>
-            <span className="text-gray-500">Tue</span>
-          </div>
-          <div className="py-1 border-b border-blue-100 flex justify-between">
-            <span>Oil Temperatures</span>
-            <span className="text-gray-500">Wed</span>
-          </div>
-          <div className="py-1 border-b border-blue-100 flex justify-between">
-            <span>Toaster Calibration</span>
-            <span className="text-gray-500">Fri</span>
-          </div>
-          <div className="py-1 flex justify-between">
-            <span>Egg Cooker Cal.</span>
-            <span className="text-gray-500">Sun</span>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   const totalAssigned = Object.values(table.columns).reduce((total, column) => 
     total + (assignments?.[table.id]?.[column]?.length || 0), 0
   );

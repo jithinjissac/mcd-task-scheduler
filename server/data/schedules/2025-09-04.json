@@ -1,0 +1,217 @@
+{
+  "employees": [
+    {
+      "name": "Oleks",
+      "minor": false,
+      "shiftStart": "6",
+      "shiftEnd": "12",
+      "task": "Outside"
+    },
+    {
+      "name": "Thajee",
+      "minor": false,
+      "shiftStart": "6",
+      "shiftEnd": "14",
+      "task": ""
+    },
+    {
+      "name": "Keith",
+      "minor": false,
+      "shiftStart": "6",
+      "shiftEnd": "15",
+      "task": "Count & Callibration"
+    },
+    {
+      "name": "Pravallika",
+      "minor": false,
+      "shiftStart": "6",
+      "shiftEnd": "15",
+      "task": ""
+    },
+    {
+      "name": "Anitta",
+      "minor": false,
+      "shiftStart": "6",
+      "shiftEnd": "15",
+      "task": ""
+    },
+    {
+      "name": "Shehan",
+      "minor": false,
+      "shiftStart": "6",
+      "shiftEnd": "15",
+      "task": ""
+    },
+    {
+      "name": "Nithusa",
+      "minor": false,
+      "shiftStart": "7",
+      "shiftEnd": "16",
+      "task": ""
+    },
+    {
+      "name": "Bharath",
+      "minor": false,
+      "shiftStart": "7",
+      "shiftEnd": "16",
+      "task": ""
+    },
+    {
+      "name": "Elaine",
+      "minor": false,
+      "shiftStart": "7",
+      "shiftEnd": "16",
+      "task": ""
+    },
+    {
+      "name": "Aj",
+      "minor": false,
+      "shiftStart": "8",
+      "shiftEnd": "17",
+      "task": ""
+    },
+    {
+      "name": "Kujtim",
+      "minor": false,
+      "shiftStart": "9",
+      "shiftEnd": "16",
+      "task": ""
+    },
+    {
+      "name": "Constantin",
+      "minor": false,
+      "shiftStart": "10",
+      "shiftEnd": "19",
+      "task": "People"
+    },
+    {
+      "name": "Aimee",
+      "minor": false,
+      "shiftStart": "10",
+      "shiftEnd": "19",
+      "task": ""
+    },
+    {
+      "name": "Chloe",
+      "minor": false,
+      "shiftStart": "11",
+      "shiftEnd": "19",
+      "task": ""
+    },
+    {
+      "name": "Lakshmi",
+      "minor": false,
+      "shiftStart": "11",
+      "shiftEnd": "20",
+      "task": ""
+    },
+    {
+      "name": "Alissa",
+      "minor": false,
+      "shiftStart": "11",
+      "shiftEnd": "20",
+      "task": ""
+    },
+    {
+      "name": "Raj",
+      "minor": false,
+      "shiftStart": "12",
+      "shiftEnd": "21",
+      "task": ""
+    },
+    {
+      "name": "Rasmeet",
+      "minor": false,
+      "shiftStart": "12",
+      "shiftEnd": "21",
+      "task": ""
+    },
+    {
+      "name": "Raheim",
+      "minor": false,
+      "shiftStart": "14",
+      "shiftEnd": "23",
+      "task": ""
+    },
+    {
+      "name": "Pavan H",
+      "minor": false,
+      "shiftStart": "15",
+      "shiftEnd": "22",
+      "task": ""
+    },
+    {
+      "name": "Carly",
+      "minor": false,
+      "shiftStart": "15",
+      "shiftEnd": "23",
+      "task": ""
+    },
+    {
+      "name": "Rajiv",
+      "minor": false,
+      "shiftStart": "16",
+      "shiftEnd": "0",
+      "task": ""
+    },
+    {
+      "name": "Abdul",
+      "minor": false,
+      "shiftStart": "16",
+      "shiftEnd": "1",
+      "task": ""
+    },
+    {
+      "name": "Ashley",
+      "minor": false,
+      "shiftStart": "16",
+      "shiftEnd": "1",
+      "task": ""
+    },
+    {
+      "name": "Ella",
+      "minor": false,
+      "shiftStart": "16",
+      "shiftEnd": "1",
+      "task": ""
+    },
+    {
+      "name": "Rhea",
+      "minor": false,
+      "shiftStart": "17",
+      "shiftEnd": "23",
+      "task": ""
+    },
+    {
+      "name": "Conner",
+      "minor": false,
+      "shiftStart": "17",
+      "shiftEnd": "0",
+      "task": ""
+    },
+    {
+      "name": "David",
+      "minor": false,
+      "shiftStart": "17",
+      "shiftEnd": "0",
+      "task": ""
+    },
+    {
+      "name": "Sharon",
+      "minor": false,
+      "shiftStart": "19",
+      "shiftEnd": "23",
+      "task": "Delivery"
+    },
+    {
+      "name": "Ashir",
+      "minor": false,
+      "shiftStart": "19",
+      "shiftEnd": "1",
+      "task": "Delivery"
+    }
+  ],
+  "uploadedAt": "2025-09-03T13:16:57.563Z",
+  "fileName": "25th of August - Thursday.csv",
+  "lastUpdated": "2025-09-03T13:16:57.571Z"
+}

@@ -1,0 +1,8 @@
+Monday Schedule
+Employee Name,Minor,Shift Start Time,Shift End Time,Task
+Sub-headers
+John Doe,false,6:00,14:00,Kitchen
+Jane Smith,true,7:00,15:00,Counter
+Bob Johnson,false,8:00,16:00,Drive-Thru
+Alice Brown,true,9:00,17:00,Cleaning
+Mike Davis,false,10:00,18:00,Manager

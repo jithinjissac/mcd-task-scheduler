@@ -69,9 +69,12 @@ const EmployeeSelectionModal: React.FC<EmployeeSelectionModalProps> = ({
     
     if (!assignments) return employeeAssignments;
 
+    // assignments is the current day part assignments: Record<string, Record<string, string[]>>
+    // Structure: assignments[stationId][taskName] = [employeeNames]
     for (const stationId of Object.keys(assignments)) {
-      for (const taskName of Object.keys(assignments[stationId] || {})) {
-        const assignedEmployees = assignments[stationId][taskName] || [];
+      const stationAssignments = assignments[stationId] || {};
+      for (const taskName of Object.keys(stationAssignments)) {
+        const assignedEmployees = stationAssignments[taskName] || [];
         if (assignedEmployees.includes(employeeName)) {
           employeeAssignments.push({ stationId, taskName });
         }
@@ -81,8 +84,7 @@ const EmployeeSelectionModal: React.FC<EmployeeSelectionModalProps> = ({
   };
 
   const availableEmployees = employees.filter(emp => 
-    emp.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
-    !emp.name.includes('assigned')
+    emp.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const handleEmployeeClick = (employee: Employee) => {
@@ -104,15 +106,32 @@ const EmployeeSelectionModal: React.FC<EmployeeSelectionModalProps> = ({
 
   const getEmployeeStats = () => {
     const total = employees.length;
-    const available = availableEmployees.length;
-    const assigned = total - available;
+    const assigned = employees.filter(emp => {
+      const employeeAssignments = findEmployeeAssignments(emp.name);
+      return employeeAssignments.length > 0;
+    }).length;
+    const available = total - assigned;
     return { total, available, assigned };
   };
 
   const stats = getEmployeeStats();
 
+  const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    // Close modal if clicking on the overlay (not on the modal content)
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
+  };
+
+  const handleConfirmationOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    // Close confirmation dialog if clicking on the overlay (not on the dialog content)
+    if (e.target === e.currentTarget) {
+      setShowConfirmation(false);
+    }
+  };
+
   const modalContent = (
-    <div className="modal-overlay" role="dialog" aria-modal="true">
+    <div className="modal-overlay" role="dialog" aria-modal="true" onClick={handleOverlayClick}>
       <div className="modal-container">
         {/* Modal Header */}
         <div className="modal-header">
@@ -182,11 +201,13 @@ const EmployeeSelectionModal: React.FC<EmployeeSelectionModalProps> = ({
                 onClick={() => handleEmployeeClick(employee)}
                 className={`employee-card-modal ${employee.minor ? 'minor' : ''} ${isAssigned ? 'assigned' : ''}`}>
                 <div className="employee-info-modal">
-                  <span className="employee-name-modal">{employee.name}</span>
-                  <span className="employee-time-modal">
-                    <Clock size={12} />
-                    {employee.shiftStart} - {employee.shiftEnd}
-                  </span>
+                  <div className="employee-main-info">
+                    <span className="employee-name-modal">{employee.name}</span>
+                    <span className="employee-time-modal">
+                      <Clock size={12} />
+                      {employee.shiftStart} - {employee.shiftEnd}
+                    </span>
+                  </div>
                   {/* Show current assignments if any */}
                   {isAssigned && (
                     <div className="current-assignments-indicator">
@@ -218,7 +239,7 @@ const EmployeeSelectionModal: React.FC<EmployeeSelectionModalProps> = ({
 
         {/* Confirmation Dialog */}
         {showConfirmation && selectedEmployee && (
-          <div className="confirmation-overlay">
+          <div className="confirmation-overlay" onClick={handleConfirmationOverlayClick}>
             <div className="confirmation-dialog">
               <h3>Employee Assignment</h3>
               <p>

@@ -63,35 +63,7 @@ const AssignmentGrid: React.FC<AssignmentGridProps> = ({
                       
                       {/* Station Columns/Tasks */}
                       <div className="station-content-9x9">
-                        {table.id === "dfs_discards" ? (
-                          // Special handling for DFS table - no drag and drop, just informational
-                          <div className="dfs-info-table">
-                            <div className="dfs-items">
-                              <div className="dfs-item">
-                                <span className="dfs-task">milk and hot chocolate discard</span>
-                                <span className="dfs-day">Monday</span>
-                              </div>
-                              <div className="dfs-item">
-                                <span className="dfs-task">Shakes, sunday and topping discard</span>
-                                <span className="dfs-day">Tuesday</span>
-                              </div>
-                              <div className="dfs-item">
-                                <span className="dfs-task">Oil drop temperatures recorded</span>
-                                <span className="dfs-day">Wednesday</span>
-                              </div>
-                              <div className="dfs-item">
-                                <span className="dfs-task">Muffin, Toaster calibration</span>
-                                <span className="dfs-day">Friday</span>
-                              </div>
-                              <div className="dfs-item">
-                                <span className="dfs-task">Egg cookers calibrations</span>
-                                <span className="dfs-day">Sunday</span>
-                              </div>
-                            </div>
-                          </div>
-                        ) : (
-                          // Regular drag and drop functionality for other tables
-                          table.columns.map((column: string) => (
+                        {table.columns.map((column: string) => (
                             <div key={column} className="task-column-9x9">
                               <div className="task-header-9x9">
                                 <span className="task-name-9x9">{column}</span>
@@ -110,7 +82,7 @@ const AssignmentGrid: React.FC<AssignmentGridProps> = ({
                               </div>
                             </div>
                           ))
-                        )}
+                        }
                       </div>
                     </div>
                   ) : (

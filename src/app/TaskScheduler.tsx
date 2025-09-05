@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { useRouter } from 'next/navigation';
 import { Upload, X } from 'lucide-react';
@@ -12,6 +12,9 @@ import DayPartTabs from '@/components/DayPartTabs';
 import HorizontalEmployeePool from '@/components/HorizontalEmployeePool';
 import StationSelectionModal from '@/components/StationSelectionModal';
 import PDFLayoutGrid from '@/components/PDFLayoutGrid';
+import storageService from '@/services/storageService_simple';
+import apiService from '@/services/apiService';
+import '../styles/compact-layout.css';
 
 const TaskScheduler: React.FC = () => {
   const router = useRouter();
@@ -33,251 +36,17 @@ const TaskScheduler: React.FC = () => {
   const [mounted, setMounted] = useState(false);
   const [showImportConfirm, setShowImportConfirm] = useState(false);
   const [pendingFile, setPendingFile] = useState<File | null>(null);
+  const [isServerMode, setIsServerMode] = useState(false);
+  const [isConnected, setIsConnected] = useState(false);
+  const [saveStatus, setSaveStatus] = useState<'saved' | 'saving' | 'pending' | 'error'>('saved');
+  const [lastSaved, setLastSaved] = useState<Date | null>(null);
+  const [showStaffPool, setShowStaffPool] = useState(false);
+  
+  // Refs for change tracking
+  const previousAssignmentsRef = useRef<Assignment>({});
+  const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Mount state for portal
-  useEffect(() => { 
-    setMounted(true); 
-    return () => setMounted(false); 
-  }, []);
-
-  // Manage body scroll when confirmation modal is open
-  useEffect(() => {
-    if (showConfirmDialog) {
-      document.body.classList.add('modal-open');
-    } else {
-      document.body.classList.remove('modal-open');
-    }
-
-    // Cleanup on unmount
-    return () => {
-      document.body.classList.remove('modal-open');
-    };
-  }, [showConfirmDialog]);
-
-  // Auto-save assignments whenever they change
-  useEffect(() => {
-    if (mounted && Object.keys(assignments).length > 0) {
-      saveAssignmentsToStorage();
-    }
-  }, [assignments, mounted]);
-
-  // Load assignments when date or day part changes
-  useEffect(() => {
-    // Load employees for the new date, fallback to latest schedule if needed
-    const employeesLoaded = loadEmployeesFromStorage();
-    if (!employeesLoaded) {
-      // No employees for this date, try to load the latest schedule
-      const latestSchedule = getLatestSchedule();
-      if (latestSchedule && latestSchedule.employees) {
-        setEmployees(latestSchedule.employees);
-        console.log('Using latest schedule for date change:', latestSchedule.employees.length, 'employees');
-      } else {
-        setEmployees([]);
-      }
-    }
-    
-    // Load assignments for the new date and day part
-    loadAssignmentsFromStorage();
-  }, [selectedDate, currentDayPart]);
-
-  // Load assignments on component mount (for page reloads)
-  useEffect(() => {
-    if (mounted) {
-      loadAssignmentsFromStorage();
-    }
-  }, [mounted]);
-
-  // Save assignments to localStorage
-  const saveAssignmentsToStorage = () => {
-    try {
-      const dateKey = selectedDate.toISOString().split('T')[0];
-      const storageKey = `assignments_${dateKey}`;
-      const assignmentData = {
-        assignments,
-        savedAt: new Date().toISOString(),
-        dayPart: currentDayPart
-      };
-      localStorage.setItem(storageKey, JSON.stringify(assignmentData));
-      
-      // Save the last used day part for this date
-      localStorage.setItem(`lastDayPart_${dateKey}`, currentDayPart);
-      
-      console.log('Assignments auto-saved for date:', dateKey);
-    } catch (error) {
-      console.warn('Failed to save assignments to localStorage:', error);
-    }
-  };
-
-  // Load assignments from localStorage
-  const loadAssignmentsFromStorage = () => {
-    try {
-      const dateKey = selectedDate.toISOString().split('T')[0];
-      const storageKey = `assignments_${dateKey}`;
-      const savedData = localStorage.getItem(storageKey);
-      
-      if (savedData) {
-        const parsedData = JSON.parse(savedData);
-        if (parsedData.assignments) {
-          setAssignments(parsedData.assignments);
-          
-          // Load the last used day part for this date
-          const lastDayPart = localStorage.getItem(`lastDayPart_${dateKey}`);
-          if (lastDayPart && (lastDayPart === 'Breakfast' || lastDayPart === 'Lunch')) {
-            setCurrentDayPart(lastDayPart as DayPart);
-            console.log('Restored last used day part for date:', dateKey, '→', lastDayPart);
-          }
-          
-          console.log('Assignments loaded from storage for date:', dateKey);
-          return; // Successfully loaded, don't initialize
-        }
-      }
-      
-      // No saved assignments found, initialize empty structure
-      console.log('No saved assignments found, initializing empty structure for date:', dateKey);
-      initializeAssignments();
-    } catch (error) {
-      console.warn('Failed to load assignments from localStorage:', error);
-      // On error, initialize empty structure
-      initializeAssignments();
-    }
-  };
-
-  // Load employees from localStorage for the selected date
-  const loadEmployeesFromStorage = () => {
-    try {
-      const dateKey = selectedDate.toISOString().split('T')[0];
-      const storageKey = `schedule_${dateKey}`;
-      const savedData = localStorage.getItem(storageKey);
-      
-      if (savedData) {
-        const parsedData = JSON.parse(savedData);
-        if (parsedData.employees && Array.isArray(parsedData.employees) && parsedData.employees.length > 0) {
-          setEmployees(parsedData.employees);
-          console.log('Employees loaded from storage for date:', dateKey, parsedData.employees.length, 'employees');
-          return true; // Successfully loaded
-        }
-      }
-      
-      console.log('No saved employees found for date:', dateKey);
-      // Clear employees if no schedule found for this date
-      setEmployees([]);
-      return false; // No employees found
-    } catch (error) {
-      console.warn('Failed to load employees from localStorage:', error);
-      setEmployees([]);
-      return false; // Failed to load
-    }
-  };
-
-  // Get the latest uploaded schedule (most recent across all dates)
-  const getLatestSchedule = () => {
-    try {
-      let latestSchedule = null;
-      let latestDate = null;
-
-      // Check all localStorage keys for schedule data
-      for (let i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i);
-        if (key && key.startsWith('schedule_')) {
-          const data = localStorage.getItem(key);
-          if (data) {
-            const parsed = JSON.parse(data);
-            const uploadDate = new Date(parsed.uploadedAt);
-            
-            if (!latestDate || uploadDate > latestDate) {
-              latestDate = uploadDate;
-              latestSchedule = parsed;
-            }
-          }
-        }
-      }
-
-      return latestSchedule;
-    } catch (error) {
-      console.warn('Failed to get latest schedule:', error);
-      return null;
-    }
-  };
-
-  // If a schedule was uploaded from the landing page, load it from sessionStorage once
-  useEffect(() => {
-    let hasNewUpload = false;
-    
-    try {
-      const raw = sessionStorage.getItem('uploadedEmployees');
-      if (raw) {
-        const parsed: Employee[] = JSON.parse(raw);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          setEmployees(parsed);
-          hasNewUpload = true;
-        }
-        sessionStorage.removeItem('uploadedEmployees');
-      }
-
-      // Load selected date from sessionStorage or use current date
-      const dateRaw = sessionStorage.getItem('selectedDate');
-      if (dateRaw) {
-        const parsedDate = new Date(dateRaw);
-        if (!isNaN(parsedDate.getTime())) {
-          setSelectedDate(parsedDate);
-        }
-        sessionStorage.removeItem('selectedDate');
-      }
-
-      // Check if this is a pool-only update or replace all assignments
-      const poolUpdateOnly = sessionStorage.getItem('poolUpdateOnly');
-      const replaceAllAssignments = sessionStorage.getItem('replaceAllAssignments');
-      
-      if (poolUpdateOnly === 'true') {
-        // For pool-only updates, don't clear assignments - just update the employee list
-        console.log('Pool-only update: preserving existing assignments');
-        sessionStorage.removeItem('poolUpdateOnly');
-      } else if (replaceAllAssignments === 'true') {
-        // For replace all assignments, clear existing assignments and reinitialize
-        console.log('Replace all assignments: clearing existing assignments');
-        const dateKey = selectedDate.toISOString().split('T')[0];
-        localStorage.removeItem(`assignments_${dateKey}`);
-        initializeAssignments();
-        sessionStorage.removeItem('replaceAllAssignments');
-      } else if (!hasNewUpload) {
-        // If no new upload, try to load employees for the selected date first
-        const employeesLoaded = loadEmployeesFromStorage();
-        if (!employeesLoaded) {
-          // No employees found for this date, try to load the latest schedule
-          const latestSchedule = getLatestSchedule();
-          if (latestSchedule && latestSchedule.employees) {
-            setEmployees(latestSchedule.employees);
-            console.log('Using latest schedule data:', latestSchedule.employees.length, 'employees');
-          } else {
-            // No schedule data found at all
-            console.log('No schedule data found - empty employee pool');
-            setEmployees([]);
-          }
-        }
-      }
-
-      // Always try to load assignments after setting up employees
-      setTimeout(() => {
-        loadAssignmentsFromStorage();
-      }, 100);
-
-    } catch (err) {
-      console.warn('Failed to load data from sessionStorage', err);
-      // Fallback: try to load from localStorage
-      loadEmployeesFromStorage();
-      loadAssignmentsFromStorage();
-    }
-  }, []);
-
-  // Initialize assignments structure when employees change (only for new uploads)
-  useEffect(() => {
-    // Only initialize if we have employees and this isn't a page reload
-    const hasUploadedData = sessionStorage.getItem('uploadedEmployees');
-    if (hasUploadedData && employees.length > 0) {
-      initializeAssignments();
-    }
-  }, [employees]);
-
+  // Initialize assignments for empty structure
   const initializeAssignments = () => {
     const newAssignments: Assignment = {};
     const dayParts: DayPart[] = ['Breakfast', 'Lunch'];
@@ -297,6 +66,400 @@ const TaskScheduler: React.FC = () => {
     setAssignments(newAssignments);
   };
 
+  // Save assignments using hybrid storage service
+  const saveAssignmentsToStorage = useCallback(async (isManual = false) => {
+    try {
+      if (!isManual) setSaveStatus('saving');
+      
+      const dateKey = selectedDate.toISOString().split('T')[0];
+      await storageService.saveAssignments(dateKey, assignments, currentDayPart);
+      await storageService.saveDayPart(dateKey, currentDayPart);
+      
+      setSaveStatus('saved');
+      setLastSaved(new Date());
+      
+      console.log(`Assignments ${isManual ? 'manually' : 'auto'}-saved for date:`, dateKey);
+    } catch (error) {
+      setSaveStatus('error');
+      console.warn('Failed to save assignments:', error);
+    }
+  }, [selectedDate, assignments, currentDayPart]);
+
+  // Manual save function for immediate saves
+  const saveNow = useCallback(async () => {
+    await saveAssignmentsToStorage(true);
+  }, [saveAssignmentsToStorage]);
+
+  // Load assignments using hybrid storage service
+  const loadAssignmentsFromStorage = useCallback(async () => {
+    try {
+      const dateKey = selectedDate.toISOString().split('T')[0];
+      const result = await storageService.getAssignments(dateKey);
+      
+      if (result.assignments && Object.keys(result.assignments).length > 0) {
+        setAssignments(result.assignments);
+        
+        // Load the last used day part for this date
+        const dayPart = await storageService.getDayPart(dateKey);
+        if (dayPart && (dayPart === 'Breakfast' || dayPart === 'Lunch')) {
+          setCurrentDayPart(dayPart as DayPart);
+          console.log('Restored last used day part for date:', dateKey, '→', dayPart);
+        }
+        
+        console.log('Assignments loaded from storage for date:', dateKey);
+        return; // Successfully loaded, don't initialize
+      }
+      
+      // No saved assignments found, initialize empty structure
+      console.log('No saved assignments found, initializing empty structure for date:', dateKey);
+      initializeAssignments();
+    } catch (error) {
+      console.warn('Failed to load assignments:', error);
+      // On error, initialize empty structure
+      initializeAssignments();
+    }
+  }, [selectedDate]);
+
+  // Load employees from server storage for the selected date
+  const loadEmployeesFromStorage = useCallback(async () => {
+    try {
+      const dateKey = selectedDate.toISOString().split('T')[0];
+      const schedule = await storageService.getSchedule(dateKey);
+      
+      if (schedule && schedule.employees && Array.isArray(schedule.employees) && schedule.employees.length > 0) {
+        setEmployees(schedule.employees);
+        console.log('Employees loaded from storage for date:', dateKey, schedule.employees.length, 'employees');
+        return true; // Successfully loaded
+      }
+      
+      console.log('No saved employees found for date:', dateKey);
+      // Clear employees if no schedule found for this date
+      setEmployees([]);
+      return false; // No employees found
+    } catch (error) {
+      console.warn('Failed to load employees from storage:', error);
+      setEmployees([]);
+      return false; // Failed to load
+    }
+  }, [selectedDate]);
+
+  // Mount state for portal
+  useEffect(() => { 
+    setMounted(true); 
+    return () => {
+      setMounted(false);
+      // Clean up save timeout on unmount
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current);
+      }
+    }; 
+  }, []);
+
+  // Keyboard shortcuts
+  useEffect(() => {
+    const handleKeyboard = (e: KeyboardEvent) => {
+      // Ctrl+S or Cmd+S for manual save
+      if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+        e.preventDefault();
+        saveNow();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyboard);
+    return () => document.removeEventListener('keydown', handleKeyboard);
+  }, [saveNow]);
+
+  // Save on page unload to prevent data loss
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (saveStatus === 'pending' || saveStatus === 'saving') {
+        e.preventDefault();
+        e.returnValue = 'You have unsaved changes. Are you sure you want to leave?';
+        return e.returnValue;
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [saveStatus]);
+
+  // Real-time connection and sync setup
+  useEffect(() => {
+    if (!mounted) return;
+
+    // Check initial server mode with safety check
+    if (storageService && typeof storageService.isServerMode === 'function') {
+      setIsServerMode(storageService.isServerMode());
+    }
+
+    // Set up connection listener
+    const unsubscribeConnection = apiService.onConnectionChange((connected) => {
+      setIsConnected(connected);
+      if (storageService && typeof storageService.isServerMode === 'function') {
+        setIsServerMode(storageService.isServerMode());
+      }
+    });
+
+    // Set up real-time update listeners
+    const unsubscribeSchedule = apiService.onScheduleUpdate((data) => {
+      const currentDateKey = selectedDate.toISOString().split('T')[0];
+      if (data.date === currentDateKey) {
+        setEmployees(data.employees || []);
+        console.log('📅 Real-time schedule update received');
+      }
+    });
+
+    const unsubscribeAssignments = apiService.onAssignmentsUpdate((data) => {
+      const currentDateKey = selectedDate.toISOString().split('T')[0];
+      if (data.date === currentDateKey) {
+        // Only update if the received data has meaningful content
+        if (data.assignments && Object.keys(data.assignments).length > 0) {
+          setAssignments(data.assignments);
+          console.log('📋 Real-time assignments update received and applied');
+        } else {
+          console.log('📋 Real-time assignments update received but empty - skipping');
+        }
+        if (data.dayPart) {
+          setCurrentDayPart(data.dayPart);
+        }
+      }
+    });
+
+    const unsubscribeDayPart = apiService.onDayPartUpdate((data) => {
+      const currentDateKey = selectedDate.toISOString().split('T')[0];
+      if (data.date === currentDateKey) {
+        setCurrentDayPart(data.dayPart);
+        console.log('🌅 Real-time day part update received');
+      }
+    });
+
+    // Join date room for targeted updates
+    const currentDateKey = selectedDate.toISOString().split('T')[0];
+    apiService.joinDate(currentDateKey);
+
+    return () => {
+      unsubscribeConnection();
+      unsubscribeSchedule();
+      unsubscribeAssignments();
+      unsubscribeDayPart();
+      apiService.leaveDate(currentDateKey);
+    };
+  }, [mounted, selectedDate]);
+
+  // Manage body scroll when confirmation modal is open
+  useEffect(() => {
+    if (showConfirmDialog) {
+      document.body.classList.add('modal-open');
+    } else {
+      document.body.classList.remove('modal-open');
+    }
+
+    // Cleanup on unmount
+    return () => {
+      document.body.classList.remove('modal-open');
+    };
+  }, [showConfirmDialog]);
+
+  // Auto-save assignments with smart change detection and debouncing
+  useEffect(() => {
+    if (!mounted || Object.keys(assignments).length === 0) return;
+
+    // Deep comparison to check if assignments actually changed
+    const hasChanged = JSON.stringify(assignments) !== JSON.stringify(previousAssignmentsRef.current);
+    
+    if (!hasChanged) return; // No actual changes, skip save
+
+    // Update the ref with current assignments
+    previousAssignmentsRef.current = JSON.parse(JSON.stringify(assignments));
+
+    // Set status to pending when real changes are detected
+    setSaveStatus('pending');
+
+    // Clear any existing timeout
+    if (saveTimeoutRef.current) {
+      clearTimeout(saveTimeoutRef.current);
+    }
+
+    // Instant auto-save - saves immediately on any change but with a small delay to avoid race conditions
+    saveTimeoutRef.current = setTimeout(() => {
+      saveAssignmentsToStorage();
+      saveTimeoutRef.current = null;
+    }, 100); // Small delay to avoid race conditions with real-time updates
+
+    // Cleanup function
+    return () => {
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current);
+        saveTimeoutRef.current = null;
+      }
+    };
+  }, [assignments, mounted, saveAssignmentsToStorage]);
+
+  // Load assignments when date or day part changes
+  useEffect(() => {
+    const loadData = async () => {
+      // Load employees for the new date - NO fallback, keep date-specific
+      const employeesLoaded = await loadEmployeesFromStorage();
+      if (!employeesLoaded) {
+        // No employees for this specific date - show empty (don't fallback to other dates)
+        console.log('No employees found for this specific date - showing empty employee pool');
+        setEmployees([]);
+      }
+      
+      // Load assignments for the new date and day part
+      await loadAssignmentsFromStorage();
+    };
+    
+    loadData();
+  }, [selectedDate, currentDayPart, loadAssignmentsFromStorage, loadEmployeesFromStorage]);
+
+  // Load assignments on component mount (for page reloads)
+  useEffect(() => {
+    if (mounted) {
+      loadAssignmentsFromStorage();
+    }
+  }, [mounted, loadAssignmentsFromStorage]);
+
+  // Load employees from server storage for a specific date
+  const loadEmployeesFromStorageForDate = async (dateKey: string) => {
+    try {
+      const schedule = await storageService.getSchedule(dateKey);
+      
+      if (schedule && schedule.employees && Array.isArray(schedule.employees) && schedule.employees.length > 0) {
+        setEmployees(schedule.employees);
+        console.log('Employees loaded from storage for specific date:', dateKey, schedule.employees.length, 'employees');
+        return true; // Successfully loaded
+      }
+      
+      console.log('No saved employees found for specific date:', dateKey);
+      // Clear employees if no schedule found for this date
+      setEmployees([]);
+      return false; // No employees found
+    } catch (error) {
+      console.warn('Failed to load employees from storage for date:', dateKey, error);
+      setEmployees([]);
+      return false; // Failed to load
+    }
+  };
+
+  // Get the latest uploaded schedule (most recent across all dates)
+  const getLatestSchedule = async () => {
+    try {
+      const latest = await storageService.getLatestSchedule();
+      return latest;
+    } catch (error) {
+      console.warn('Failed to get latest schedule:', error);
+      return null;
+    }
+  };
+
+  // If a schedule was uploaded from the landing page, load it from sessionStorage once
+  useEffect(() => {
+    const loadInitialData = async () => {
+      let hasNewUpload = false;
+      
+      try {
+        const raw = sessionStorage.getItem('uploadedEmployees');
+        if (raw) {
+          const parsed: Employee[] = JSON.parse(raw);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            setEmployees(parsed);
+            hasNewUpload = true;
+          }
+          sessionStorage.removeItem('uploadedEmployees');
+        }
+
+        // Load selected date from sessionStorage first (before any date-dependent operations)
+        let workingDate = selectedDate; // Default to current state
+        const dateRaw = sessionStorage.getItem('selectedDate');
+        if (dateRaw) {
+          const parsedDate = new Date(dateRaw);
+          if (!isNaN(parsedDate.getTime())) {
+            setSelectedDate(parsedDate);
+            workingDate = parsedDate; // Use the parsed date for immediate operations
+          }
+          sessionStorage.removeItem('selectedDate');
+        }
+
+        // Check if this is a pool-only update or replace all assignments
+        const poolUpdateOnly = sessionStorage.getItem('poolUpdateOnly');
+        const replaceAllAssignments = sessionStorage.getItem('replaceAllAssignments');
+        
+        if (poolUpdateOnly === 'true') {
+          // For pool-only updates, don't clear assignments - just update the employee list
+          console.log('Pool-only update: preserving existing assignments');
+          sessionStorage.removeItem('poolUpdateOnly');
+        } else if (replaceAllAssignments === 'true') {
+          // For replace all assignments, clear existing assignments and reinitialize
+          console.log('Replace all assignments: clearing existing assignments for date:', workingDate.toLocaleDateString());
+          const dateKey = workingDate.toISOString().split('T')[0]; // Use workingDate instead of selectedDate
+          await storageService.saveAssignments(dateKey, {});
+          initializeAssignments();
+          sessionStorage.removeItem('replaceAllAssignments');
+        } else if (!hasNewUpload) {
+          // If no new upload, try to load employees for the working date only
+          const dateKey = workingDate.toISOString().split('T')[0];
+          console.log('Loading employees for date:', workingDate.toLocaleDateString(), 'DateKey:', dateKey);
+          const employeesLoaded = await loadEmployeesFromStorageForDate(dateKey);
+          if (!employeesLoaded) {
+            // No employees found for this specific date - show empty (don't fallback to other dates)
+            console.log('No schedule data found for this specific date - empty employee pool');
+            setEmployees([]);
+          }
+        }
+
+        // Always try to load assignments after setting up employees
+        // Use workingDate to ensure we load for the correct date
+        const finalDateKey = workingDate.toISOString().split('T')[0];
+        console.log('Loading assignments for final date:', workingDate.toLocaleDateString(), 'DateKey:', finalDateKey);
+        
+        // Small delay to ensure state updates are processed
+        setTimeout(async () => {
+          try {
+            const result = await storageService.getAssignments(finalDateKey);
+            
+            if (result.assignments && Object.keys(result.assignments).length > 0) {
+              setAssignments(result.assignments);
+              
+              // Load the last used day part for this date
+              const dayPart = await storageService.getDayPart(finalDateKey);
+              if (dayPart && (dayPart === 'Breakfast' || dayPart === 'Lunch')) {
+                setCurrentDayPart(dayPart as DayPart);
+                console.log('Restored last used day part for date:', finalDateKey, '→', dayPart);
+              }
+              
+              console.log('Assignments loaded from storage for specific date:', finalDateKey);
+            } else {
+              // No saved assignments found, initialize empty structure
+              console.log('No saved assignments found, initializing empty structure for date:', finalDateKey);
+              initializeAssignments();
+            }
+          } catch (error) {
+            console.warn('Failed to load assignments for date:', finalDateKey, error);
+            initializeAssignments();
+          }
+        }, 100);
+
+      } catch (err) {
+        console.warn('Failed to load data from sessionStorage', err);
+        // Fallback: try to load from server storage
+        await loadEmployeesFromStorage();
+        await loadAssignmentsFromStorage();
+      }
+    };
+    
+    loadInitialData();
+  }, [loadAssignmentsFromStorage, loadEmployeesFromStorage, selectedDate]);
+
+  // Initialize assignments structure when employees change (only for new uploads)
+  useEffect(() => {
+    // Only initialize if we have employees and this isn't a page reload
+    const hasUploadedData = sessionStorage.getItem('uploadedEmployees');
+    if (hasUploadedData && employees.length > 0) {
+      initializeAssignments();
+    }
+  }, [employees]);
+
   const getCurrentLayout = (): Layout => {
     return currentDayPart === 'Breakfast' ? defaultLayouts.breakfast : defaultLayouts.dayPart;
   };
@@ -306,23 +469,18 @@ const TaskScheduler: React.FC = () => {
   };
 
   // Handle adding a new employee manually
-  const handleAddEmployee = (newEmployee: Employee) => {
+  const handleAddEmployee = async (newEmployee: Employee) => {
     setEmployees(prev => [...prev, newEmployee]);
     
-    // Save updated employee list to localStorage
+    // Save updated employee list using storage service
     try {
       const dateKey = selectedDate.toISOString().split('T')[0];
       const updatedEmployees = [...employees, newEmployee];
       
-      const scheduleData = {
-        employees: updatedEmployees,
-        uploadedAt: new Date().toISOString()
-      };
-      
-      localStorage.setItem(`schedule_${dateKey}`, JSON.stringify(scheduleData));
+      await storageService.saveSchedule(dateKey, updatedEmployees);
       console.log('New employee added and saved:', newEmployee.name);
     } catch (error) {
-      console.warn('Failed to save employee to localStorage:', error);
+      console.warn('Failed to save employee to storage:', error);
     }
   };
 
@@ -333,14 +491,14 @@ const TaskScheduler: React.FC = () => {
 
     // Check if there are existing assignments for this date
     const dateKey = selectedDate.toISOString().split('T')[0];
-    const assignmentKey = `assignments_${dateKey}`;
-    const existingAssignments = localStorage.getItem(assignmentKey);
 
-    if (existingAssignments) {
-      try {
-        const parsedAssignments = JSON.parse(existingAssignments);
+    try {
+      const existingData = await storageService.getAssignments(dateKey);
+      const existingAssignments = existingData?.assignments;
+
+      if (existingAssignments) {
         // Check if there are any actual assignments (not just empty structures)
-        const hasAssignments = Object.values(parsedAssignments.assignments || {}).some((dayPartAssignments: any) =>
+        const hasAssignments = Object.values(existingAssignments).some((dayPartAssignments: any) =>
           Object.values(dayPartAssignments).some((tableAssignments: any) =>
             Object.values(tableAssignments).some((columnAssignments: any) =>
               Array.isArray(columnAssignments) && columnAssignments.length > 0
@@ -354,9 +512,9 @@ const TaskScheduler: React.FC = () => {
           e.target.value = ''; // Reset file input
           return;
         }
-      } catch (error) {
-        console.warn('Error checking existing assignments:', error);
       }
+    } catch (error) {
+      console.warn('Error checking existing assignments:', error);
     }
 
     // No existing assignments, proceed with upload
@@ -371,19 +529,13 @@ const TaskScheduler: React.FC = () => {
       if (result.success && result.employees) {
         setEmployees(result.employees);
         
-        // Save to localStorage with current date
+        // Save using storage service with current date
         const dateKey = selectedDate.toISOString().split('T')[0];
-        const scheduleData = {
-          employees: result.employees,
-          uploadedAt: new Date().toISOString(),
-          fileName: file.name
-        };
-        
-        localStorage.setItem(`schedule_${dateKey}`, JSON.stringify(scheduleData));
+        await storageService.saveSchedule(dateKey, result.employees, file.name, true); // replaceAll = true
         
         // Clear existing assignments since we're importing a new schedule
         setAssignments({});
-        localStorage.removeItem(`assignments_${dateKey}`);
+        await storageService.saveAssignments(dateKey, {});
         
         console.log('Schedule imported successfully:', result.employees.length, 'employees');
         alert(`Successfully imported ${result.employees.length} employees! All previous assignments have been cleared.`);
@@ -404,15 +556,9 @@ const TaskScheduler: React.FC = () => {
       if (result.success && result.employees) {
         setEmployees(result.employees);
         
-        // Save to localStorage with current date
+        // Save using storage service with current date
         const dateKey = selectedDate.toISOString().split('T')[0];
-        const scheduleData = {
-          employees: result.employees,
-          uploadedAt: new Date().toISOString(),
-          fileName: file.name
-        };
-        
-        localStorage.setItem(`schedule_${dateKey}`, JSON.stringify(scheduleData));
+        await storageService.saveSchedule(dateKey, result.employees, file.name);
         
         console.log('Employee pool updated:', result.employees.length, 'employees');
         alert(`Successfully updated employee pool with ${result.employees.length} employees! Existing assignments preserved.`);
@@ -446,6 +592,13 @@ const TaskScheduler: React.FC = () => {
   const cancelImport = () => {
     setShowImportConfirm(false);
     setPendingFile(null);
+  };
+
+  const handleImportOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    // Close modal if clicking on the overlay (not on the modal content)
+    if (e.target === e.currentTarget) {
+      cancelImport();
+    }
   };
 
   const handleDragStart = (employee: Employee) => {
@@ -540,13 +693,13 @@ const TaskScheduler: React.FC = () => {
     });
   };
 
-  const handleDayPartChange = (dayPart: DayPart) => {
+  const handleDayPartChange = async (dayPart: DayPart) => {
     setCurrentDayPart(dayPart);
     
     // Save the day part preference for this date
     try {
       const dateKey = selectedDate.toISOString().split('T')[0];
-      localStorage.setItem(`lastDayPart_${dateKey}`, dayPart);
+      await storageService.saveDayPart(dateKey, dayPart);
       console.log('Day part preference saved for date:', dateKey, '→', dayPart);
     } catch (error) {
       console.warn('Failed to save day part preference:', error);
@@ -615,6 +768,13 @@ const TaskScheduler: React.FC = () => {
     setPendingAssignment(null);
   };
 
+  const handleAssignmentOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    // Close modal if clicking on the overlay (not on the modal content)
+    if (e.target === e.currentTarget) {
+      cancelAssignment();
+    }
+  };
+
   // Get current day part assignments, ensuring structure exists
   const getCurrentAssignments = () => {
     return assignments[currentDayPart] || {};
@@ -649,24 +809,86 @@ const TaskScheduler: React.FC = () => {
 
   return (
     <div className="app-container-responsive">
-
-      
-      <DayPartTabs
-        currentDayPart={currentDayPart}
-        onDayPartChange={handleDayPartChange}
-      />
+      <div className="flex items-center justify-between mb-4">
+        <DayPartTabs
+          currentDayPart={currentDayPart}
+          onDayPartChange={handleDayPartChange}
+        />
+        
+        {/* Save Status Indicator */}
+        <div className="flex items-center gap-2">
+          <div className={`flex items-center gap-2 px-3 py-1 rounded-full text-sm ${
+            saveStatus === 'saved' ? 'bg-green-100 text-green-800' :
+            saveStatus === 'saving' ? 'bg-blue-100 text-blue-800' :
+            saveStatus === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+            'bg-red-100 text-red-800'
+          }`}>
+            <div className={`w-2 h-2 rounded-full ${
+              saveStatus === 'saved' ? 'bg-green-500' :
+              saveStatus === 'saving' ? 'bg-blue-500 animate-pulse' :
+              saveStatus === 'pending' ? 'bg-yellow-500 animate-pulse' :
+              'bg-red-500'
+            }`}></div>
+            <span>
+              {saveStatus === 'saved' && 'All Changes Saved'}
+              {saveStatus === 'saving' && 'Saving Changes...'}
+              {saveStatus === 'pending' && 'Auto-save in 2s'}
+              {saveStatus === 'error' && 'Save Failed'}
+            </span>
+            {lastSaved && saveStatus === 'saved' && (
+              <span className="text-xs opacity-70">
+                {lastSaved.toLocaleTimeString()}
+              </span>
+            )}
+          </div>
+          
+          {/* Manual Save Button */}
+          <button
+            onClick={saveNow}
+            disabled={saveStatus === 'saving'}
+            className={`px-3 py-1 rounded text-sm ${
+              saveStatus === 'saving' 
+                ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                : 'bg-blue-600 hover:bg-blue-700 text-white'
+            }`}
+            title="Save changes immediately (Ctrl+S)"
+          >
+            {saveStatus === 'saving' ? 'Saving...' : 'Save Now'}
+          </button>
+          
+          {/* Staff Pool Toggle */}
+          <div className="staff-pool-main-toggle">
+            <label className="toggle-switch-main">
+              <input
+                type="checkbox"
+                checked={showStaffPool}
+                onChange={() => setShowStaffPool(!showStaffPool)}
+                className="toggle-switch-checkbox-main"
+                aria-label={showStaffPool ? 'Hide staff pool' : 'Show staff pool'}
+              />
+              <span className="toggle-switch-slider-main">
+                <span className="toggle-switch-button-main"></span>
+              </span>
+            </label>
+            <span className="toggle-label-main">
+              Staff Pool
+            </span>
+          </div>
+        </div>
+      </div>
       
       {/* Main Layout Container - Side by Side */}
       <div className="main-layout-container">
-        {/* Horizontal Employee Pool */}
-        <div className="employee-pool-sidebar">
-          <HorizontalEmployeePool
-            employees={employees}
-            assignments={assignments}
-            currentDayPart={currentDayPart}
-            onDragStart={handleDragStart}
-            onFileUpload={() => {
-              const fileInput = document.getElementById('schedule-upload') as HTMLInputElement;
+        {/* Horizontal Employee Pool - Conditionally Rendered */}
+        {showStaffPool && (
+          <div className="employee-pool-sidebar">
+            <HorizontalEmployeePool
+              employees={employees}
+              assignments={assignments}
+              currentDayPart={currentDayPart}
+              onDragStart={handleDragStart}
+              onFileUpload={() => {
+                const fileInput = document.getElementById('schedule-upload') as HTMLInputElement;
               if (fileInput) {
                 fileInput.click();
               }
@@ -678,6 +900,7 @@ const TaskScheduler: React.FC = () => {
             onAddEmployee={handleAddEmployee}
           />
         </div>
+        )}
 
         {/* Assignment Grid */}
         <div className="assignment-grid-main">
@@ -707,7 +930,7 @@ const TaskScheduler: React.FC = () => {
 
       {/* Confirmation dialog for assignments initiated from modal */}
       {showConfirmDialog && pendingAssignment && mounted && createPortal(
-        <div className="modal-overlay">
+        <div className="modal-overlay" onClick={handleAssignmentOverlayClick}>
           <div className="modal-container">
             <div className="p-6">
               {pendingAssignment.isBreakAssignment ? (
@@ -757,7 +980,7 @@ const TaskScheduler: React.FC = () => {
 
       {/* Import Confirmation Dialog */}
       {showImportConfirm && pendingFile && mounted && createPortal(
-        <div className="modal-overlay">
+        <div className="modal-overlay" onClick={handleImportOverlayClick}>
           <div className="modal-container">
             <div className="modal-header">
               <div className="modal-title">

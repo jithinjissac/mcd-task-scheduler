@@ -28,7 +28,7 @@ const PDFLayoutGrid: React.FC<PDFLayoutGridProps> = ({
     if (dayPart === 'Breakfast') {
       // Row 1: Shift Manager, Handheld, Window 1, Window 2, Front Hand Wash, Customer Care
       // Row 2: Order Assembly, Kitchen Leader, Beverage Cell, Line 1, Line 2, Breaks
-      // Row 3: Batch, Oven, Dive, Backroom, Hash Browns, DFS Discards
+      // Row 3: Batch, Oven, Dive, Backroom, Hash Browns
       return {
         column1: [
           'shift_manager', 'order_assembly', 'batch'
@@ -46,7 +46,7 @@ const PDFLayoutGrid: React.FC<PDFLayoutGridProps> = ({
           'front_hand_wash', 'line2', 'hash_browns'
         ],
         column6: [
-          'customer_care', 'breaks', 'dfs_discards'
+          'customer_care', 'breaks'
         ]
       };
     } else {
@@ -100,35 +100,7 @@ const PDFLayoutGrid: React.FC<PDFLayoutGridProps> = ({
               
               {/* Station Columns/Tasks */}
               <div className="station-content-compact">
-                {table.id === "dfs_discards" ? (
-                  // Special handling for DFS table - no drag and drop, just informational
-                  <div className="dfs-info-compact">
-                    <div className="dfs-items-compact">
-                      <div className="dfs-item-compact">
-                        <span className="dfs-task-compact">milk discard</span>
-                        <span className="dfs-day-compact">Mon</span>
-                      </div>
-                      <div className="dfs-item-compact">
-                        <span className="dfs-task-compact">Shakes discard</span>
-                        <span className="dfs-day-compact">Tue</span>
-                      </div>
-                      <div className="dfs-item-compact">
-                        <span className="dfs-task-compact">Oil temps</span>
-                        <span className="dfs-day-compact">Wed</span>
-                      </div>
-                      <div className="dfs-item-compact">
-                        <span className="dfs-task-compact">Toaster cal.</span>
-                        <span className="dfs-day-compact">Fri</span>
-                      </div>
-                      <div className="dfs-item-compact">
-                        <span className="dfs-task-compact">Egg cal.</span>
-                        <span className="dfs-day-compact">Sun</span>
-                      </div>
-                    </div>
-                  </div>
-                ) : (
-                  // Regular drag and drop functionality for other tables
-                  table.columns.map((column) => (
+                {table.columns.map((column) => (
                     <div key={column} className="task-column-compact">
                       <div className="task-header-compact">
                         <span className="task-name-compact">{column}</span>
@@ -148,7 +120,7 @@ const PDFLayoutGrid: React.FC<PDFLayoutGridProps> = ({
                       </div>
                     </div>
                   ))
-                )}
+                }
               </div>
             </div>
           );

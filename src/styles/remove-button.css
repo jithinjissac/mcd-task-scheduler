@@ -1,0 +1,132 @@
+/* RemoveButton Component Styles */
+
+/* Enhanced visual styles for better UX */
+.remove-button-enhanced {
+  position: relative;
+  overflow: hidden;
+}
+
+.remove-button-enhanced::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(239, 68, 68, 0.1);
+  transition: width 0.3s ease, height 0.3s ease;
+  transform: translate(-50%, -50%);
+  z-index: -1;
+}
+
+.remove-button-enhanced:hover::before {
+  width: 120%;
+  height: 120%;
+}
+
+/* Floating remove button variant */
+.remove-button-floating {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  z-index: 10;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Pulse animation for attention */
+@keyframes remove-pulse {
+  0%, 100% { 
+    transform: scale(1); 
+    opacity: 0.8;
+  }
+  50% { 
+    transform: scale(1.05); 
+    opacity: 1;
+  }
+}
+
+.remove-button-pulse {
+  animation: remove-pulse 2s infinite;
+}
+
+/* Responsive adjustments for RemoveButton */
+@media (max-width: 768px) {
+  /* Touch-friendly sizing on mobile */
+  .remove-button-component {
+    min-width: 32px;
+    min-height: 32px;
+  }
+  
+  .remove-button-floating {
+    top: -6px;
+    right: -6px;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Extra touch-friendly on very small screens */
+  .remove-button-component {
+    min-width: 36px;
+    min-height: 36px;
+  }
+  
+  .remove-button-floating {
+    top: -8px;
+    right: -8px;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .remove-button-component {
+    border-width: 2px;
+    filter: contrast(1.2);
+  }
+
+  .remove-button-component:hover {
+    border-width: 3px;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .remove-button-component,
+  .remove-button-enhanced::before {
+    transition: none;
+  }
+
+  .remove-button-component:hover {
+    transform: none;
+  }
+
+  .remove-button-component:active {
+    transform: none;
+  }
+  
+  .remove-button-pulse {
+    animation: none;
+  }
+}
+
+/* Focus visible for keyboard navigation */
+.remove-button-component:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Print styles - hide remove buttons when printing */
+@media print {
+  .remove-button-component,
+  .remove-button-floating {
+    display: none !important;
+  }
+}
+
+/* Backdrop blur support for modern browsers */
+@supports (backdrop-filter: blur(4px)) {
+  .remove-button-backdrop {
+    backdrop-filter: blur(4px);
+    background: rgba(255, 255, 255, 0.8);
+  }
+}

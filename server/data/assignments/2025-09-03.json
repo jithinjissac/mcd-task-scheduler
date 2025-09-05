@@ -1,0 +1,196 @@
+{
+  "assignments": {
+    "Breakfast": {
+      "shift_manager": {
+        "Manager on Duty": [
+          "Anitta",
+          "Chloe",
+          "Aimee"
+        ]
+      },
+      "handheld": {
+        "Staff": [
+          "Constantin"
+        ]
+      },
+      "window1": {
+        "Order Takes": [
+          "Oleks"
+        ],
+        "Cashier": [
+          "Nithusa",
+          "Lakshmi"
+        ]
+      },
+      "window2": {
+        "Presenter": [
+          "Ashir"
+        ],
+        "Checker": [
+          "Ashley"
+        ],
+        "Runner": [],
+        "Holds": []
+      },
+      "front_hand_wash": {
+        "Staff": [
+          "Rhea"
+        ]
+      },
+      "order_assembly": {
+        "1. R/P": [
+          "Pravallika",
+          "Kujtim"
+        ],
+        "2. R/P": [
+          "Keith",
+          "Elaine"
+        ],
+        "3. Delivery checker": [],
+        "4. Expeditator": [
+          "Bharath"
+        ],
+        "5. Delivery Drinks": [
+          "Aj"
+        ]
+      },
+      "kitchen_leader": {
+        "Staff": [
+          "Thajee",
+          "Rasmeet"
+        ]
+      },
+      "line1": {
+        "Screen": [],
+        "Rolls": []
+      },
+      "line2": {
+        "Screen": [
+          "Alissa"
+        ],
+        "Rolls": [
+          "Shehan"
+        ]
+      },
+      "batch": {
+        "Muffins": [],
+        "Sausage": [],
+        "Eggs": []
+      },
+      "oven": {
+        "Staff": []
+      },
+      "backroom": {
+        "Staff": []
+      },
+      "hash_browns": {
+        "Staff": []
+      },
+      "customer_care": {
+        "Staff": []
+      },
+      "beverage_cell": {
+        "Soft Drinks": [
+          "Sharon"
+        ],
+        "Shakes": [],
+        "Hot Drinks": []
+      },
+      "breaks": {
+        "Kitchen": [],
+        "Front": []
+      },
+      "dive": {
+        "09:00": [],
+        "11:00": [
+          "Ella",
+          "Raj"
+        ]
+      },
+      "dfs_discards": {
+        "Monday": [],
+        "Tuesday": [],
+        "Wednesday": [],
+        "Friday": [],
+        "Sunday": []
+      }
+    },
+    "Lunch": {
+      "shift_manager": {
+        "Manager on Duty": []
+      },
+      "handheld": {
+        "Staff": []
+      },
+      "window1": {
+        "Order Takes": [],
+        "Cashier": []
+      },
+      "window2": {
+        "Presenter": [],
+        "Checker": [],
+        "Runner": [],
+        "Holds": []
+      },
+      "front_hand_wash": {
+        "Staff": []
+      },
+      "order_assembly": {
+        "1. R/P": [],
+        "2. R/P": [],
+        "3. Delivery checker": [],
+        "4. Expeditator": [],
+        "5. Delivery Drinks": []
+      },
+      "kitchen_leader": {
+        "Staff": []
+      },
+      "line1": {
+        "Initiator": [],
+        "Assembler": [],
+        "Finisher": []
+      },
+      "line2": {
+        "Initiator": [],
+        "Assembler": [],
+        "Finisher": []
+      },
+      "batch_grill": {
+        "Staff": []
+      },
+      "batch_chicken": {
+        "Staff": []
+      },
+      "backroom": {
+        "Staff": []
+      },
+      "fries": {
+        "Staff": []
+      },
+      "customer_care": {
+        "Staff": []
+      },
+      "beverage_cell": {
+        "Soft Drinks": [],
+        "Shakes": [],
+        "Hot Drinks": []
+      },
+      "breaks": {
+        "Kitchen": [],
+        "Front": []
+      },
+      "dive": {
+        "11:00": [],
+        "15:00": [],
+        "19:00": [],
+        "CLOSE": []
+      },
+      "delivery": {
+        "Staff": []
+      }
+    }
+  },
+  "savedAt": "2025-09-04T00:04:47.551Z",
+  "dayPart": "Breakfast",
+  "lastUpdated": "2025-09-04T00:04:47.551Z"
+}

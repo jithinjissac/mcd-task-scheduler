@@ -5,6 +5,7 @@ import { createPortal } from 'react-dom';
 import { Employee } from '@/types';
 import { X } from 'lucide-react';
 import EmployeeSelectionModal from './EmployeeSelectionModal';
+import TinyRemoveButton from './TinyRemoveButton';
 
 interface DropZoneProps {
   tableId: string;
@@ -159,6 +160,13 @@ const DropZone: React.FC<DropZoneProps> = ({
   const cancelAssignment = () => {
     setShowConfirmDialog(false);
     setPendingAssignment(null);
+  };
+
+  const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    // Close modal if clicking on the overlay (not on the modal content)
+    if (e.target === e.currentTarget) {
+      cancelAssignment();
+    }
   };
 
   // Touch handlers for drag and drop
@@ -481,7 +489,6 @@ const DropZone: React.FC<DropZoneProps> = ({
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
         onClick={employees.length === 0 ? handleDropZoneClick : undefined}
-        title={employees.length === 0 ? 'Click or tap to assign employee' : ''}
       >
         {employees.length === 0 ? (
           <div className="text-gray-400 text-sm text-center py-4">
@@ -521,31 +528,30 @@ const DropZone: React.FC<DropZoneProps> = ({
                     touchAction: 'manipulation',
                     userSelect: 'none'
                   }}
-                  title="Tap to change assignment or drag to move"
                 >
                   {employeeInfo?.minor && <div className="minor-badge">M</div>}
                   
                   <div className="flex items-center justify-between">
-                    <div className="flex-1">
-                      <div className="employee-name text-sm">
+                    <div className="employee-info flex items-center gap-2 flex-1 min-w-0">
+                      <div className="employee-name text-sm truncate">
                         {employeeName}
                       </div>
                       {employeeInfo && (
-                        <div className="employee-role text-xs">
+                        <div className="employee-role text-xs text-gray-600 whitespace-nowrap">
                           {employeeInfo.shiftStart} - {employeeInfo.shiftEnd}
                         </div>
                       )}
                     </div>
-                    <button
+                    <TinyRemoveButton
                       onClick={(e) => {
+                        e.preventDefault();
                         e.stopPropagation();
                         onRemove(employeeName, tableId, columnName);
                       }}
-                      className="text-red-500 hover:text-red-700 p-1 rounded-full hover:bg-red-100 transition-colors"
-                      title="Remove assignment"
-                    >
-                      <X className="w-4 h-4" />
-                    </button>
+                      size="micro"
+                      variant="dot"
+                      className="opacity-70 hover:opacity-100 transition-opacity"
+                    />
                   </div>
                 </div>
               );
@@ -571,7 +577,7 @@ const DropZone: React.FC<DropZoneProps> = ({
 
       {/* Assignment Conflict Confirmation Dialog */}
       {showConfirmDialog && pendingAssignment && mounted && createPortal(
-        <div className="modal-overlay">
+        <div className="modal-overlay" onClick={handleOverlayClick}>
           <div className="modal-container">
             <div className="p-6">
               {pendingAssignment.isBreakAssignment ? (

@@ -170,6 +170,13 @@ const HorizontalEmployeePool: React.FC<HorizontalEmployeePoolProps> = ({
     setShowAddForm(false);
   }, []);
 
+  const handleAddFormOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    // Close modal if clicking on the overlay (not on the modal content)
+    if (e.target === e.currentTarget) {
+      handleCancelAdd();
+    }
+  };
+
   const assignedEmployees = employees.filter(emp => isEmployeeAssigned(emp.name));
   const totalEmployees = employees.length;
   const assignedCount = assignedEmployees.length;
@@ -203,82 +210,95 @@ const HorizontalEmployeePool: React.FC<HorizontalEmployeePoolProps> = ({
           </div>
         </div>
 
-        {/* Import Schedule Button */}
-        <button
-          onClick={onFileUpload}
-          className="add-staff-button bg-red-600 hover:bg-red-700"
-          title="Import schedule from CSV/Excel file"
-        >
-          <Upload className="w-4 h-4" />
-          <span>Import Schedule</span>
-        </button>
+        {/* Action Buttons */}
+        <div className="employee-actions-horizontal">
+          {/* Import Schedule Button */}
+          <button
+            onClick={onFileUpload}
+            className="add-staff-button bg-red-600 hover:bg-red-700"
+            title="Import schedule from CSV/Excel file"
+          >
+            <Upload className="w-4 h-4" />
+            <span>Import Schedule</span>
+          </button>
 
-        {/* Add Employee Button */}
-        <button
-          onClick={() => setShowAddForm(true)}
-          className="add-staff-button"
-          title="Add new employee manually"
-        >
-          <Plus className="w-4 h-4" />
-          <span>Add Staff</span>
-        </button>
-      </div>
-      
-      {/* Available Employees - Horizontal Scroll */}
-      <div className="available-employees-horizontal">
-        <div className="employees-list-horizontal">
-          {filteredEmployees.length === 0 ? (
-            <div className="no-employees-horizontal">
-              {searchTerm ? 'No employees match your search' : 'No available employees'}
-            </div>
-          ) : (
-            filteredEmployees.map((employee) => (
-              <div key={employee.name} className="employee-card-horizontal-wrapper">
-                <div onClick={() => onEmployeeClick && onEmployeeClick(employee)}>
-                  <EmployeeCard
-                    employee={employee}
-                    isAssigned={false}
-                    onDragStart={onDragStart}
-                  />
-                </div>
-              </div>
-            ))
-          )}
+          {/* Add Employee Button */}
+          <button
+            onClick={() => setShowAddForm(true)}
+            className="add-staff-button"
+            title="Add new employee manually"
+          >
+            <Plus className="w-4 h-4" />
+            <span>Add Staff</span>
+          </button>
         </div>
       </div>
-
-      {/* Assigned Employees - Collapsible */}
-      {assignedCount > 0 && (
-        <details className="assigned-employees-section">
-          <summary className="assigned-employees-header">
-            <span>Assigned Employees ({assignedCount})</span>
-          </summary>
-          <div className="assigned-employees-list">
-            {assignedEmployees.map((employee) => (
-              <div key={employee.name} className="assigned-employee-card">
-                <span className="employee-name">{employee.name}</span>
-                <span className="employee-time">{employee.shiftStart}-{employee.shiftEnd}</span>
-                {employee.minor && <span className="minor-badge-small">M</span>}
+      
+      {/* Employee Pool Content */}
+      <div className="employee-pool-content">
+        {/* Available Employees - Horizontal Scroll */}
+        <div className="available-employees-horizontal">
+          <div className="employees-list-horizontal">
+            {filteredEmployees.length === 0 ? (
+              <div className="no-employees-horizontal">
+                {searchTerm ? 'No employees match your search' : 
+                 employees.length === 0 ? 'No employee data loaded for this date. Please upload a CSV file.' : 
+                 'No available employees'}
               </div>
-            ))}
+            ) : (
+              filteredEmployees.map((employee) => (
+                <div key={employee.name} className="employee-card-horizontal-wrapper">
+                  <div onClick={() => onEmployeeClick && onEmployeeClick(employee)}>
+                    <EmployeeCard
+                      employee={employee}
+                      isAssigned={false}
+                      onDragStart={onDragStart}
+                    />
+                  </div>
+                </div>
+              ))
+            )}
           </div>
-        </details>
-      )}
+        </div>
+
+        {/* Assigned Employees - Collapsible */}
+        {assignedCount > 0 && (
+          <details className="assigned-employees-section">
+            <summary className="assigned-employees-header">
+              <span>Assigned Employees ({assignedCount})</span>
+            </summary>
+            <div className="assigned-employees-list">
+              {assignedEmployees.map((employee) => (
+                <div key={employee.name} className="assigned-employee-card">
+                  <div className="employee-info flex items-center gap-2">
+                    <span className="employee-name font-semibold text-gray-800 text-sm truncate flex-1">{employee.name}</span>
+                    <span className="employee-time text-xs text-gray-600 whitespace-nowrap">{employee.shiftStart}-{employee.shiftEnd}</span>
+                    {employee.minor && <span className="minor-badge-small">M</span>}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </details>
+        )}
+      </div>
 
       {/* Add Employee Form Modal */}
       {showAddForm && (
-        <div className="modal-overlay">
+        <div className="modal-overlay" role="dialog" aria-modal="true" onClick={handleAddFormOverlayClick}>
           <div className="modal-container">
             <div className="modal-header">
               <div className="modal-title">
-                <Plus className="w-5 h-5" />
-                <h2>Add New Employee</h2>
+                <Plus className="modal-icon" />
+                <div>
+                  <h2>Add New Employee</h2>
+                  <p>Enter employee details below</p>
+                </div>
               </div>
               <button 
                 onClick={handleCancelAdd}
                 className="modal-close-btn"
               >
-                <X className="w-5 h-5" />
+                <X size={20} />
               </button>
             </div>
 

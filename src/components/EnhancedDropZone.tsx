@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { Employee } from '@/types';
 import { X, Move, Clock } from 'lucide-react';
+import TinyRemoveButton from './TinyRemoveButton';
 
 interface EnhancedDropZoneProps {
   tableId: string;
@@ -125,26 +126,29 @@ const EnhancedDropZone: React.FC<EnhancedDropZoneProps> = ({
               >
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex-1 min-w-0">
-                    <span className="font-semibold text-gray-800 text-sm block truncate">{employee.name}</span>
-                    {!compact && (
-                      <div className="mt-1 space-y-1">
-                        <div className="flex items-center gap-1 text-xs text-gray-600">
-                          <Clock className="w-3 h-3" />
-                          <span>{formatShiftTime(employee.shiftStart, employee.shiftEnd)}</span>
-                        </div>
-                        {employee.task && (
-                          <div className="text-xs text-blue-600 bg-blue-50 px-2 py-0.5 rounded">{employee.task}</div>
-                        )}
+                    <div className="employee-info flex items-center gap-2">
+                      <span className="font-semibold text-gray-800 text-sm truncate flex-1">{employee.name}</span>
+                      <div className="flex items-center gap-1 text-xs text-gray-600 whitespace-nowrap">
+                        <Clock className="w-3 h-3" />
+                        <span>{formatShiftTime(employee.shiftStart, employee.shiftEnd)}</span>
+                      </div>
+                    </div>
+                    {!compact && employee.task && (
+                      <div className="mt-1">
+                        <div className="text-xs text-blue-600 bg-blue-50 px-2 py-0.5 rounded inline-block">{employee.task}</div>
                       </div>
                     )}
                   </div>
-                  <button
-                    onClick={() => onRemove(employeeName, tableId, columnName)}
-                    className="p-1 rounded-full bg-red-50 text-red-500 hover:bg-red-100 hover:text-red-600 transition-colors duration-200 flex-shrink-0 hover:scale-110"
-                    title="Remove assignment"
-                  >
-                    <X className="w-3 h-3" />
-                  </button>
+                  <TinyRemoveButton
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      onRemove(employeeName, tableId, columnName);
+                    }}
+                    size="micro"
+                    variant="minimal"
+                    className="opacity-60 hover:opacity-100 transition-opacity"
+                  />
                 </div>
                 {compact && (
                   <div className="mt-1">

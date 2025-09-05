@@ -1,0 +1,29 @@
+{
+  "name": "mcd-task-scheduler-server",
+  "version": "1.0.0",
+  "description": "McDonald's Task Scheduler Backend Server",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "helmet": "^7.1.0",
+    "morgan": "^1.10.0",
+    "socket.io": "^4.7.4",
+    "socket.io-client": "^4.8.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  },
+  "keywords": [
+    "mcdonald's",
+    "task-scheduler",
+    "real-time",
+    "socket.io"
+  ],
+  "author": "McDonald's Task Scheduler Team",
+  "license": "MIT"
+}

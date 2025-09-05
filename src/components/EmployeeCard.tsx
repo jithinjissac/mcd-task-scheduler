@@ -163,17 +163,18 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({
         touchAction: 'manipulation',
         userSelect: 'none'
       }}
-      title={inDropZone ? 'Tap to change assignment or drag to move' : 'Drag to assign or tap for options'}
     >
       {employee.minor && <div className="minor-badge">Minor</div>}
       
-      <div className="employee-name">
-        {employee.name}
-      </div>
-      
-      <div className="employee-role flex items-center gap-1">
-        <Clock className="w-3 h-3" />
-        {employee.shiftStart} - {employee.shiftEnd}
+      <div className="employee-info flex items-center justify-between gap-2">
+        <div className="employee-name flex-1">
+          {employee.name}
+        </div>
+        
+        <div className="employee-role flex items-center gap-1 text-xs">
+          <Clock className="w-3 h-3" />
+          {employee.shiftStart} - {employee.shiftEnd}
+        </div>
       </div>
       
       {employee.task && (

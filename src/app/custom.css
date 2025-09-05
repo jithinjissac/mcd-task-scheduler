@@ -84,6 +84,39 @@ body {
   border-color: #fcd34d !important;
 }
 
+/* Enhanced employee card hover effects */
+.employee-card {
+  transition: all 0.2s ease-out;
+}
+
+.employee-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Group hover for remove button visibility */
+.group:hover .group-hover\:opacity-100 {
+  opacity: 1 !important;
+}
+
+/* Modern remove button animations */
+@keyframes buttonPop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1.05); }
+}
+
+.remove-button-modern:hover {
+  animation: buttonPop 0.2s ease-out;
+}
+
+/* Glassmorphism effect for modern UI */
+.glass-effect {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
 /* Touch screen enhancements */
 @media (hover: none) and (pointer: coarse) {
   /* Touch device specific styles */
@@ -135,15 +168,11 @@ button:active {
   transition: transform 0.1s ease !important;
 }
 
-/* Better touch targets */
-.employee-card {
-  min-height: 44px !important;
-  touch-action: manipulation !important; /* Standard touch interactions */
-  -webkit-touch-callout: none !important;
-  -webkit-user-select: none !important;
-  -moz-user-select: none !important;
-  -ms-user-select: none !important;
-  user-select: none !important;
+/* Assigned employee cards in drop zones - compact height */
+.drop-zone .employee-card {
+  min-height: 32px !important; /* Reduced from 44px for compact grid display */
+  padding: 0.375rem 0.5rem !important; /* Even more compact padding */
+  margin: 0.125rem 0 !important; /* Small margin between cards */
 }
 
 /* Drop zones should allow touch manipulation */
@@ -172,7 +201,9 @@ button:active {
   touch-action: manipulation !important;
 }
 
-/* CRITICAL: Modal Overlay Absolute Center Fix - High Priority */
+/* ===== MODERN STATION SELECTION MODAL ===== */
+
+/* Modal Overlay - Clean and Modern */
 .modal-overlay {
   position: fixed !important;
   top: 0 !important;
@@ -181,57 +212,47 @@ button:active {
   bottom: 0 !important;
   width: 100vw !important;
   height: 100vh !important;
+  background: rgba(15, 23, 42, 0.6) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  z-index: 10000 !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  background: rgba(15, 23, 42, 0.45) !important;
-  backdrop-filter: blur(4px) !important;
-  -webkit-backdrop-filter: blur(4px) !important;
-  z-index: 10000 !important;
-  padding: 0 !important;
-  margin: 0 !important;
+  padding: 1rem !important;
+  animation: modalFadeIn 0.3s ease-out !important;
+}
+
+/* Modal Container - Large and Spacious */
+.modal-container {
+  background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%) !important;
+  border-radius: 16px !important;
+  width: min(95vw, 1400px) !important;
+  max-width: 1400px !important;
+  height: min(90vh, calc(100vh - 2rem)) !important;
+  max-height: min(90vh, calc(100vh - 2rem)) !important;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
   overflow: hidden !important;
-  -webkit-overflow-scrolling: touch !important;
-}
-
-/* CRITICAL: Force Perfect Center with Multiple Methods */
-.modal-overlay {
-  place-items: center center !important;
-  place-content: center center !important;
-}
-
-/* CRITICAL: Modal Container Center Positioning - High Priority */
-div.modal-overlay > .modal-container,
-.modal-overlay .modal-container {
-  background: white !important;
-  border-radius: 0.75rem !important;
-  width: min(90vw, 800px) !important;
-  max-width: 800px !important;
-  max-height: min(90vh, calc(100vh - 4rem)) !important;
-  overflow: auto !important;
-  box-shadow: 0 20px 50px rgba(2,6,23,0.35) !important;
-  border: 1px solid rgba(15,23,42,0.06) !important;
-  position: relative !important;
-  animation: modalSlideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
   display: flex !important;
   flex-direction: column !important;
-  margin: auto auto !important;
-  transform: translate(0, 0) !important;
-  top: auto !important;
-  left: auto !important;
-  right: auto !important;
-  bottom: auto !important;
+  animation: modalSlideUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
 }
 
-/* Modal Animation for Perfect Center Entry */
-@keyframes modalSlideIn {
+/* Modern Modal Animations */
+@keyframes modalFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes modalSlideUp {
   from {
     opacity: 0;
-    transform: scale(0.95);
+    transform: translateY(20px) scale(0.96);
   }
   to {
     opacity: 1;
-    transform: scale(1);
+    transform: translateY(0) scale(1);
   }
 }
 
@@ -244,10 +265,13 @@ div.modal-overlay > .modal-container,
   z-index: 10000 !important;
 }
 
-/* Ensure modal content is scrollable if needed */
+/* Ensure modal content is spacious and only vertically scrollable */
 .modal-container {
   max-height: 90vh !important;
   overflow-y: auto !important;
+  overflow-x: hidden !important;
+  display: flex !important;
+  flex-direction: column !important;
 }
 
 /* Ensure modal stays centered on scroll */
@@ -259,69 +283,150 @@ div.modal-overlay > .modal-container,
   pointer-events: none !important;
 }
 
+/* Header - Compact and Professional */
 .modal-header {
+  background: linear-gradient(135deg, #DA291C 0%, #c8231a 100%) !important;
+  color: white !important;
+  padding: 1rem 1.5rem !important;
   display: flex !important;
   align-items: center !important;
   justify-content: space-between !important;
-  padding: 1rem 1.25rem !important;
-  border-bottom: 1px solid #eef2f7 !important;
+  position: relative !important;
+}
+
+.modal-header::before {
+  content: '' !important;
+  position: absolute !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 1px !important;
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.2) 50%, transparent 100%) !important;
 }
 
 .modal-title {
   display: flex !important;
-  align-items: center !important;
-  gap: 0.75rem !important;
-  color: #111827 !important;
+  flex-direction: column !important;
+  gap: 0.25rem !important;
 }
 
 .modal-title h2 {
   margin: 0 !important;
-  font-size: 1.125rem !important;
+  font-size: 1.25rem !important;
   font-weight: 700 !important;
+  color: white !important;
+  letter-spacing: -0.025em !important;
+}
+
+.modal-title p {
+  margin: 0 !important;
+  font-size: 0.9rem !important;
+  font-weight: 400 !important;
+  color: rgba(255, 255, 255, 0.9) !important;
+  opacity: 0.9 !important;
 }
 
 .modal-close-btn {
-  background: transparent !important;
+  background: rgba(255, 255, 255, 0.1) !important;
   border: none !important;
-  padding: 0.5rem !important;
-  border-radius: 0.5rem !important;
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 12px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: white !important;
   cursor: pointer !important;
-  color: #374151 !important;
+  transition: all 0.2s ease !important;
+  backdrop-filter: blur(10px) !important;
 }
 
 .modal-close-btn:hover {
-  background: #f3f4f6 !important;
+  background: rgba(255, 255, 255, 0.2) !important;
+  transform: scale(1.05) !important;
 }
 
-/* Station selection list inside modal */
+/* Station List - Flexible Layout without Horizontal Scroll */
 .station-list {
-  padding: 1rem !important;
+  padding: 1.25rem !important;
   display: grid !important;
-  grid-template-columns: 1fr !important;
-  gap: 0.75rem !important;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)) !important;
+  gap: 1rem !important;
+  flex: 1 !important;
+  max-height: calc(85vh - 120px) !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  scrollbar-width: thin !important;
+  scrollbar-color: #DA291C #f1f5f9 !important;
 }
 
+.station-list::-webkit-scrollbar {
+  width: 6px !important;
+}
+
+.station-list::-webkit-scrollbar-track {
+  background: #f1f5f9 !important;
+  border-radius: 3px !important;
+}
+
+.station-list::-webkit-scrollbar-thumb {
+  background: #DA291C !important;
+  border-radius: 3px !important;
+}
+
+.station-list::-webkit-scrollbar-thumb:hover {
+  background: #b8241a !important;
+}
+
+/* Station Cards - Flexible Design */
 .station-card {
+  background: white !important;
+  border-radius: 12px !important;
+  padding: 1.25rem !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.08) !important;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  position: relative !important;
+  overflow: hidden !important;
   display: flex !important;
   flex-direction: column !important;
-  gap: 0.5rem !important;
-  padding: 0.75rem 1rem !important;
-  border-radius: 0.5rem !important;
-  background: #ffffff !important;
-  border: 1px solid #eef2f7 !important;
+  gap: 0.875rem !important;
+  min-height: 110px !important;
+  min-width: 300px !important;
+  width: 100% !important;
 }
 
-/* Polished station modal styles */
-.station-list {
-  grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
+.station-card::before {
+  content: '' !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 3px !important;
+  background: linear-gradient(90deg, #DA291C 0%, #FFC72C 100%) !important;
 }
 
-@media (min-width: 700px) {
-  .station-list { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+.station-card:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12), 0 2px 6px rgba(0, 0, 0, 0.08) !important;
+  border-color: #DA291C !important;
 }
 
-@media (min-width: 1100px) {
-  .station-list { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
+.station-card:active {
+  transform: translateY(-2px) !important;
+}
+
+/* Enhanced responsive grid for station selection - Flexible columns */
+@media (min-width: 640px) {
+  .station-list { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)) !important; }
+}
+
+@media (min-width: 768px) {
+  .station-list { grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)) !important; }
+}
+
+@media (min-width: 1024px) {
+  .station-list { grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)) !important; }
 }
 
 .station-card {
@@ -329,52 +434,226 @@ div.modal-overlay > .modal-container,
   display: flex !important;
   flex-direction: column !important;
   justify-content: space-between !important;
-  min-height: 84px !important;
+  min-height: 140px !important;
 }
 
-.station-row { display:flex; gap:0.75rem; align-items:center; justify-content:space-between; }
+/* Station Row - Clean Layout */
+.station-row {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 1rem !important;
+  margin-bottom: 0.5rem !important;
+}
 
-.station-left { display:flex; gap:0.75rem; align-items:center; }
+.station-left {
+  display: flex !important;
+  align-items: center !important;
+  gap: 1rem !important;
+  flex: 1 !important;
+}
+
+/* Station Icon - Modern Design */
 .station-icon {
-  width:44px; height:44px; border-radius:8px; background:linear-gradient(180deg,var(--mcdonalds-yellow),#f7c948); display:flex; align-items:center; justify-content:center; color:#111827; font-weight:700;
+  width: 52px !important;
+  height: 52px !important;
+  border-radius: 14px !important;
+  background: linear-gradient(135deg, #FFC72C 0%, #f7c948 100%) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: #DA291C !important;
+  font-weight: 800 !important;
+  font-size: 1.25rem !important;
+  box-shadow: 0 4px 12px rgba(218, 41, 28, 0.2) !important;
+  border: 2px solid rgba(255, 255, 255, 0.3) !important;
 }
 
-.station-name { font-size:0.975rem; font-weight:700; color:#0f172a; }
-.station-sub { font-size:0.8rem; color: #374151; font-weight: 500; }
+/* Station Info */
+.station-name {
+  font-size: 1.125rem !important;
+  font-weight: 700 !important;
+  color: #1e293b !important;
+  margin: 0 !important;
+  line-height: 1.3 !important;
+}
 
-.station-count { background:#e0e7ff; color:#1e40af; padding:0.25rem 0.5rem; border-radius:999px; font-weight:700; font-size:0.75rem; border: 1px solid #c7d2fe; }
+.station-sub {
+  font-size: 0.875rem !important;
+  color: #64748b !important;
+  font-weight: 500 !important;
+  margin: 0.25rem 0 0 0 !important;
+}
 
-.station-card:hover { transform: translateY(-6px); box-shadow: 0 14px 40px rgba(2,6,23,0.12) !important; }
+/* Station Count Badge */
+.station-count {
+  background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%) !important;
+  color: #0369a1 !important;
+  padding: 0.5rem 1rem !important;
+  border-radius: 20px !important;
+  font-weight: 700 !important;
+  font-size: 0.8rem !important;
+  border: 1px solid #7dd3fc !important;
+  box-shadow: 0 2px 8px rgba(3, 105, 161, 0.1) !important;
+  white-space: nowrap !important;
+}
+
+.station-card:hover { 
+  transform: translateY(-8px); 
+  box-shadow: 0 20px 40px rgba(2,6,23,0.15) !important; 
+  border-color: var(--mcdonalds-yellow) !important;
+}
 
 .station-actions { display:flex; gap:0.5rem; align-items:center; }
-.station-add-btn { min-width:88px; }
-
-.station-add-btn.add { background: var(--mcdonalds-red) !important; color:#fff !important; box-shadow: 0 6px 18px rgba(218,41,28,0.12) !important; }
-.station-add-btn.assigned { border:1px solid #e6e9ee !important; background:#fff !important; color:#6b7280 !important; }
-
-.station-selected { outline: 2px solid rgba(59,130,246,0.12) !important; box-shadow: 0 10px 30px rgba(59,130,246,0.08) !important; }
-
-.station-card .station-columns { margin-top:0.75rem; display:flex; gap:0.5rem; flex-direction:column; }
-.station-card .station-column-pill { 
-  padding:0.75rem; 
-  background:#f8fafc; 
-  color:#111827; 
-  border-radius:8px; 
-  font-size:0.875rem; 
-  font-weight: 500;
-  border:1px solid #e2e8f0;
-  transition: all 180ms ease;
-}
-.station-card .station-column-pill:hover { 
-  background:#ffffff; 
-  border-color:#cbd5e1; 
-  box-shadow: 0 4px 12px rgba(2,6,23,0.08);
+.station-add-btn {
+  padding: 0.5rem 1rem !important;
+  border-radius: 8px !important;
+  font-weight: 600 !important;
+  font-size: 0.85rem !important;
+  border: none !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  min-width: 80px !important;
+  text-align: center !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
 }
 
-/* accessible focus states */
-.station-card:focus-within, .station-card:focus { box-shadow: 0 10px 30px rgba(2,6,23,0.08); transform: translateY(-4px); }
+.station-add-btn.add {
+  background: linear-gradient(135deg, #DA291C 0%, #c8231a 100%) !important;
+  color: white !important;
+  box-shadow: 0 4px 12px rgba(218, 41, 28, 0.3) !important;
+}
 
+.station-add-btn.add:hover {
+  background: linear-gradient(135deg, #c8231a 0%, #a61e1a 100%) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 20px rgba(218, 41, 28, 0.4) !important;
+}
 
+.station-add-btn.assigned {
+  background: #f1f5f9 !important;
+  color: #64748b !important;
+  border: 2px solid #e2e8f0 !important;
+  cursor: not-allowed !important;
+}
+
+.station-add-btn.assigned:hover {
+  transform: none !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+}
+
+.station-selected { 
+  outline: 3px solid rgba(59,130,246,0.2) !important; 
+  box-shadow: 0 12px 36px rgba(59,130,246,0.15) !important; 
+}
+
+.station-card .station-columns {
+  margin-top: 1rem !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.75rem !important;
+  overflow-x: hidden !important;
+  width: 100% !important;
+}
+
+.station-card .station-column-pill {
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%) !important;
+  border: 2px solid #e2e8f0 !important;
+  border-radius: 12px !important;
+  padding: 1rem !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+  position: relative !important;
+  overflow-x: hidden !important;
+}
+
+.station-card .station-column-pill:hover {
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%) !important;
+  border-color: #DA291C !important;
+  box-shadow: 0 6px 20px rgba(218, 41, 28, 0.15) !important;
+  transform: translateY(-2px) !important;
+}
+
+/* Mobile responsive improvements for station selection modal */
+@media (max-width: 640px) {
+  .modal-container {
+    width: min(98vw, 1200px) !important;
+    height: min(95vh, calc(100vh - 1rem)) !important;
+    max-height: min(95vh, calc(100vh - 1rem)) !important;
+    margin: 0.25rem !important;
+  }
+
+  .modal-header {
+    padding: 0.875rem 1.25rem !important;
+  }
+
+  .modal-title h2 {
+    font-size: 1.125rem !important;
+  }
+
+  .modal-title p {
+    font-size: 0.85rem !important;
+  }
+
+  .station-list {
+    padding: 1rem !important;
+    gap: 0.75rem !important;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)) !important;
+    max-height: calc(80vh - 100px) !important;
+    overflow-x: hidden !important;
+  }
+
+  .station-card {
+    padding: 1rem !important;
+    min-height: 90px !important;
+    gap: 0.75rem !important;
+  }
+
+  .station-icon {
+    width: 44px !important;
+    height: 44px !important;
+    font-size: 1rem !important;
+  }
+
+  .station-name {
+    font-size: 1rem !important;
+  }
+
+  .station-add-btn {
+    min-width: 70px !important;
+    padding: 0.4rem 0.8rem !important;
+    font-size: 0.8rem !important;
+  }
+}
+
+/* Focus states for accessibility */
+.station-card:focus-within,
+.station-card:focus {
+  outline: 2px solid #DA291C !important;
+  outline-offset: 2px !important;
+}
+
+.station-add-btn:focus {
+  outline: 2px solid #DA291C !important;
+  outline-offset: 2px !important;
+}
+
+.modal-close-btn:focus {
+  outline: 2px solid white !important;
+  outline-offset: 2px !important;
+}
+
+/* Success animation for assignments */
+@keyframes assignmentSuccess {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+.station-add-btn.success {
+  animation: assignmentSuccess 0.6s ease-out !important;
+  background: linear-gradient(135deg, #10B981 0%, #059669 100%) !important;
+}
 .station-card .station-row {
   display: flex !important;
   align-items: center !important;
@@ -417,10 +696,25 @@ div.modal-overlay > .modal-container,
   cursor: default !important;
 }
 
-/* Make modal content readable on small screens */
+/* Make modal content spacious on small screens */
 @media (max-width: 640px) {
-  .modal-container { width: calc(100% - 2rem) !important; }
-  .station-list { gap: 0.5rem !important; }
+  .modal-container { 
+    width: calc(100% - 0.5rem) !important; 
+    height: 95vh !important;
+    max-height: 95vh !important;
+    overflow-x: hidden !important;
+  }
+  .station-list { 
+    gap: 0.5rem !important; 
+    padding: 0.75rem !important;
+    max-height: calc(95vh - 100px) !important;
+    overflow-x: hidden !important;
+  }
+  .station-card {
+    padding: 0.5rem !important;
+    min-height: 70px !important;
+    gap: 0.375rem !important;
+  }
 }
 
 /* Employee selection modal specific styles */
@@ -477,7 +771,7 @@ div.modal-overlay > .modal-container,
 .employee-list-modal {
   padding: 0.75rem 1rem !important;
   display: grid !important;
-  grid-template-columns: 1fr 1fr !important;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)) !important;
   gap: 0.5rem !important;
   max-height: 48vh !important;
   overflow: auto !important;
@@ -485,21 +779,51 @@ div.modal-overlay > .modal-container,
 
 .employee-card-modal {
   display: flex !important;
-  align-items: center !important;
-  justify-content: space-between !important;
+  flex-direction: column !important;
   gap: 0.5rem !important;
-  padding: 0.6rem 0.75rem !important;
+  padding: 0.75rem !important;
+  margin-bottom: 0.5rem !important;
+  background: white !important;
+  border: 2px solid #e5e7eb !important;
   border-radius: 0.5rem !important;
-  border: 1px solid #eef2f7 !important;
-  background: #ffffff !important;
   cursor: pointer !important;
+  transition: all 0.2s !important;
 }
 
-.employee-card-modal:hover { box-shadow: 0 8px 30px rgba(2,6,23,0.06) !important; transform: translateY(-2px) !important; }
+.employee-card-modal:hover { 
+  box-shadow: 0 8px 30px rgba(2,6,23,0.06) !important; 
+  transform: translateY(-1px) !important; 
+  border-color: #DA291C !important;
+  background: #fef2f2 !important;
+}
 
-.employee-info-modal { display: flex !important; flex-direction: column !important; gap: 0.15rem !important; }
-.employee-name-modal { font-weight: 600 !important; color: #111827 !important; }
-.employee-time-modal { font-size: 0.8rem !important; color: #374151 !important; font-weight: 500 !important; display:flex; gap:0.35rem; align-items:center; }
+.employee-card-modal.minor {
+  background: #fefce8 !important;
+  border-color: #FFC72C !important;
+}
+
+.employee-card-modal.minor:hover {
+  background: #fef3c7 !important;
+  border-color: #f59e0b !important;
+}
+
+.employee-card-modal.assigned {
+  background: #f0f9ff !important;
+  border-color: #0ea5e9 !important;
+}
+
+.employee-card-modal.assigned:hover {
+  background: #e0f2fe !important;
+  border-color: #0284c7 !important;
+}
+
+.employee-card-modal.assigned.minor {
+  background: linear-gradient(135deg, #fefce8 0%, #f0f9ff 100%) !important;
+  border-color: #0ea5e9 !important;
+}
+
+.employee-name-modal { font-weight: 600 !important; color: #111827 !important; flex: 1 !important; min-width: 0 !important; }
+.employee-time-modal { font-size: 0.8rem !important; color: #374151 !important; font-weight: 500 !important; display:flex; gap:0.35rem; align-items:center; white-space: nowrap !important; }
 
 .minor-badge-modal {
   background: #f59e0b !important;
@@ -539,9 +863,57 @@ div.modal-overlay > .modal-container,
 .confirm-btn.add { background:#10b981 !important; color:#fff !important; }
 .confirm-btn.cancel { background:#f3f4f6 !important; color:#374151 !important; }
 
+@media (max-width: 768px) {
+  .employee-list-modal { 
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) !important; 
+    max-height: 40vh !important; 
+    gap: 0.25rem !important;
+  }
+  .employee-card-modal {
+    padding: 0.5rem !important;
+    gap: 0.25rem !important;
+  }
+}
+
 @media (max-width: 640px) {
-  .employee-list-modal { grid-template-columns: 1fr !important; max-height: 38vh !important; }
+  .employee-list-modal { 
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)) !important; 
+    max-height: 38vh !important; 
+    gap: 0.25rem !important;
+  }
+  .employee-card-modal {
+    padding: 0.4rem !important;
+    gap: 0.2rem !important;
+  }
+  .employee-name-modal {
+    font-size: 0.8rem !important;
+  }
+  .employee-time-modal {
+    font-size: 0.7rem !important;
+  }
   .confirmation-dialog { width: calc(100% - 2rem) !important; }
+}
+
+@media (max-width: 480px) {
+  .employee-list-modal { 
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)) !important; 
+    max-height: 35vh !important; 
+    gap: 0.25rem !important;
+    padding: 0.5rem !important;
+  }
+  .employee-card-modal {
+    padding: 0.35rem !important;
+    gap: 0.15rem !important;
+  }
+  .employee-name-modal {
+    font-size: 0.75rem !important;
+  }
+  .employee-time-modal {
+    font-size: 0.65rem !important;
+  }
+  .current-assignments-indicator {
+    font-size: 0.55rem !important;
+  }
 }
 
 
@@ -558,7 +930,6 @@ div.modal-overlay > .modal-container,
 }
 
 /* Better visual feedback for touch interactions */
-.employee-card:hover,
 .employee-card:focus {
   transform: translateY(-2px) !important;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
@@ -707,39 +1078,101 @@ div.modal-overlay > .modal-container,
   min-height: 100vh !important;
   background-color: #f9fafb !important;
   overflow-x: hidden !important;
+  width: 100vw !important;
+  max-width: 100vw !important;
+  padding: 1rem !important;
+  margin: 0 !important;
+  box-sizing: border-box !important;
 }
 
-/* Main Layout Container - Side by Side */
+/* Responsive padding adjustments */
+@media (max-width: 768px) {
+  .app-container-responsive {
+    padding: 0.5rem !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .app-container-responsive {
+    padding: 0.25rem !important;
+  }
+}
+
+/* Main Layout Container - Enhanced Responsiveness */
 .main-layout-container {
   display: flex !important;
   height: calc(100vh - 200px) !important;
   gap: 1rem !important;
   padding: 0 1rem !important;
   overflow: hidden !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
 }
 
-/* Responsive: Stack on smaller screens */
-@media (max-width: 1200px) {
+/* Large screens (desktop) - side by side layout */
+@media (min-width: 1440px) {
+  .main-layout-container {
+    gap: 1.5rem !important;
+    padding: 0 1.5rem !important;
+    height: calc(100vh - 220px) !important;
+  }
+}
+
+/* Medium screens (tablet landscape) - side by side with adjusted spacing */
+@media (min-width: 1025px) and (max-width: 1439px) {
+  .main-layout-container {
+    gap: 1rem !important;
+    padding: 0 1rem !important;
+    height: calc(100vh - 200px) !important;
+  }
+}
+
+/* Tablet portrait - stack vertically */
+@media (min-width: 769px) and (max-width: 1024px) {
   .main-layout-container {
     flex-direction: column !important;
     height: calc(100vh - 180px) !important;
-  }
-  
-  .employee-pool-sidebar {
-    width: 100% !important;
-    min-width: auto !important;
-    max-width: none !important;
-    height: 200px !important;
-    min-height: 200px !important;
-    max-height: 200px !important;
-  }
-  
-  .assignment-grid-main {
-    height: calc(100% - 220px) !important;
+    gap: 0.75rem !important;
+    padding: 0 0.75rem !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
   }
 }
 
-/* Employee Pool Sidebar */
+/* Small tablets and large phones - stack vertically */
+@media (min-width: 641px) and (max-width: 768px) {
+  .main-layout-container {
+    flex-direction: column !important;
+    height: calc(100vh - 160px) !important;
+    gap: 0.5rem !important;
+    padding: 0 0.5rem !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+  }
+}
+
+/* Mobile phones - stack vertically with compact spacing */
+@media (max-width: 640px) {
+  .main-layout-container {
+    flex-direction: column !important;
+    height: calc(100vh - 140px) !important;
+    gap: 0.375rem !important;
+    padding: 0 0.375rem !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+  }
+}
+
+/* Extra small screens */
+@media (max-width: 480px) {
+  .main-layout-container {
+    height: calc(100vh - 120px) !important;
+    gap: 0.25rem !important;
+    padding: 0 0.25rem !important;
+  }
+}
+
+/* Employee Pool Sidebar - Enhanced Responsiveness */
 .employee-pool-sidebar {
   width: 300px !important;
   min-width: 300px !important;
@@ -750,6 +1183,85 @@ div.modal-overlay > .modal-container,
   box-shadow: 0 2px 4px -1px rgb(0 0 0 / 0.1) !important;
   overflow-y: auto !important;
   height: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* Large screens - full sidebar width */
+@media (min-width: 1440px) {
+  .employee-pool-sidebar {
+    width: 320px !important;
+    min-width: 320px !important;
+    max-width: 320px !important;
+  }
+}
+
+/* Medium screens - slightly narrower */
+@media (min-width: 1025px) and (max-width: 1439px) {
+  .employee-pool-sidebar {
+    width: 280px !important;
+    min-width: 280px !important;
+    max-width: 280px !important;
+  }
+}
+
+/* Tablet portrait - full width, fixed height */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .employee-pool-sidebar {
+    width: 100% !important;
+    min-width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    min-height: 220px !important;
+    max-height: 320px !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+}
+
+/* Small tablets - full width, compact height */
+@media (min-width: 641px) and (max-width: 768px) {
+  .employee-pool-sidebar {
+    width: 100% !important;
+    min-width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    min-height: 200px !important;
+    max-height: 280px !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+}
+
+/* Mobile phones - full width, compact */
+@media (max-width: 640px) {
+  .employee-pool-sidebar {
+    width: 100% !important;
+    min-width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    min-height: 180px !important;
+    max-height: 250px !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    border-radius: 0.375rem !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+}
+
+/* Extra small screens - very compact */
+@media (max-width: 480px) {
+  .employee-pool-sidebar {
+    min-height: 160px !important;
+    max-height: 220px !important;
+    border-radius: 0.25rem !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
 }
 
 /* Modify employee list for vertical layout */
@@ -761,10 +1273,57 @@ div.modal-overlay > .modal-container,
   overflow-y: visible !important;
 }
 
+/* Enhanced Employee Card Responsiveness */
 .employee-pool-sidebar .employee-card-horizontal-wrapper {
   width: 100% !important;
   min-width: auto !important;
   flex-shrink: 0 !important;
+  box-sizing: border-box !important;
+}
+
+/* Large screens - standard sizing */
+@media (min-width: 1440px) {
+  .employee-pool-sidebar .employee-card-horizontal-wrapper {
+    padding: 0.125rem !important;
+  }
+}
+
+/* Medium screens - slight adjustment */
+@media (min-width: 1025px) and (max-width: 1439px) {
+  .employee-pool-sidebar .employee-card-horizontal-wrapper {
+    padding: 0.125rem !important;
+  }
+}
+
+/* Tablet portrait - full width */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .employee-pool-sidebar .employee-card-horizontal-wrapper {
+    width: 100% !important;
+    padding: 0.125rem !important;
+  }
+}
+
+/* Small tablets - compact */
+@media (min-width: 641px) and (max-width: 768px) {
+  .employee-pool-sidebar .employee-card-horizontal-wrapper {
+    width: 100% !important;
+    padding: 0.0625rem !important;
+  }
+}
+
+/* Mobile phones - very compact */
+@media (max-width: 640px) {
+  .employee-pool-sidebar .employee-card-horizontal-wrapper {
+    width: 100% !important;
+    padding: 0.0625rem !important;
+  }
+}
+
+/* Extra small screens - minimal */
+@media (max-width: 480px) {
+  .employee-pool-sidebar .employee-card-horizontal-wrapper {
+    padding: 0.03125rem !important;
+  }
 }
 
 .employee-pool-sidebar .available-employees-horizontal {
@@ -794,9 +1353,66 @@ div.modal-overlay > .modal-container,
   padding: 0.5rem !important;
   display: flex !important;
   flex-direction: column !important;
+  box-sizing: border-box !important;
+  min-width: 0 !important; /* Allow flex shrinking */
 }
 
-/* Grid Container Wrapper for Better Responsiveness */
+/* Large screens - more padding */
+@media (min-width: 1440px) {
+  .assignment-grid-main {
+    padding: 0.75rem !important;
+    border-radius: 0.625rem !important;
+  }
+}
+
+/* Medium screens - standard padding */
+@media (min-width: 1025px) and (max-width: 1439px) {
+  .assignment-grid-main {
+    padding: 0.5rem !important;
+  }
+}
+
+/* Tablet portrait - full height, adjusted padding */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .assignment-grid-main {
+    height: calc(100% - 240px) !important;
+    padding: 0.5rem !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+  }
+}
+
+/* Small tablets - compact height */
+@media (min-width: 641px) and (max-width: 768px) {
+  .assignment-grid-main {
+    height: calc(100% - 200px) !important;
+    padding: 0.375rem !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+  }
+}
+
+/* Mobile phones - very compact */
+@media (max-width: 640px) {
+  .assignment-grid-main {
+    height: calc(100% - 180px) !important;
+    padding: 0.25rem !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    border-radius: 0.375rem !important;
+  }
+}
+
+/* Extra small screens - minimal padding */
+@media (max-width: 480px) {
+  .assignment-grid-main {
+    height: calc(100% - 160px) !important;
+    padding: 0.125rem !important;
+    border-radius: 0.25rem !important;
+  }
+}
+
+/* Grid Container Wrapper - Enhanced Responsiveness */
 .grid-container-9x9 {
   flex: 1 !important;
   overflow: auto !important;
@@ -804,6 +1420,59 @@ div.modal-overlay > .modal-container,
   padding: 0.25rem !important;
   background-color: #f9fafb !important;
   border-radius: 0.375rem !important;
+  box-sizing: border-box !important;
+  min-height: 0 !important; /* Allow flex shrinking */
+}
+
+/* Large screens - more padding */
+@media (min-width: 1440px) {
+  .grid-container-9x9 {
+    padding: 0.5rem !important;
+    border-radius: 0.5rem !important;
+  }
+}
+
+/* Medium screens - standard padding */
+@media (min-width: 1025px) and (max-width: 1439px) {
+  .grid-container-9x9 {
+    padding: 0.375rem !important;
+  }
+}
+
+/* Tablet portrait - adjusted padding */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .grid-container-9x9 {
+    padding: 0.25rem !important;
+    -webkit-overflow-scrolling: touch !important;
+    overflow-x: auto !important;
+  }
+}
+
+/* Small tablets - compact padding */
+@media (min-width: 641px) and (max-width: 768px) {
+  .grid-container-9x9 {
+    padding: 0.1875rem !important;
+    -webkit-overflow-scrolling: touch !important;
+    overflow-x: auto !important;
+  }
+}
+
+/* Mobile phones - minimal padding */
+@media (max-width: 640px) {
+  .grid-container-9x9 {
+    padding: 0.125rem !important;
+    -webkit-overflow-scrolling: touch !important;
+    overflow-x: auto !important;
+    border-radius: 0.25rem !important;
+  }
+}
+
+/* Extra small screens - very minimal */
+@media (max-width: 480px) {
+  .grid-container-9x9 {
+    padding: 0.0625rem !important;
+    border-radius: 0.1875rem !important;
+  }
 }
 
 /* Responsive Grid Container Adjustments */
@@ -1026,8 +1695,9 @@ div.modal-overlay > .modal-container,
   border-radius: 0.375rem !important;
   padding: 0.5rem !important;
   display: flex !important;
-  flex-direction: column !important;
-  gap: 0.25rem !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
   min-width: 150px !important;
 }
 
@@ -1035,12 +1705,15 @@ div.modal-overlay > .modal-container,
   font-weight: 600 !important;
   color: #111827 !important;
   font-size: 0.875rem !important;
+  flex: 1 !important;
+  min-width: 0 !important;
 }
 
 .assigned-employee-card .employee-time {
   font-size: 0.75rem !important;
   color: #374151 !important;
   font-weight: 500 !important;
+  white-space: nowrap !important;
 }
 
 .minor-badge-small {
@@ -1052,6 +1725,110 @@ div.modal-overlay > .modal-container,
   border-radius: 0.25rem !important;
   align-self: flex-start !important;
   border: 1px solid #d97706 !important;
+}
+
+/* Collapsible Employee Pool Styles */
+.employee-pool-horizontal-container {
+  transition: all 0.3s ease-in-out !important;
+}
+
+.employee-pool-horizontal-container.collapsed {
+  background-color: #f9fafb !important;
+}
+
+.employee-pool-horizontal-container.expanded {
+  background-color: white !important;
+}
+
+.collapse-toggle-btn {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0.375rem !important;
+  background-color: #f3f4f6 !important;
+  border: 1px solid #d1d5db !important;
+  border-radius: 0.375rem !important;
+  color: #374151 !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease-in-out !important;
+  margin-left: auto !important;
+}
+
+.collapse-toggle-btn:hover {
+  background-color: #e5e7eb !important;
+  color: #111827 !important;
+}
+
+.collapse-toggle-btn:active {
+  transform: scale(0.95) !important;
+}
+
+.employee-pool-content {
+  transition: all 0.3s ease-in-out !important;
+  overflow: hidden !important;
+}
+
+.employee-pool-content.collapsed {
+  max-height: 0 !important;
+  opacity: 0 !important;
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+.employee-pool-content.expanded {
+  max-height: 1000px !important;
+  opacity: 1 !important;
+  margin-top: 0.75rem !important;
+}
+
+.employee-actions-horizontal {
+  display: flex !important;
+  gap: 0.75rem !important;
+  flex-wrap: wrap !important;
+}
+
+/* Mobile and Tablet Responsiveness for Collapsible Pool */
+@media (max-width: 1024px) {
+  .employee-pool-horizontal-container.collapsed {
+    padding-bottom: 0.5rem !important;
+  }
+  
+  .employee-pool-header-horizontal {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 0.5rem !important;
+  }
+  
+  .employee-pool-title-horizontal {
+    justify-content: space-between !important;
+    width: 100% !important;
+  }
+  
+  .employee-stats-horizontal {
+    justify-content: center !important;
+    font-size: 0.75rem !important;
+  }
+  
+  .collapse-toggle-btn {
+    display: flex !important;
+  }
+}
+
+@media (min-width: 1280px) {
+  .collapse-toggle-btn {
+    display: none !important;
+  }
+  
+  .employee-pool-content {
+    max-height: none !important;
+    opacity: 1 !important;
+  }
+  
+  .employee-pool-horizontal-container.collapsed,
+  .employee-pool-horizontal-container.expanded {
+    background-color: white !important;
+  }
 }
 
 /* Assignment Grid Container */
@@ -1067,11 +1844,6 @@ div.modal-overlay > .modal-container,
   padding: 0.125rem !important;
   max-height: 80px !important;
   font-size: 0.625rem !important;
-}
-
-.drop-zone:hover {
-  border-color: #60a5fa !important;
-  background-color: #eff6ff !important;
 }
 
 .drop-zone.active {
@@ -1122,11 +1894,6 @@ div.modal-overlay > .modal-container,
   font-size: 0.875rem !important;
   line-height: 1.3 !important;
   font-weight: 500 !important;
-}
-
-.shift-manager-card .drop-zone:hover {
-  background-color: rgba(255, 255, 255, 0.95) !important;
-  border-color: #111827 !important;
 }
 
 .shift-manager-card .drop-zone.drag-over {
@@ -1188,12 +1955,6 @@ div.modal-overlay > .modal-container,
   text-align: center !important;
 }
 
-.employee-card:hover {
-  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1) !important;
-  border-color: #60a5fa !important;
-  transform: scale(1.02) !important;
-}
-
 .employee-card:active {
   transform: scale(0.98) !important;
 }
@@ -1249,13 +2010,31 @@ div.modal-overlay > .modal-container,
 
 @media (max-width: 768px) {
   .employee-card {
-    padding: 0.125rem !important;
-    font-size: 0.5rem !important;
+    padding: 0.25rem !important;
+    font-size: 0.75rem !important;
+    min-height: 40px !important;
   }
   
   .station-content-9x9 .employee-card {
-    padding: 0.05rem !important;
-    font-size: 0.4rem !important;
+    padding: 0.125rem !important;
+    font-size: 0.625rem !important;
+    min-height: 35px !important;
+  }
+  
+  /* Enhanced mobile touch targets for remove buttons */
+  .employee-card button[title="Remove assignment"] {
+    padding: 0.375rem !important;
+    min-width: 40px !important;
+    min-height: 40px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin-left: 0.25rem !important;
+  }
+  
+  .employee-card button[title="Remove assignment"] svg {
+    width: 1rem !important;
+    height: 1rem !important;
   }
 }
 
@@ -1291,13 +2070,18 @@ div.modal-overlay > .modal-container,
   width: 100% !important;
   max-width: 100vw !important;
   padding: 0.25rem !important;
-  overflow-x: auto !important;
+  overflow-x: hidden !important;
+  overflow-y: visible !important;
 }
 
 .assignment-grid-compact {
   display: flex !important;
   flex-direction: column !important;
   gap: 0.5rem !important;
+  width: 100% !important;
+  height: 100% !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
 }
 
 .shift-manager-section {
@@ -1335,15 +2119,16 @@ div.modal-overlay > .modal-container,
 .six-column-layout {
   display: flex !important;
   flex-direction: row !important;
-  flex-wrap: nowrap !important;
+  flex-wrap: wrap !important;
   align-items: flex-start !important;
   gap: 0.2rem !important;
   width: 100% !important;
   height: auto !important;
   min-height: fit-content !important;
-  overflow-x: auto !important;
+  overflow-x: hidden !important;
   overflow-y: visible !important;
   padding: 0.2rem !important;
+  justify-content: center !important;
 }
 
 .station-group.column1,
@@ -1368,8 +2153,9 @@ div.modal-overlay > .modal-container,
 /* Responsive behavior - maintain multi-column layout */
 @media (max-width: 1200px) and (min-width: 769px) {
   .six-column-layout {
-    flex-wrap: nowrap !important;
-    overflow-x: auto !important;
+    flex-wrap: wrap !important;
+    overflow-x: hidden !important;
+    justify-content: flex-start !important;
   }
   .station-group.column1,
   .station-group.column2,
@@ -1377,16 +2163,17 @@ div.modal-overlay > .modal-container,
   .station-group.column4,
   .station-group.column5,
   .station-group.column6 {
-    flex: 0 0 auto !important;
-    min-width: 250px !important;
-    max-width: 280px !important;
+    flex: 1 1 calc(33.333% - 0.4rem) !important;
+    min-width: 140px !important;
+    max-width: calc(33.333% - 0.4rem) !important;
   }
 }
 
 @media (max-width: 768px) {
   .six-column-layout {
-    flex-wrap: nowrap !important;
-    overflow-x: auto !important;
+    flex-wrap: wrap !important;
+    overflow-x: hidden !important;
+    justify-content: center !important;
   }
   .station-group.column1,
   .station-group.column2,
@@ -1394,13 +2181,48 @@ div.modal-overlay > .modal-container,
   .station-group.column4,
   .station-group.column5,
   .station-group.column6 {
-    flex: 0 0 auto !important;
-    min-width: 200px !important;
-    max-width: 250px !important;
+    flex: 1 1 calc(50% - 0.4rem) !important;
+    min-width: 150px !important;
+    max-width: calc(50% - 0.4rem) !important;
   }
 }
 
-/* No scrollbars - everything should be visible */
+@media (max-width: 640px) {
+  .six-column-layout {
+    flex-wrap: wrap !important;
+    overflow-x: hidden !important;
+    justify-content: center !important;
+    gap: 0.1rem !important;
+  }
+  .station-group.column1,
+  .station-group.column2,
+  .station-group.column3,
+  .station-group.column4,
+  .station-group.column5,
+  .station-group.column6 {
+    flex: 1 1 100% !important;
+    min-width: 100px !important;
+    max-width: 100% !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .six-column-layout {
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 0.1rem !important;
+  }
+  .station-group.column1,
+  .station-group.column2,
+  .station-group.column3,
+  .station-group.column4,
+  .station-group.column5,
+  .station-group.column6 {
+    flex: 1 1 100% !important;
+    min-width: 100px !important;
+    max-width: 100% !important;
+  }
+}
 
 /* Enhanced Modal styling for assignment confirmations */
 .modal-overlay {
@@ -1679,61 +2501,19 @@ div.modal-overlay > .modal-container,
   border-color: #DA291C !important;
 }
 
-.employee-list-modal {
-  max-height: 400px !important;
-  overflow-y: auto !important;
-  padding: 1rem 1.5rem !important;
-}
-
-.employee-card-modal {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: space-between !important;
-  padding: 0.75rem !important;
-  margin-bottom: 0.5rem !important;
-  background: white !important;
-  border: 2px solid #e5e7eb !important;
-  border-radius: 0.5rem !important;
-  cursor: pointer !important;
-  transition: all 0.2s !important;
-}
-
-.employee-card-modal:hover {
-  border-color: #DA291C !important;
-  background: #fef2f2 !important;
-  transform: translateY(-1px) !important;
-}
-
-.employee-card-modal.minor {
-  background: #fefce8 !important;
-  border-color: #FFC72C !important;
-}
-
-.employee-card-modal.minor:hover {
-  background: #fbbf24 !important;
-  border-color: #f59e0b !important;
-}
-
-.employee-card-modal.assigned {
-  background: #f0f9ff !important;
-  border-color: #0ea5e9 !important;
-}
-
-.employee-card-modal.assigned:hover {
-  background: #e0f2fe !important;
-  border-color: #0284c7 !important;
-}
-
-.employee-card-modal.assigned.minor {
-  background: linear-gradient(135deg, #fefce8 0%, #f0f9ff 100%) !important;
-  border-color: #0ea5e9 !important;
-}
 
 .employee-info-modal {
   display: flex !important;
   flex-direction: column !important;
   gap: 0.25rem !important;
   flex: 1 !important;
+}
+
+.employee-main-info {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
 }
 
 .current-assignments-indicator {
@@ -1743,7 +2523,6 @@ div.modal-overlay > .modal-container,
   font-size: 0.625rem !important;
   color: #0ea5e9 !important;
   font-weight: 500 !important;
-  margin-top: 0.125rem !important;
 }
 
 .assignments-text {
@@ -1770,6 +2549,8 @@ div.modal-overlay > .modal-container,
   font-weight: 600 !important;
   color: #1f2937 !important;
   font-size: 0.875rem !important;
+  flex: 1 !important;
+  min-width: 0 !important;
 }
 
 .employee-time-modal {
@@ -1881,12 +2662,6 @@ div.modal-overlay > .modal-container,
   transition: all 0.2s ease !important;
 }
 
-.employee-card.in-drop-zone:hover {
-  transform: translateY(-1px) !important;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.15) !important;
-  border-color: #DA291C !important;
-}
-
 .employee-card.in-drop-zone::after {
   content: "👆 Double-click to change" !important;
   position: absolute !important;
@@ -1905,15 +2680,7 @@ div.modal-overlay > .modal-container,
   z-index: 10 !important;
 }
 
-.employee-card.in-drop-zone:hover::after {
-  opacity: 1 !important;
-}
-
 /* Empty drop zone styling */
-.drop-zone:empty:hover {
-  border-color: #DA291C !important;
-  background: #fef2f2 !important;
-}
 
 /* Employee assignments container for multiple staff */
 .employee-assignments-container {
@@ -1927,12 +2694,13 @@ div.modal-overlay > .modal-container,
 
 /* Enhanced employee card styling for multiple assignments */
 .six-column-layout .employee-card {
-  padding: 0.25rem !important;
-  font-size: 0.75rem !important;
-  line-height: 1.2 !important;
-  border-radius: 0.25rem !important;
-  margin-bottom: 0.125rem !important;
-  min-height: 20px !important;
+  padding: 0.15rem !important;
+  font-size: 0.65rem !important;
+  line-height: 1.1 !important;
+  border-radius: 0.2rem !important;
+  margin-bottom: 0.1rem !important;
+  min-height: 18px !important;
+  max-height: none !important;
   display: flex !important;
   flex-direction: column !important;
   width: 100% !important;
@@ -1940,6 +2708,15 @@ div.modal-overlay > .modal-container,
   flex-shrink: 0 !important;
   height: auto !important;
   overflow: visible !important;
+  word-wrap: break-word !important;
+  hyphens: auto !important;
+}
+
+/* Ensure employee names don't overflow */
+.six-column-layout .employee-card * {
+  overflow: visible !important;
+  word-wrap: break-word !important;
+  white-space: normal !important;
 }
 
 /* Multiple employee handling */
@@ -1967,22 +2744,6 @@ div.modal-overlay > .modal-container,
 .six-column-layout .drop-zone:has(.employee-card:nth-child(3)) {
   padding: 0.5rem !important;
   gap: 0.375rem !important;
-}
-
-.drop-zone[title]:hover::before {
-  content: attr(title) !important;
-  position: absolute !important;
-  bottom: 100% !important;
-  left: 50% !important;
-  transform: translateX(-50%) !important;
-  background: #1f2937 !important;
-  color: white !important;
-  padding: 0.5rem !important;
-  border-radius: 0.25rem !important;
-  font-size: 0.75rem !important;
-  white-space: nowrap !important;
-  z-index: 10 !important;
-  margin-bottom: 0.25rem !important;
 }
 
 .station-group {
@@ -2023,17 +2784,19 @@ div.modal-overlay > .modal-container,
   background: white !important;
   border: 2px solid #e5e5e5 !important;
   border-radius: 0.375rem !important;
-  padding: 0.3rem !important;
-  font-size: 0.8rem !important;
+  padding: 0.25rem !important;
+  font-size: 0.75rem !important;
   width: 100% !important;
-  height: fit-content !important;
-  min-height: 100px !important;
+  height: auto !important;
+  min-height: 80px !important;
   max-height: none !important;
+  max-width: 180px !important;
   display: flex !important;
   flex-direction: column !important;
   overflow: visible !important;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
-  margin-bottom: 0.1rem !important;
+  margin-bottom: 0.15rem !important;
+  aspect-ratio: auto !important;
 }
 
 /* Alternating light colors for station cards by column */
@@ -2071,19 +2834,20 @@ div.modal-overlay > .modal-container,
 }
 
 .six-column-layout .station-title-compact {
-  font-size: 0.8rem !important;
+  font-size: 0.7rem !important;
   font-weight: 700 !important;
   color: #1f2937 !important;
-  margin-bottom: 0.3rem !important;
+  margin-bottom: 0.2rem !important;
   text-align: center !important;
   background: #f3f4f6 !important;
-  padding: 0.25rem !important;
-  border-radius: 0.25rem !important;
+  padding: 0.2rem !important;
+  border-radius: 0.2rem !important;
   line-height: 1.1 !important;
-  min-height: 32px !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
+  min-height: 24px !important;
+  max-height: 28px !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
 }
 
 /* Alternating colors for station title backgrounds by column */
@@ -2126,12 +2890,12 @@ div.modal-overlay > .modal-container,
 .six-column-layout .task-column-compact {
   display: flex !important;
   flex-direction: column !important;
-  min-height: 40px !important;
+  min-height: 30px !important;
   height: auto !important;
   flex: 1 !important;
   margin-bottom: 0.1rem !important;
   overflow: visible !important;
-  min-height: fit-content !important;
+  max-height: none !important;
 }
 
 .six-column-layout .task-header-compact {
@@ -2144,39 +2908,47 @@ div.modal-overlay > .modal-container,
 }
 
 .six-column-layout .task-name-compact {
-  font-size: 0.75rem !important;
+  font-size: 0.65rem !important;
   font-weight: 600 !important;
   color: #374151 !important;
   text-align: center !important;
   background: #f9fafb !important;
-  padding: 0.125rem 0.25rem !important;
-  border-radius: 0.125rem !important;
+  padding: 0.1rem 0.15rem !important;
+  border-radius: 0.1rem !important;
   border: 1px solid #e5e7eb !important;
+  margin-bottom: 0.1rem !important;
+  line-height: 1 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
 }
 
 .six-column-layout .task-assignments-compact {
   display: flex !important;
   flex-direction: column !important;
   overflow: visible !important;
-  height: fit-content !important;
-  min-height: 30px !important;
+  height: auto !important;
+  min-height: 20px !important;
+  max-height: none !important;
+  gap: 0.05rem !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
 }
 
 /* PROPER CSS - All styles working correctly */
 html body .six-column-layout .drop-zone,
 html body .drop-zone {
-  min-height: 30px !important;
-  height: fit-content !important;
+  min-height: 20px !important;
+  height: auto !important;
   max-height: none !important;
-  padding: 0.25rem !important;
-  font-size: 0.75rem !important;
-  border: 2px dashed #d1d5db !important;
-  border-radius: 0.25rem !important;
-  background: #f9fafb !important;
+  padding: 0.1rem !important;
+  font-size: 0.65rem !important;
+  border: 1px dashed #d1d5db !important;
+  border-radius: 0.2rem !important;
+  overflow: visible !important;
   display: flex !important;
   flex-direction: column !important;
-  gap: 0.125rem !important;
-  overflow: visible !important;
+  gap: 0.05rem !important;
   box-sizing: border-box !important;
 }
 
@@ -2249,45 +3021,6 @@ html body .employee-assignments-container {
   opacity: 0.8 !important;
 }
 
-/* DFS specific styling for square layout */
-.six-column-layout .dfs-info-compact {
-  flex: 1 !important;
-  height: auto !important;
-  overflow: visible !important;
-}
-
-.six-column-layout .dfs-items-compact {
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 0.125rem !important;
-}
-
-.six-column-layout .dfs-item-compact {
-  display: flex !important;
-  justify-content: space-between !important;
-  align-items: center !important;
-  padding: 0.125rem 0.25rem !important;
-  background: #f3f4f6 !important;
-  border-radius: 0.125rem !important;
-  font-size: 0.625rem !important;
-  border: 1px solid #e5e7eb !important;
-}
-
-.six-column-layout .dfs-task-compact {
-  font-weight: 500 !important;
-  color: #374151 !important;
-  flex: 1 !important;
-}
-
-.six-column-layout .dfs-day-compact {
-  font-weight: 600 !important;
-  color: #DC2626 !important;
-  background: #FEF2F2 !important;
-  padding: 0.0625rem 0.25rem !important;
-  border-radius: 0.125rem !important;
-  font-size: 0.5625rem !important;
-}
-
 .station-header-compact {
   background-color: #f3f4f6 !important;
   padding: 0.25rem !important;
@@ -2331,39 +3064,6 @@ html body .employee-assignments-container {
 
 .task-assignments-compact {
   margin-bottom: 0.125rem !important;
-}
-
-/* DFS compact styling */
-.dfs-info-compact {
-  font-size: 0.5rem !important;
-  line-height: 1.1 !important;
-}
-
-.dfs-items-compact {
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 0.125rem !important;
-}
-
-.dfs-item-compact {
-  display: flex !important;
-  justify-content: space-between !important;
-  padding: 0.125rem !important;
-  background-color: #f9fafb !important;
-  border-radius: 0.125rem !important;
-  border: 1px solid #e5e7eb !important;
-}
-
-.dfs-task-compact {
-  font-size: 0.5rem !important;
-  color: #374151 !important;
-  flex: 1 !important;
-}
-
-.dfs-day-compact {
-  font-size: 0.5rem !important;
-  color: #6b7280 !important;
-  font-weight: 500 !important;
 }
 
 /* Compact drop zones */
@@ -2596,96 +3296,6 @@ html body .employee-assignments-container {
   
   .task-name-9x9 {
     font-size: 0.35rem !important;
-  }
-}
-
-/* Responsive DFS table styles */
-@media (max-width: 1024px) {
-  .dfs-info-table {
-    padding: 0.75rem !important;
-  }
-  
-  .dfs-item {
-    padding: 0.5rem !important;
-    font-size: 0.8rem !important;
-  }
-  
-  .dfs-task {
-    font-size: 0.8rem !important;
-  }
-  
-  .dfs-day {
-    font-size: 0.7rem !important;
-    padding: 2px 6px !important;
-  }
-}
-
-@media (max-width: 768px) {
-  .dfs-info-table {
-    padding: 0.5rem !important;
-  }
-  
-  .dfs-item {
-    padding: 0.375rem !important;
-    font-size: 0.75rem !important;
-    flex-direction: column !important;
-    align-items: flex-start !important;
-    gap: 0.25rem !important;
-  }
-  
-  .dfs-task {
-    font-size: 0.75rem !important;
-    width: 100% !important;
-  }
-  
-  .dfs-day {
-    font-size: 0.65rem !important;
-    padding: 2px 4px !important;
-    align-self: flex-end !important;
-  }
-}
-
-@media (max-width: 640px) {
-  .dfs-info-table {
-    padding: 0.375rem !important;
-  }
-  
-  .dfs-items {
-    gap: 0.25rem !important;
-  }
-  
-  .dfs-item {
-    padding: 0.25rem !important;
-    font-size: 0.7rem !important;
-  }
-  
-  .dfs-task {
-    font-size: 0.7rem !important;
-  }
-  
-  .dfs-day {
-    font-size: 0.6rem !important;
-    padding: 1px 3px !important;
-  }
-}
-
-@media (max-width: 480px) {
-  .dfs-info-table {
-    padding: 0.25rem !important;
-  }
-  
-  .dfs-item {
-    padding: 0.2rem !important;
-    font-size: 0.65rem !important;
-  }
-  
-  .dfs-task {
-    font-size: 0.65rem !important;
-  }
-  
-  .dfs-day {
-    font-size: 0.55rem !important;
-    padding: 1px 2px !important;
   }
 }
 
@@ -3411,10 +4021,6 @@ input:focus {
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12) !important;
 }
 
-.btn-cancel:hover::before {
-  left: 100% !important;
-}
-
 .btn-save {
   background: linear-gradient(135deg, var(--mcdonalds-red) 0%, #c53030 100%) !important;
   color: white !important;
@@ -3449,10 +4055,6 @@ input:focus {
   background: linear-gradient(135deg, #c53030 0%, var(--mcdonalds-red) 100%) !important;
   transform: translateY(-2px) !important;
   box-shadow: 0 12px 24px rgba(218, 41, 28, 0.4) !important;
-}
-
-.btn-save:hover::before {
-  left: 100% !important;
 }
 
 .btn-save:disabled {
@@ -3605,7 +4207,7 @@ input:focus {
 
 /* Modal specific adjustments for employee form */
 .modal-container .add-employee-form {
-  padding: 0 !important;
+  padding: 1.5rem !important;
 }
 
 .modal-container .form-buttons {
@@ -3749,29 +4351,6 @@ input:focus {
 .form-help {
   position: relative !important;
   cursor: help !important;
-}
-
-.form-help:hover::after {
-  content: attr(title) !important;
-  position: absolute !important;
-  bottom: 100% !important;
-  left: 50% !important;
-  transform: translateX(-50%) !important;
-  background: #1e293b !important;
-  color: white !important;
-  padding: 0.5rem 0.75rem !important;
-  border-radius: 0.5rem !important;
-  font-size: 0.75rem !important;
-  white-space: nowrap !important;
-  z-index: 1000 !important;
-  opacity: 0 !important;
-  animation: tooltipFadeIn 0.3s ease forwards !important;
-}
-
-@keyframes tooltipFadeIn {
-  to {
-    opacity: 1;
-  }
 }
 
 /* Form Error States */
@@ -4024,6 +4603,190 @@ html .modal-overlay .modal-container,
     font-size: 0.4375rem !important;
   }
 
+/* Enhanced Header Responsiveness */
+.flex.items-center.justify-between.mb-4 {
+  margin-bottom: 1rem !important;
+  gap: 0.75rem !important;
+  flex-wrap: wrap !important;
+}
+
+/* Large screens - standard spacing */
+@media (min-width: 1440px) {
+  .flex.items-center.justify-between.mb-4 {
+    margin-bottom: 1.25rem !important;
+    gap: 1rem !important;
+  }
+}
+
+/* Medium screens - adjusted spacing */
+@media (min-width: 1025px) and (max-width: 1439px) {
+  .flex.items-center.justify-between.mb-4 {
+    margin-bottom: 1rem !important;
+    gap: 0.75rem !important;
+  }
+}
+
+/* Tablet portrait - wrap elements */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .flex.items-center.justify-between.mb-4 {
+    margin-bottom: 0.75rem !important;
+    gap: 0.5rem !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+}
+
+/* Small tablets - compact */
+@media (min-width: 641px) and (max-width: 768px) {
+  .flex.items-center.justify-between.mb-4 {
+    margin-bottom: 0.5rem !important;
+    gap: 0.375rem !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+}
+
+/* Mobile phones - very compact */
+@media (max-width: 640px) {
+  .flex.items-center.justify-between.mb-4 {
+    margin-bottom: 0.375rem !important;
+    gap: 0.25rem !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+}
+
+/* Extra small screens - minimal */
+@media (max-width: 480px) {
+  .flex.items-center.justify-between.mb-4 {
+    margin-bottom: 0.25rem !important;
+    gap: 0.125rem !important;
+  }
+}
+
+/* Enhanced Button Responsiveness */
+button, .btn {
+  min-height: 44px !important;
+  touch-action: manipulation !important;
+  box-sizing: border-box !important;
+}
+
+/* Large screens - standard button sizing */
+@media (min-width: 1440px) {
+  button, .btn {
+    min-height: 48px !important;
+    padding: 0.75rem 1.5rem !important;
+    font-size: 1rem !important;
+  }
+}
+
+/* Medium screens - adjusted sizing */
+@media (min-width: 1025px) and (max-width: 1439px) {
+  button, .btn {
+    min-height: 44px !important;
+    padding: 0.625rem 1.25rem !important;
+    font-size: 0.95rem !important;
+  }
+}
+
+/* Tablet portrait - compact buttons */
+@media (min-width: 769px) and (max-width: 1024px) {
+  button, .btn {
+    min-height: 44px !important;
+    padding: 0.5rem 1rem !important;
+    font-size: 0.9rem !important;
+  }
+}
+
+/* Small tablets - smaller buttons */
+@media (min-width: 641px) and (max-width: 768px) {
+  button, .btn {
+    min-height: 40px !important;
+    padding: 0.4375rem 0.875rem !important;
+    font-size: 0.85rem !important;
+  }
+}
+
+/* Mobile phones - compact buttons */
+@media (max-width: 640px) {
+  button, .btn {
+    min-height: 40px !important;
+    padding: 0.375rem 0.75rem !important;
+    font-size: 0.8rem !important;
+  }
+}
+
+/* Extra small screens - very compact */
+@media (max-width: 480px) {
+  button, .btn {
+    min-height: 36px !important;
+    padding: 0.3125rem 0.625rem !important;
+    font-size: 0.75rem !important;
+  }
+}
+
+/* Enhanced Modal Responsiveness */
+.modal-container {
+  max-width: 95vw !important;
+  max-height: 95vh !important;
+  margin: 2.5vh auto !important;
+  box-sizing: border-box !important;
+}
+
+/* Large screens - larger modals */
+@media (min-width: 1440px) {
+  .modal-container {
+    max-width: 90vw !important;
+    max-height: 90vh !important;
+    margin: 5vh auto !important;
+  }
+}
+
+/* Medium screens - standard modal size */
+@media (min-width: 1025px) and (max-width: 1439px) {
+  .modal-container {
+    max-width: 85vw !important;
+    max-height: 85vh !important;
+    margin: 7.5vh auto !important;
+  }
+}
+
+/* Tablet portrait - full width modal */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .modal-container {
+    max-width: 95vw !important;
+    max-height: 90vh !important;
+    margin: 5vh auto !important;
+  }
+}
+
+/* Small tablets - nearly full width */
+@media (min-width: 641px) and (max-width: 768px) {
+  .modal-container {
+    max-width: 96vw !important;
+    max-height: 92vh !important;
+    margin: 4vh auto !important;
+  }
+}
+
+/* Mobile phones - full width */
+@media (max-width: 640px) {
+  .modal-container {
+    max-width: 98vw !important;
+    max-height: 95vh !important;
+    margin: 2.5vh auto !important;
+  }
+}
+
+/* Extra small screens - almost full screen */
+@media (max-width: 480px) {
+  .modal-container {
+    max-width: 99vw !important;
+    max-height: 96vh !important;
+    margin: 2vh auto !important;
+  }
+}
+
   .station-content-9x9 {
     gap: 0.09375rem !important;
   }
@@ -4242,5 +5005,42 @@ html .modal-overlay .modal-container,
 @media (max-width: 768px) {
   .assignment-grid-main {
     padding: 0.125rem !important;
+  }
+  
+  .six-column-layout .employee-card {
+    font-size: 0.6rem !important;
+    min-height: 16px !important;
+    padding: 0.1rem !important;
+  }
+  
+  html body .six-column-layout .drop-zone,
+  html body .drop-zone {
+    padding: 0.08rem !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .six-column-layout .employee-card {
+    font-size: 0.55rem !important;
+    min-height: 14px !important;
+    padding: 0.08rem !important;
+  }
+  
+  html body .six-column-layout .drop-zone,
+  html body .drop-zone {
+    padding: 0.06rem !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .six-column-layout .employee-card {
+    font-size: 0.5rem !important;
+    min-height: 12px !important;
+    padding: 0.06rem !important;
+  }
+  
+  html body .six-column-layout .drop-zone,
+  html body .drop-zone {
+    padding: 0.05rem !important;
   }
 }

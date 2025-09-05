@@ -1,199 +1,436 @@
 /* Responsive Assignment Grid Styles */
 .responsive-assignment-grid {
-  @apply w-full max-w-7xl mx-auto px-4;
+  width: 100%;
+  max-width: 80rem;
+  margin: 0 auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 
 .assignment-header {
-  @apply border-b border-gray-200 pb-4;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 1rem;
 }
 
 /* Station Areas */
 .station-area {
-  @apply relative;
+  position: relative;
 }
 
 .area-title {
-  @apply sticky top-0 bg-white/95 backdrop-blur-sm z-10 py-2 border-b border-gray-100;
+  position: sticky;
+  top: 0;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(4px);
+  z-index: 10;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #f3f4f6;
 }
 
 /* Station Cards */
 .station-card {
-  @apply bg-white rounded-xl shadow-lg border-2 border-gray-100 transition-all duration-200 hover:shadow-xl;
+  background: white;
+  border-radius: 0.75rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  border: 2px solid #f3f4f6;
+  transition: all 0.2s;
   min-height: 200px;
 }
 
-.station-card.drag-mode {
-  @apply border-mcdonalds-yellow bg-yellow-50/50;
+.station-card:hover {
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  border-color: rgba(255, 199, 44, 0.5);
+  transform: translateY(-0.25rem);
 }
 
-.station-card:hover {
-  @apply border-mcdonalds-yellow/50 transform -translate-y-1;
+.station-card.drag-mode {
+  border-color: #FFC72C;
+  background: rgba(254, 252, 232, 0.5);
 }
 
 .station-header {
-  @apply bg-gradient-to-r from-mcdonalds-red to-red-600 text-white p-3 rounded-t-xl;
+  background: linear-gradient(to right, #DA291C, #dc2626);
+  color: white;
+  padding: 0.75rem;
+  border-radius: 0.75rem 0.75rem 0 0;
 }
 
 .station-title {
-  @apply text-white font-bold text-sm sm:text-base;
+  color: white;
+  font-weight: 700;
+  font-size: 0.875rem;
+}
+
+.station-title {
+  color: white;
+  font-weight: 700;
+  font-size: 0.875rem;
+}
+
+@media (min-width: 640px) {
+  .station-title {
+    font-size: 1rem;
+  }
 }
 
 .station-count {
-  @apply text-red-100 text-xs mt-1;
+  color: #fecaca;
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
 }
 
 .station-columns {
-  @apply p-3;
+  padding: 0.75rem;
 }
 
 .column-section {
-  @apply border border-gray-100 rounded-lg p-2 bg-gray-50;
+  border: 1px solid #f3f4f6;
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+  background: #f9fafb;
 }
 
 .column-header {
-  @apply bg-white px-2 py-1 rounded text-gray-700 border-b border-gray-200;
-}
-
-/* DFS Card Special Styling */
-.dfs-card {
-  @apply bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200;
-}
-
-.dfs-card .station-header {
-  @apply bg-gradient-to-r from-blue-600 to-indigo-600;
-}
-
-.dfs-content {
-  @apply text-gray-700;
-}
-
-.dfs-item {
-  @apply py-1 border-b border-blue-100 last:border-b-0;
+  background: white;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  color: #374151;
+  border-bottom: 1px solid #e5e7eb;
 }
 
 /* Enhanced Drop Zone */
 .enhanced-drop-zone {
-  @apply min-h-16 border-2 border-dashed border-gray-300 rounded-lg p-2 transition-all duration-200;
+  min-height: 4rem;
+  border: 2px dashed #d1d5db;
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+  transition: all 0.2s;
 }
 
 .enhanced-drop-zone.drag-over {
-  @apply border-mcdonalds-yellow bg-yellow-50 scale-105;
+  border-color: #FFC72C;
+  background: #fefce8;
+  transform: scale(1.05);
 }
 
 .enhanced-drop-zone.compact {
-  @apply min-h-12 p-1;
+  min-height: 3rem;
+  padding: 0.25rem;
+}
+
+/* Compact employee cards in enhanced drop zones */
+.enhanced-drop-zone .employee-card {
+  min-height: 2rem; /* 32px */
+  padding: 0.25rem; /* 4px */
+  margin: 0.125rem; /* 2px */
+  font-size: 0.75rem; /* 12px */
+}
+
+.enhanced-drop-zone.compact .employee-card {
+  min-height: 1.5rem; /* 24px */
+  padding: 0.125rem; /* 2px */
+  margin: 0.125rem; /* 2px */
+  font-size: 0.75rem; /* 12px */
 }
 
 /* Empty Zone */
 .empty-zone {
-  @apply flex flex-col items-center justify-center text-center py-4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 1rem 0;
 }
 
 .empty-icon {
-  @apply mb-2 opacity-50;
+  margin-bottom: 0.5rem;
+  opacity: 0.5;
 }
 
 .empty-text {
-  @apply text-gray-400;
+  color: #9ca3af;
 }
 
 /* Employee List */
 .employee-list {
-  @apply space-y-1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
 }
 
 /* Assigned Employee */
 .assigned-employee {
-  @apply bg-white border border-gray-200 rounded-lg p-2 cursor-move transition-all duration-200 hover:shadow-md hover:border-mcdonalds-yellow;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+  cursor: move;
+  transition: all 0.2s;
 }
 
 .assigned-employee:hover {
-  @apply transform -translate-y-0.5 shadow-lg;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  border-color: #FFC72C;
 }
 
 .assigned-employee:active {
-  @apply scale-95;
+  transform: scale(0.95);
 }
 
 .employee-content {
-  @apply flex items-start justify-between gap-2;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.5rem;
 }
 
 .employee-main {
-  @apply flex-1 min-w-0;
+  flex: 1;
+  min-width: 0;
 }
 
 .employee-name {
-  @apply font-semibold text-gray-800 text-sm block truncate;
+  font-weight: 600;
+  color: #1f2937;
+  font-size: 0.875rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.employee-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
 }
 
 .employee-details {
-  @apply mt-1 space-y-1;
+  margin-top: 0.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
 }
 
 .shift-time {
-  @apply flex items-center gap-1 text-xs text-gray-600;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.75rem;
+  color: #6b7280;
 }
 
 .employee-task {
-  @apply text-xs text-blue-600 bg-blue-50 px-2 py-0.5 rounded;
+  font-size: 0.75rem;
+  color: #2563eb;
+  background: #eff6ff;
+  padding: 0.125rem 0.5rem;
+  border-radius: 0.25rem;
 }
 
 .compact-details {
-  @apply mt-1;
+  margin-top: 0.25rem;
 }
 
 .shift-time-compact {
-  @apply text-xs text-gray-500;
+  font-size: 0.75rem;
+  color: #6b7280;
 }
 
-/* Remove Button */
-.remove-button {
-  @apply p-1 rounded-full bg-red-50 text-red-500 hover:bg-red-100 hover:text-red-600 transition-colors duration-200 flex-shrink-0;
+/* Enhanced Responsive Grid Layouts */
+
+/* Large screens (1440px+) - optimized for high resolution */
+@media (min-width: 1440px) {
+  .responsive-assignment-grid {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+  
+  .station-card {
+    min-width: 280px;
+    min-height: 220px;
+  }
+  
+  .station-header {
+    padding: 1rem;
+  }
+  
+  .station-columns {
+    padding: 1rem;
+  }
+  
+  .assigned-employee {
+    padding: 0.75rem;
+  }
+  
+  .employee-name {
+    font-size: 0.95rem;
+  }
 }
 
-.remove-button:hover {
-  @apply scale-110;
+/* Medium screens (1025px-1439px) - standard desktop */
+@media (min-width: 1025px) and (max-width: 1439px) {
+  .responsive-assignment-grid {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+  
+  .station-card {
+    min-width: 260px;
+    min-height: 200px;
+  }
+  
+  .station-header {
+    padding: 0.875rem;
+  }
+  
+  .station-columns {
+    padding: 0.875rem;
+  }
+  
+  .assigned-employee {
+    padding: 0.625rem;
+  }
+  
+  .employee-name {
+    font-size: 0.9rem;
+  }
 }
 
-/* Responsive Breakpoints */
+/* Tablet landscape (769px-1024px) - 4 columns without horizontal scroll */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .responsive-assignment-grid {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  .station-card {
+    min-width: 240px;
+    min-height: 180px;
+  }
+  
+  .station-header {
+    padding: 0.75rem;
+  }
+  
+  .station-columns {
+    padding: 0.75rem;
+  }
+  
+  .assigned-employee {
+    padding: 0.5rem;
+  }
+  
+  .employee-name {
+    font-size: 0.85rem;
+  }
+  
+  /* Maximum 4 columns for tablets to ensure readability */
+  .grid-cols-4.lg\\:grid-cols-6.xl\\:grid-cols-4 {
+    grid-template-columns: repeat(4, minmax(240px, 1fr)) !important;
+  }
+}
 
-/* Tablet and mobile - maintain multi-column layout with horizontal scroll */
-@media (max-width: 1024px) {
+/* Small tablets (641px-768px) - 3 columns */
+@media (min-width: 641px) and (max-width: 768px) {
   .responsive-assignment-grid {
     padding-left: 0.75rem;
     padding-right: 0.75rem;
   }
   
-  /* Ensure cards maintain minimum width for readability */
   .station-card {
-    min-width: 250px;
-    min-height: 180px;
+    min-width: 220px;
+    min-height: 160px;
   }
   
-  /* Smooth horizontal scrolling */
-  .overflow-x-auto {
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: thin;
-    scrollbar-color: #DA291C #f1f1f1;
+  .station-header {
+    padding: 0.625rem;
   }
   
-  .overflow-x-auto::-webkit-scrollbar {
-    height: 8px;
+  .station-columns {
+    padding: 0.625rem;
   }
   
-  .overflow-x-auto::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 4px;
+  .assigned-employee {
+    padding: 0.4375rem;
   }
   
-  .overflow-x-auto::-webkit-scrollbar-thumb {
-    background: #DA291C;
-    border-radius: 4px;
+  .employee-name {
+    font-size: 0.8rem;
   }
   
-  .overflow-x-auto::-webkit-scrollbar-thumb:hover {
-    background: #b8241a;
+  /* 3 columns for small tablets */
+  .grid-cols-4.lg\\:grid-cols-6.xl\\:grid-cols-4 {
+    grid-template-columns: repeat(3, minmax(220px, 1fr)) !important;
+  }
+}
+
+/* Mobile phones (481px-640px) - 2 columns */
+@media (min-width: 481px) and (max-width: 640px) {
+  .responsive-assignment-grid {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+  
+  .station-card {
+    min-width: 200px;
+    min-height: 140px;
+  }
+  
+  .station-header {
+    padding: 0.5rem;
+  }
+  
+  .station-columns {
+    padding: 0.5rem;
+  }
+  
+  .assigned-employee {
+    padding: 0.375rem;
+  }
+  
+  .employee-name {
+    font-size: 0.75rem;
+  }
+  
+  /* 2 columns for mobile */
+  .grid-cols-4.lg\\:grid-cols-6.xl\\:grid-cols-4 {
+    grid-template-columns: repeat(2, minmax(200px, 1fr)) !important;
+  }
+}
+
+/* Extra small screens (≤480px) - 1 column */
+@media (max-width: 480px) {
+  .responsive-assignment-grid {
+    padding-left: 0.25rem;
+    padding-right: 0.25rem;
+  }
+  
+  .station-card {
+    min-width: 180px;
+    min-height: 120px;
+  }
+  
+  .station-header {
+    padding: 0.375rem;
+  }
+  
+  .station-columns {
+    padding: 0.375rem;
+  }
+  
+  .assigned-employee {
+    padding: 0.3125rem;
+  }
+  
+  .employee-name {
+    font-size: 0.7rem;
+  }
+  
+  /* 1 column for very small screens */
+  .grid-cols-4.lg\\:grid-cols-6.xl\\:grid-cols-4 {
+    grid-template-columns: repeat(1, minmax(180px, 1fr)) !important;
   }
 }
 
@@ -224,24 +461,11 @@
     font-size: 0.8rem;
   }
   
-  /* DFS card tablet styles */
-  .dfs-card {
-    padding: 0.625rem;
-    min-height: 160px;
-    min-width: 220px;
+  /* Maximum 4 columns for tablets to ensure readability */
+  .grid-cols-4.lg\\:grid-cols-6.xl\\:grid-cols-4 {
+    grid-template-columns: repeat(4, minmax(220px, 1fr)) !important;
   }
   
-  .dfs-card .station-header {
-    padding: 0.625rem;
-  }
-  
-  .dfs-content {
-    font-size: 0.8rem;
-  }
-  
-  .dfs-item {
-    padding: 0.375rem;
-  }
 }
 
 /* Mobile and small tablets */
@@ -277,27 +501,31 @@
     font-size: 0.75rem;
   }
   
-  /* DFS card responsive styles */
-  .dfs-card {
-    padding: 0.5rem;
-    min-height: 120px;
-    min-width: 200px;
+  /* Mobile-specific remove button styling for enhanced touch interaction */
+  .enhanced-drop-zone button[title="Remove assignment"],
+  .drop-zone button[title="Remove assignment"] {
+    padding: 0.5rem !important;
+    min-width: 44px !important;
+    min-height: 44px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background-color: #fee2e2 !important;
+    border: 1px solid #fca5a5 !important;
   }
   
-  .dfs-card .station-header {
-    padding: 0.5rem;
+  .enhanced-drop-zone button[title="Remove assignment"] svg,
+  .drop-zone button[title="Remove assignment"] svg {
+    width: 1.125rem !important;
+    height: 1.125rem !important;
   }
   
-  .dfs-content {
-    font-size: 0.75rem;
+  .enhanced-drop-zone button[title="Remove assignment"]:active,
+  .drop-zone button[title="Remove assignment"]:active {
+    background-color: #f87171 !important;
+    transform: scale(0.95) !important;
   }
   
-  .dfs-item {
-    padding-top: 0.25rem;
-    padding-bottom: 0.25rem;
-    padding-left: 0.5rem;
-    padding-right: 0.5rem;
-  }
 }
 
 @media (max-width: 640px) {
@@ -330,45 +558,30 @@
   .employee-name {
     font-size: 0.7rem;
   }
-  
-  /* DFS card mobile styles */
-  .dfs-card {
-    padding: 0.375rem;
-    min-height: 100px;
-  }
-  
-  .dfs-card .station-header {
-    padding: 0.375rem;
-  }
-  
-  .dfs-content {
-    font-size: 0.7rem;
-  }
-  
-  .dfs-item {
-    padding-top: 0.1875rem;
-    padding-bottom: 0.1875rem;
-    padding-left: 0.375rem;
-    padding-right: 0.375rem;
-  }
 }
 
 @media (min-width: 641px) and (max-width: 768px) {
   .station-card {
     min-height: 180px;
   }
-  
-  /* DFS card tablet styles */
-  .dfs-card {
-    min-height: 140px;
+}
+
+/* Extra small mobile devices */
+@media (max-width: 640px) {
+  .enhanced-drop-zone button[title="Remove assignment"],
+  .drop-zone button[title="Remove assignment"] {
+    padding: 0.625rem !important;
+    min-width: 48px !important;
+    min-height: 48px !important;
+    border-radius: 50% !important;
+    touch-action: manipulation !important;
+    -webkit-tap-highlight-color: transparent !important;
   }
   
-  .dfs-card .station-header {
-    padding: 0.75rem;
-  }
-  
-  .dfs-content {
-    font-size: 0.875rem;
+  .enhanced-drop-zone button[title="Remove assignment"] svg,
+  .drop-zone button[title="Remove assignment"] svg {
+    width: 1.25rem !important;
+    height: 1.25rem !important;
   }
 }
 
@@ -376,22 +589,12 @@
   .station-card {
     min-height: 250px;
   }
-  
-  /* DFS card desktop styles */
-  .dfs-card {
-    min-height: 200px;
-  }
 }
 
 /* Touch-friendly interactions for mobile */
 @media (hover: none) and (pointer: coarse) {
   .assigned-employee {
     padding: 0.75rem;
-  }
-  
-  .remove-button {
-    padding: 0.5rem;
-    font-size: 1rem;
   }
   
   .enhanced-drop-zone {
@@ -435,8 +638,7 @@
 @media (prefers-reduced-motion: reduce) {
   .station-card,
   .assigned-employee,
-  .enhanced-drop-zone,
-  .remove-button {
+  .enhanced-drop-zone {
     transition: none;
   }
   

@@ -1,0 +1,692 @@
+/* Compact Layout Styles - Maximize Assignment Grid Viewport */
+
+/* Main App Container - Minimize Overall Padding */
+.app-container-responsive {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  padding: 0.25rem 0.5rem !important; /* Reduced from default padding */
+  overflow-x: hidden;
+  overflow-y: auto; /* Ensure vertical scrolling is enabled */
+}
+
+/* Top Header Area - Compress Vertical Space */
+.app-container-responsive > .flex.items-center.justify-between {
+  margin-bottom: 0.5rem !important; /* Reduced from 1rem (mb-4) */
+  padding: 0.25rem 0 !important;
+  min-height: 2.5rem; /* Compact header height */
+}
+
+/* Day Part Tabs - Reduce Size and Spacing */
+.day-part-tabs {
+  gap: 0.25rem !important;
+  padding: 0.125rem !important;
+  margin-bottom: 0.25rem !important;
+}
+
+.day-part-tab {
+  padding: 0.375rem 0.75rem !important; /* Reduced from default */
+  font-size: 0.875rem !important;
+  min-height: 2rem !important;
+  border-radius: 0.375rem !important;
+  font-weight: 500 !important;
+}
+
+.day-part-tab.active {
+  background-color: #dc2626 !important;
+  color: white !important;
+  border-color: #dc2626 !important;
+}
+
+.day-part-tab:not(.active) {
+  background-color: #f3f4f6 !important;
+  color: #6b7280 !important;
+  border-color: #d1d5db !important;
+}
+
+.day-part-tab:not(.active):hover {
+  background-color: #e5e7eb !important;
+  color: #374151 !important;
+}
+
+/* Save Status Indicator - Compact */
+.app-container-responsive .flex.items-center.gap-2 {
+  gap: 0.5rem !important;
+}
+
+.app-container-responsive .flex.items-center.gap-2 > div,
+.app-container-responsive .flex.items-center.gap-2 > button {
+  padding: 0.25rem 0.5rem !important;
+  font-size: 0.75rem !important;
+  min-height: 1.75rem !important;
+}
+
+/* Main Layout Container - Maximize Assignment Grid */
+.main-layout-container {
+  display: flex;
+  flex-direction: row; /* Side by side on large screens */
+  gap: 0.5rem !important; /* Reduced gap */
+  min-height: calc(100vh - 4rem) !important; /* Use min-height instead of fixed height */
+  overflow: visible; /* Allow scrolling */
+}
+
+/* When staff pool is hidden, assignment grid takes full width */
+.main-layout-container:not(:has(.employee-pool-sidebar)) .assignment-grid-main,
+.main-layout-container .assignment-grid-main:only-child {
+  flex: 1;
+  width: 100%;
+}
+
+/* Employee Pool Sidebar - Left side on large screens */
+.employee-pool-sidebar {
+  flex-shrink: 0;
+  width: 300px !important; /* Fixed width for sidebar */
+  height: auto !important; /* Full height */
+  max-height: none !important; /* Remove height restriction */
+  overflow-y: auto;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background: white;
+  margin-bottom: 0 !important; /* Remove bottom spacing */
+}
+
+/* Horizontal Employee Pool Specific Overrides */
+.employee-pool-sidebar .p-4 {
+  padding: 0.5rem !important;
+}
+
+.employee-pool-sidebar .p-3 {
+  padding: 0.375rem !important;
+}
+
+.employee-pool-sidebar .mb-4 {
+  margin-bottom: 0.5rem !important;
+}
+
+.employee-pool-sidebar .mb-3 {
+  margin-bottom: 0.375rem !important;
+}
+
+.employee-pool-sidebar .mb-2 {
+  margin-bottom: 0.25rem !important;
+}
+
+/* Employee Pool Header */
+.employee-pool-sidebar h2 {
+  font-size: 1rem !important;
+  margin-bottom: 0.375rem !important;
+  padding: 0.25rem 0 !important;
+}
+
+.employee-pool-sidebar h3 {
+  font-size: 0.875rem !important;
+  margin-bottom: 0.25rem !important;
+}
+
+/* Employee Cards in Pool */
+.employee-pool-sidebar .employee-card {
+  padding: 0.25rem 0.375rem !important;
+  margin: 0.125rem !important;
+  font-size: 0.75rem !important;
+  min-height: 1.5rem !important;
+  border-radius: 0.25rem !important;
+}
+
+/* Employee Pool Grid/List */
+.employee-pool-sidebar .grid {
+  gap: 0.25rem !important;
+}
+
+.employee-pool-sidebar .flex.flex-wrap {
+  gap: 0.25rem !important;
+}
+
+/* Upload Button in Employee Pool */
+.employee-pool-sidebar button {
+  padding: 0.25rem 0.5rem !important;
+  font-size: 0.75rem !important;
+  min-height: 1.75rem !important;
+  border-radius: 0.375rem !important;
+}
+
+/* Employee Pool Actions */
+.employee-pool-sidebar .flex.gap-2 {
+  gap: 0.375rem !important;
+}
+
+.employee-pool-sidebar .flex.gap-3 {
+  gap: 0.5rem !important;
+}
+
+.employee-pool-sidebar .flex.gap-4 {
+  gap: 0.5rem !important;
+}
+
+/* Employee Pool Collapsed States - No longer needed for main toggle */
+
+/* Main Staff Pool Toggle - Next to Save Button */
+.staff-pool-main-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.5rem;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.toggle-switch-main {
+  position: relative;
+  display: inline-block;
+  width: 3rem;
+  height: 1.5rem;
+}
+
+.toggle-switch-checkbox-main {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-switch-slider-main {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  border-radius: 1.5rem;
+  transition: background-color 0.3s ease;
+  border: 2px solid #e5e7eb;
+}
+
+.toggle-switch-button-main {
+  position: absolute;
+  content: "";
+  height: 1rem;
+  width: 1rem;
+  left: 0.125rem;
+  bottom: 0.125rem;
+  background-color: white;
+  border-radius: 50%;
+  transition: transform 0.3s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.toggle-switch-checkbox-main:checked + .toggle-switch-slider-main {
+  background-color: #dc2626;
+  border-color: #dc2626;
+}
+
+.toggle-switch-checkbox-main:checked + .toggle-switch-slider-main .toggle-switch-button-main {
+  transform: translateX(1.5rem);
+}
+
+.toggle-switch-slider-main:hover {
+  background-color: #b91c1c;
+}
+
+.toggle-switch-checkbox-main:checked + .toggle-switch-slider-main:hover {
+  background-color: #991b1b;
+}
+
+.toggle-label-main {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+  white-space: nowrap;
+}
+
+/* Collapsed state specific styling for mobile/tablet */
+@media (max-width: 1024px) {
+  /* Remove old collapsed state styles - no longer needed */
+}
+
+/* Assignment Grid Main - Fill Remaining Space */
+.assignment-grid-main {
+  flex: 1;
+  min-height: 0; /* Allow flex shrinking */
+  overflow-y: auto;
+  background: white;
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 0.75rem !important;
+}
+
+/* Assignment Grid Content - Optimize Spacing */
+.assignment-section {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.assignment-section > h2 {
+  margin-bottom: 0.5rem !important; /* Reduced from default */
+  font-size: 1.25rem !important;
+  padding: 0.25rem 0 !important;
+  border-bottom: 2px solid #dc2626;
+  color: #dc2626;
+  flex-shrink: 0;
+}
+
+/* Grid Container - Use Full Available Space */
+.grid-container-compact {
+  flex: 1;
+  overflow: visible; /* Allow scrolling when content exceeds container */
+  display: flex;
+  flex-direction: column;
+}
+
+.assignment-grid-compact {
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  flex: 1;
+}
+
+/* Six Column Layout - Optimize for Density */
+.six-column-layout {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(200px, 1fr));
+  gap: 0.5rem !important; /* Reduced gap */
+  padding: 0.25rem;
+  min-height: 100%;
+  height: fit-content;
+}
+
+/* PDFLayoutGrid Specific Overrides */
+.assignment-grid-main .assignment-section h2 {
+  font-size: 1.125rem !important;
+  margin-bottom: 0.375rem !important;
+  padding-bottom: 0.25rem !important;
+  border-bottom-width: 1px !important;
+}
+
+/* Station Groups - Compact Spacing */
+.station-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem !important; /* Reduced gap */
+}
+
+/* Station Cards - Optimize for Space */
+.station-group .bg-white {
+  border-radius: 0.5rem !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08) !important;
+  border: 1px solid #e5e7eb !important;
+  overflow: hidden;
+  min-height: 120px !important; /* Minimum functional height */
+}
+
+/* Station Headers - Compact */
+.station-group .bg-gradient-to-r {
+  padding: 0.5rem !important; /* Reduced padding */
+  min-height: 2.5rem !important;
+}
+
+.station-group .bg-gradient-to-r h3 {
+  font-size: 0.875rem !important;
+  font-weight: 600 !important;
+  line-height: 1.2 !important;
+}
+
+.station-group .bg-gradient-to-r .text-red-100 {
+  font-size: 0.7rem !important;
+  margin-top: 0.125rem !important;
+}
+
+/* Station Content - Optimize Spacing */
+.station-group .p-3.space-y-2 {
+  padding: 0.5rem !important;
+  gap: 0.25rem !important;
+}
+
+.station-group .border.border-gray-100.rounded-lg.p-2 {
+  padding: 0.375rem !important;
+  margin-bottom: 0.25rem !important;
+  border-radius: 0.375rem !important;
+}
+
+/* Column Headers - Compact */
+.station-group .text-xs.font-medium.text-gray-700 {
+  font-size: 0.7rem !important;
+  margin-bottom: 0.25rem !important;
+  padding: 0.125rem 0.25rem !important;
+}
+
+/* Employee Cards in Stations - Ultra Compact */
+.station-group .employee-card {
+  padding: 0.25rem !important;
+  margin-bottom: 0.125rem !important;
+  border-radius: 0.25rem !important;
+  font-size: 0.75rem !important;
+  min-height: 1.5rem !important;
+  line-height: 1.2 !important;
+}
+
+/* Remove Button - Optimize for Compact Cards - Override Mobile Touch Targets */
+/* High specificity override for all remove assignment buttons */
+.station-group .employee-card button,
+.enhanced-drop-zone button[title="Remove assignment"],
+.drop-zone button[title="Remove assignment"],
+.employee-card button[title="Remove assignment"] {
+  width: 0.875rem !important;
+  height: 0.875rem !important;
+  min-width: 0.875rem !important;
+  min-height: 0.875rem !important;
+  padding: 0 !important;
+  margin-left: 0.25rem !important;
+  border-radius: 0.125rem !important; /* 2px rounded corners */
+}
+
+.station-group .employee-card button svg,
+.enhanced-drop-zone button[title="Remove assignment"] svg,
+.drop-zone button[title="Remove assignment"] svg,
+.employee-card button[title="Remove assignment"] svg {
+  width: 0.625rem !important; /* 10px */
+  height: 0.625rem !important; /* 10px */
+}
+
+/* Extra specificity for mobile overrides */
+@media (max-width: 768px) {
+  .enhanced-drop-zone button[title="Remove assignment"],
+  .drop-zone button[title="Remove assignment"],
+  .employee-card button[title="Remove assignment"] {
+    width: 0.875rem !important;
+    height: 0.875rem !important;
+    min-width: 0.875rem !important;
+    min-height: 0.875rem !important;
+    padding: 0 !important;
+    border-radius: 0.125rem !important;
+  }
+  
+  .enhanced-drop-zone button[title="Remove assignment"] svg,
+  .drop-zone button[title="Remove assignment"] svg,
+  .employee-card button[title="Remove assignment"] svg {
+    width: 0.625rem !important;
+    height: 0.625rem !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .enhanced-drop-zone button[title="Remove assignment"],
+  .drop-zone button[title="Remove assignment"],
+  .employee-card button[title="Remove assignment"] {
+    width: 0.875rem !important;
+    height: 0.875rem !important;
+    min-width: 0.875rem !important;
+    min-height: 0.875rem !important;
+    padding: 0 !important;
+    border-radius: 0.125rem !important;
+  }
+}
+
+/* Bottom Navigation - Minimize Height */
+.bottom-nav {
+  height: 3rem !important; /* Reduced from default */
+  flex-shrink: 0;
+  border-top: 1px solid #e5e7eb;
+  background: white;
+  padding: 0.25rem 0 !important;
+}
+
+.bottom-nav-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+
+.bottom-nav-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem 0.5rem !important;
+  border-radius: 0.375rem;
+  transition: all 0.2s ease;
+  background: transparent;
+  border: none;
+  color: #6b7280;
+  cursor: pointer;
+  min-width: 3rem;
+  height: 2.5rem !important; /* Compact height */
+}
+
+.bottom-nav-button:hover {
+  background: #f3f4f6;
+  color: #dc2626;
+}
+
+.bottom-nav-icon {
+  width: 1rem !important;
+  height: 1rem !important;
+  margin-bottom: 0.125rem;
+}
+
+.bottom-nav-label {
+  font-size: 0.625rem !important;
+  font-weight: 500;
+  line-height: 1;
+}
+
+/* Responsive Adjustments for Mobile */
+@media (max-width: 768px) {
+  .app-container-responsive {
+    padding: 0.125rem !important;
+    overflow-y: auto !important; /* Ensure vertical scrolling on mobile */
+    overflow-x: hidden !important;
+  }
+  
+  /* Make main staff pool toggle more compact on mobile */
+  .staff-pool-main-toggle {
+    padding: 0.125rem 0.5rem !important;
+    gap: 0.375rem !important;
+  }
+  
+  .toggle-switch-main {
+    width: 2.5rem !important;
+    height: 1.25rem !important;
+  }
+  
+  .toggle-switch-button-main {
+    height: 0.875rem !important;
+    width: 0.875rem !important;
+  }
+  
+  .toggle-switch-checkbox-main:checked + .toggle-switch-slider-main .toggle-switch-button-main {
+    transform: translateX(1.25rem) !important;
+  }
+  
+  .toggle-label-main {
+    font-size: 0.75rem !important;
+  }
+  
+  .employee-pool-sidebar {
+    width: 100% !important;
+    min-width: 100% !important;
+    max-width: 100% !important;
+    margin-bottom: 0 !important;
+    /* Dynamic height - no longer needs collapsed state handling */
+    height: auto !important;
+    max-height: 50vh !important;
+    overflow-y: auto !important;
+  }
+  
+  /* Switch to stacked layout on tablets */
+  .main-layout-container {
+    flex-direction: column !important;
+    min-height: calc(100vh - 3.5rem) !important; /* Use min-height for mobile to allow scrolling */
+    overflow: visible !important; /* Ensure scrolling is not blocked on mobile */
+  }
+  
+  .six-column-layout {
+    grid-template-columns: repeat(3, minmax(160px, 1fr)) !important;
+    gap: 0.25rem !important;
+  }
+  
+  /* Switch to stacked layout on tablets */
+  .main-layout-container {
+    flex-direction: column !important;
+    min-height: calc(100vh - 3.5rem) !important; /* Use min-height for mobile to allow scrolling */
+    overflow: visible !important; /* Ensure scrolling is not blocked on mobile */
+  }
+  
+  .assignment-grid-main {
+    padding: 0.5rem !important;
+    overflow-y: auto !important; /* Ensure assignment grid can scroll */
+    max-height: none !important; /* Remove height restrictions */
+  }
+  
+  .grid-container-compact {
+    overflow: visible !important; /* Allow content overflow for scrolling */
+  }
+}
+
+@media (max-width: 480px) {
+  .app-container-responsive {
+    overflow-y: auto !important; /* Ensure vertical scrolling on very small screens */
+    overflow-x: hidden !important;
+  }
+  
+  .six-column-layout {
+    grid-template-columns: repeat(2, minmax(140px, 1fr)) !important;
+  }
+  
+  .employee-pool-sidebar {
+    width: 100% !important;
+    min-width: 100% !important;
+    max-width: 100% !important;
+    margin-bottom: 0 !important;
+    /* Dynamic height - no longer needs collapsed state handling */
+    height: auto !important;
+    max-height: 40vh !important;
+    overflow-y: auto !important;
+  }
+  
+  /* Maintain stacked layout on small screens */
+  .main-layout-container {
+    flex-direction: column !important;
+    min-height: calc(100vh - 3rem) !important; /* Adjust for very small screens */
+    overflow: visible !important;
+  }
+  
+  .station-group .bg-white {
+    min-height: 100px !important;
+  }
+  
+  .assignment-grid-main {
+    overflow-y: auto !important;
+    max-height: none !important;
+  }
+}
+
+/* Tablet Landscape Optimization */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .app-container-responsive {
+    overflow-y: auto !important; /* Ensure vertical scrolling on tablets */
+    overflow-x: hidden !important;
+  }
+  
+  .employee-pool-sidebar {
+    width: 100% !important;
+    min-width: 100% !important;
+    max-width: 100% !important;
+    margin-bottom: 0 !important;
+    /* Dynamic height - no longer needs collapsed state handling */
+    height: auto !important;
+    max-height: 60vh !important;
+    overflow-y: auto !important;
+  }
+  
+  .six-column-layout {
+    grid-template-columns: repeat(4, minmax(180px, 1fr)) !important;
+  }
+  
+  .main-layout-container {
+    min-height: calc(100vh - 4rem) !important;
+    overflow: visible !important;
+  }
+  
+  .assignment-grid-main {
+    overflow-y: auto !important;
+    max-height: none !important;
+  }
+}
+
+/* Large Desktop - Maintain 6 Columns */
+@media (min-width: 1025px) {
+  .app-container-responsive {
+    overflow-y: auto !important; /* Ensure vertical scrolling on large screens */
+    overflow-x: hidden !important;
+  }
+  
+  .six-column-layout {
+    grid-template-columns: repeat(6, minmax(220px, 1fr)) !important;
+  }
+  
+  .main-layout-container {
+    min-height: calc(100vh - 4rem) !important;
+    overflow: visible !important;
+  }
+  
+  .assignment-grid-main {
+    padding: 1rem !important;
+    overflow-y: auto !important;
+    max-height: none !important;
+  }
+}
+
+/* Large Screen Layout - Staff Pool on Left */
+@media (min-width: 1025px) {
+  .main-layout-container {
+    flex-direction: row !important;
+  }
+  
+  .employee-pool-sidebar {
+    width: 300px !important;
+    height: auto !important;
+    max-height: none !important;
+  }
+  
+  .assignment-grid-main {
+    flex: 1;
+  }
+}
+
+/* Focus States for Accessibility */
+.day-part-tab:focus,
+.bottom-nav-button:focus {
+  outline: 2px solid #dc2626;
+  outline-offset: 2px;
+}
+
+/* Smooth Transitions */
+.main-layout-container,
+.employee-pool-sidebar,
+.assignment-grid-main {
+  transition: all 0.3s ease;
+}
+
+/* Print Optimizations */
+@media print {
+  .employee-pool-sidebar,
+  .bottom-nav {
+    display: none !important;
+  }
+  
+  .main-layout-container {
+    height: auto !important;
+    overflow: visible !important;
+  }
+  
+  .assignment-grid-main {
+    height: auto !important;
+    overflow: visible !important;
+    box-shadow: none !important;
+  }
+}
