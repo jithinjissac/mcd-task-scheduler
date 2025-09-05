@@ -14,6 +14,7 @@ import StationSelectionModal from '@/components/StationSelectionModal';
 import PDFLayoutGrid from '@/components/PDFLayoutGrid';
 import storageService from '@/services/storageService_simple';
 import apiService from '@/services/apiService';
+import { PersistenceService } from '@/services/persistenceService';
 import '../styles/compact-layout.css';
 
 const TaskScheduler: React.FC = () => {
@@ -41,10 +42,14 @@ const TaskScheduler: React.FC = () => {
   const [saveStatus, setSaveStatus] = useState<'saved' | 'saving' | 'pending' | 'error'>('saved');
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [showStaffPool, setShowStaffPool] = useState(false);
+  const [syncStatus, setSyncStatus] = useState<'synced' | 'syncing' | 'conflict' | 'offline'>('synced');
+  const [lastSyncTime, setLastSyncTime] = useState<Date | null>(null);
   
-  // Refs for change tracking
+  // Refs for change tracking and sync management
   const previousAssignmentsRef = useRef<Assignment>({});
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const syncIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const isSyncingRef = useRef(false);
 
   // Initialize assignments for empty structure
   const initializeAssignments = () => {
@@ -74,6 +79,10 @@ const TaskScheduler: React.FC = () => {
       const dateKey = selectedDate.toISOString().split('T')[0];
       await storageService.saveAssignments(dateKey, assignments, currentDayPart);
       await storageService.saveDayPart(dateKey, currentDayPart);
+      
+      // Also save to localStorage for persistence across reloads
+      PersistenceService.save(`assignment_${dateKey}`, { assignments, dayPart: currentDayPart });
+      PersistenceService.save(`daypart_${dateKey}`, { dayPart: currentDayPart });
       
       setSaveStatus('saved');
       setLastSaved(new Date());
@@ -154,6 +163,27 @@ const TaskScheduler: React.FC = () => {
       }
     }; 
   }, []);
+
+  // Sync localStorage data to server on mount (for persistence across page reloads)
+  useEffect(() => {
+    if (!mounted) return;
+    
+    const syncData = async () => {
+      try {
+        // In production mode, sync any localStorage data to server
+        if (process.env.NODE_ENV === 'production') {
+          const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
+          await PersistenceService.syncToServer(baseUrl);
+          console.log('🔄 Data synced from localStorage to server');
+        }
+      } catch (error) {
+        console.warn('⚠️ Failed to sync data on mount:', error);
+      }
+    };
+    
+    // Delay sync slightly to ensure everything is initialized
+    setTimeout(syncData, 1000);
+  }, [mounted]);
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -245,6 +275,116 @@ const TaskScheduler: React.FC = () => {
       apiService.leaveDate(currentDateKey);
     };
   }, [mounted, selectedDate]);
+
+  // Real-time cross-device synchronization with polling
+  useEffect(() => {
+    if (!mounted) return;
+
+    const startRealtimeSync = () => {
+      // Clear any existing interval
+      if (syncIntervalRef.current) {
+        clearInterval(syncIntervalRef.current);
+      }
+
+      // Set up polling interval for cross-device sync (every 10 seconds)
+      syncIntervalRef.current = setInterval(async () => {
+        if (isSyncingRef.current) return; // Skip if already syncing
+
+        try {
+          isSyncingRef.current = true;
+          setSyncStatus('syncing');
+
+          const currentDateKey = selectedDate.toISOString().split('T')[0];
+          
+          // Check for updates from other devices
+          const apiUrl = process.env.NODE_ENV === 'production' 
+            ? 'https://mcd-task-scheduler.vercel.app'
+            : 'http://localhost:3000';
+
+          const keys = [`schedule_${currentDateKey}`, `assignment_${currentDateKey}`, `daypart_${currentDateKey}`];
+          let hasUpdates = false;
+
+          for (const key of keys) {
+            try {
+              const response = await fetch(`${apiUrl}/api/sync/${key}?t=${Date.now()}`, {
+                headers: {
+                  'Cache-Control': 'no-cache, no-store, must-revalidate',
+                  'Pragma': 'no-cache',
+                  'Expires': '0'
+                }
+              });
+
+              if (response.ok) {
+                const serverData = await response.json();
+                
+                // Check if we have this data locally
+                const localData = localStorage.getItem(`mcd_${key}`);
+                let shouldUpdate = false;
+
+                if (!localData) {
+                  shouldUpdate = true;
+                } else {
+                  const localSyncData = JSON.parse(localData);
+                  if (serverData.timestamp > localSyncData.timestamp) {
+                    shouldUpdate = true;
+                  }
+                }
+
+                if (shouldUpdate) {
+                  // Update localStorage with newer data from server
+                  localStorage.setItem(`mcd_${key}`, JSON.stringify(serverData));
+                  hasUpdates = true;
+
+                  // Update state based on the data type
+                  if (key.startsWith('schedule_')) {
+                    setEmployees(serverData.data.employees || []);
+                  } else if (key.startsWith('assignment_')) {
+                    setAssignments(serverData.data.assignments || {});
+                  } else if (key.startsWith('daypart_')) {
+                    setCurrentDayPart(serverData.data.dayPart || 'Breakfast');
+                  }
+                }
+              }
+            } catch (error) {
+              console.warn(`Failed to sync ${key}:`, error);
+            }
+          }
+
+          setSyncStatus('synced');
+          if (hasUpdates) {
+            setLastSyncTime(new Date());
+            console.log('🔄 Cross-device sync completed with updates');
+          }
+
+        } catch (error) {
+          console.warn('Cross-device sync error:', error);
+          setSyncStatus('offline');
+        } finally {
+          isSyncingRef.current = false;
+        }
+      }, 10000); // Poll every 10 seconds
+    };
+
+    startRealtimeSync();
+
+    return () => {
+      if (syncIntervalRef.current) {
+        clearInterval(syncIntervalRef.current);
+      }
+    };
+  }, [mounted, selectedDate]);
+
+  // Cleanup all intervals on unmount
+  useEffect(() => {
+    return () => {
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current);
+      }
+      if (syncIntervalRef.current) {
+        clearInterval(syncIntervalRef.current);
+      }
+    };
+  }, []);
 
   // Manage body scroll when confirmation modal is open
   useEffect(() => {
@@ -478,6 +618,10 @@ const TaskScheduler: React.FC = () => {
       const updatedEmployees = [...employees, newEmployee];
       
       await storageService.saveSchedule(dateKey, updatedEmployees);
+      
+      // Also save to localStorage for persistence
+      PersistenceService.save(`schedule_${dateKey}`, { employees: updatedEmployees });
+      
       console.log('New employee added and saved:', newEmployee.name);
     } catch (error) {
       console.warn('Failed to save employee to storage:', error);
@@ -533,9 +677,15 @@ const TaskScheduler: React.FC = () => {
         const dateKey = selectedDate.toISOString().split('T')[0];
         await storageService.saveSchedule(dateKey, result.employees, file.name, true); // replaceAll = true
         
+        // Also save to localStorage for persistence
+        PersistenceService.save(`schedule_${dateKey}`, { employees: result.employees });
+        
         // Clear existing assignments since we're importing a new schedule
         setAssignments({});
         await storageService.saveAssignments(dateKey, {});
+        
+        // Also clear assignments in localStorage
+        PersistenceService.save(`assignment_${dateKey}`, { assignments: {} });
         
         console.log('Schedule imported successfully:', result.employees.length, 'employees');
         alert(`Successfully imported ${result.employees.length} employees! All previous assignments have been cleared.`);
@@ -559,6 +709,9 @@ const TaskScheduler: React.FC = () => {
         // Save using storage service with current date
         const dateKey = selectedDate.toISOString().split('T')[0];
         await storageService.saveSchedule(dateKey, result.employees, file.name);
+        
+        // Also save to localStorage for persistence
+        PersistenceService.save(`schedule_${dateKey}`, { employees: result.employees });
         
         console.log('Employee pool updated:', result.employees.length, 'employees');
         alert(`Successfully updated employee pool with ${result.employees.length} employees! Existing assignments preserved.`);
@@ -815,8 +968,35 @@ const TaskScheduler: React.FC = () => {
           onDayPartChange={handleDayPartChange}
         />
         
-        {/* Save Status Indicator */}
+        {/* Save Status and Sync Status Indicators */}
         <div className="flex items-center gap-2">
+          {/* Sync Status Indicator */}
+          <div className={`flex items-center gap-2 px-3 py-1 rounded-full text-xs ${
+            syncStatus === 'synced' ? 'bg-green-50 text-green-700 border border-green-200' :
+            syncStatus === 'syncing' ? 'bg-blue-50 text-blue-700 border border-blue-200' :
+            syncStatus === 'conflict' ? 'bg-orange-50 text-orange-700 border border-orange-200' :
+            'bg-gray-50 text-gray-700 border border-gray-200'
+          }`}>
+            <div className={`w-1.5 h-1.5 rounded-full ${
+              syncStatus === 'synced' ? 'bg-green-500' :
+              syncStatus === 'syncing' ? 'bg-blue-500 animate-pulse' :
+              syncStatus === 'conflict' ? 'bg-orange-500 animate-pulse' :
+              'bg-gray-400'
+            }`}></div>
+            <span>
+              {syncStatus === 'synced' && '🔄 Synced'}
+              {syncStatus === 'syncing' && '🔄 Syncing...'}
+              {syncStatus === 'conflict' && '⚠️ Conflict'}
+              {syncStatus === 'offline' && '📶 Offline'}
+            </span>
+            {lastSyncTime && syncStatus === 'synced' && (
+              <span className="text-xs opacity-70">
+                {lastSyncTime.toLocaleTimeString()}
+              </span>
+            )}
+          </div>
+
+          {/* Save Status Indicator */}
           <div className={`flex items-center gap-2 px-3 py-1 rounded-full text-sm ${
             saveStatus === 'saved' ? 'bg-green-100 text-green-800' :
             saveStatus === 'saving' ? 'bg-blue-100 text-blue-800' :
