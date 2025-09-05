@@ -1,15 +1,23 @@
 import { io, Socket } from 'socket.io-client';
 import { Employee, Assignment } from '@/types';
 
-// Dynamic API URL configuration for network access
+// Dynamic API URL configuration for both development and production
 const getApiBaseUrl = () => {
+  // In production (Vercel), use the Next.js API routes
+  if (process.env.NODE_ENV === 'production') {
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL || 
+                   (typeof window !== 'undefined' ? window.location.origin : '');
+    console.log('🌐 Using production API URL:', baseUrl);
+    return baseUrl;
+  }
+  
   // In development, check if we have an environment variable first
   if (process.env.NEXT_PUBLIC_API_URL) {
     console.log('🌐 Using environment API URL:', process.env.NEXT_PUBLIC_API_URL);
     return process.env.NEXT_PUBLIC_API_URL;
   }
   
-  // If running in browser, use the current host with port 3002
+  // If running in browser, use the current host with port 3002 for dev server
   if (typeof window !== 'undefined') {
     const currentHost = window.location.hostname;
     const apiUrl = `http://${currentHost}:3002`;
@@ -23,7 +31,8 @@ const getApiBaseUrl = () => {
 };
 
 const API_BASE_URL = getApiBaseUrl();
-console.log('🔗 Final API_BASE_URL:', API_BASE_URL);
+const USE_NEXT_API = process.env.NODE_ENV === 'production' || process.env.NEXT_PUBLIC_USE_NEXT_API === 'true';
+console.log('🔗 Final API_BASE_URL:', API_BASE_URL, 'Using Next.js API:', USE_NEXT_API);
 
 interface ScheduleData {
   employees: Employee[];

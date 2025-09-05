@@ -39,7 +39,9 @@
         "2. R/P": [
           "Thajee"
         ],
-        "3. Delivery checker": [],
+        "3. Delivery checker": [
+          "Pavan H"
+        ],
         "4. Expeditator": [],
         "5. Delivery Drinks": []
       },
@@ -179,7 +181,7 @@
       }
     }
   },
-  "savedAt": "2025-09-05T00:31:15.840Z",
+  "savedAt": "2025-09-05T00:34:40.663Z",
   "dayPart": "Breakfast",
-  "lastUpdated": "2025-09-05T00:31:15.842Z"
+  "lastUpdated": "2025-09-05T00:34:40.664Z"
 }

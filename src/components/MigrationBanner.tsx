@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { CloudUpload, Database, Wifi, WifiOff, CheckCircle, AlertCircle, X, Users, Calendar } from 'lucide-react';
-import apiService from '@/services/apiService';
+import apiService from '@/services/apiService_nextjs';
 
 interface MigrationBannerProps {
   onMigrationComplete?: () => void;
