@@ -1,11 +1,109 @@
 // Storage adapter for Vercel serverless environment
-// Uses Vercel KV if available, otherwise falls back to temporary in-memory storage
+// Supports Supabase, Vercel KV, or in-memory storage
+
+import { supabase, testSupabaseConnection, type SupabaseRow } from '@/lib/supabase';
 
 interface StorageAdapter {
   get(key: string): Promise<any>;
   set(key: string, value: any): Promise<void>;
   delete(key: string): Promise<void>;
   list(prefix?: string): Promise<string[]>;
+}
+
+// Supabase storage (preferred option)
+class SupabaseStorage implements StorageAdapter {
+  private async initTable(): Promise<void> {
+    // Create table if it doesn't exist (this will be handled by migration)
+    const { error } = await supabase.rpc('create_mcd_data_table_if_not_exists');
+    if (error && !error.message.includes('already exists')) {
+      console.warn('Could not initialize table:', error);
+    }
+  }
+
+  private parseKey(key: string): { category: string; filename: string } {
+    const [category, filename] = key.split(':');
+    return { category: category || 'unknown', filename: filename || 'unknown' };
+  }
+
+  async get(key: string): Promise<any> {
+    try {
+      const { category, filename } = this.parseKey(key);
+      const { data, error } = await supabase
+        .from('mcd_data')
+        .select('data')
+        .eq('category', category)
+        .eq('filename', filename)
+        .single();
+
+      if (error) {
+        if (error.code === 'PGRST116') return null; // No rows returned
+        throw error;
+      }
+
+      return data?.data || null;
+    } catch (error) {
+      console.warn(`Supabase get failed for ${key}:`, error);
+      return null;
+    }
+  }
+
+  async set(key: string, value: any): Promise<void> {
+    try {
+      const { category, filename } = this.parseKey(key);
+      const { error } = await supabase
+        .from('mcd_data')
+        .upsert({
+          category,
+          filename,
+          data: value,
+          updated_at: new Date().toISOString()
+        }, {
+          onConflict: 'category,filename'
+        });
+
+      if (error) throw error;
+    } catch (error) {
+      console.error(`Supabase set failed for ${key}:`, error);
+      throw new Error('Failed to save data to database');
+    }
+  }
+
+  async delete(key: string): Promise<void> {
+    try {
+      const { category, filename } = this.parseKey(key);
+      const { error } = await supabase
+        .from('mcd_data')
+        .delete()
+        .eq('category', category)
+        .eq('filename', filename);
+
+      if (error) throw error;
+    } catch (error) {
+      console.error(`Supabase delete failed for ${key}:`, error);
+      throw error;
+    }
+  }
+
+  async list(prefix?: string): Promise<string[]> {
+    try {
+      let query = supabase.from('mcd_data').select('category, filename');
+      
+      if (prefix) {
+        const [category] = prefix.split(':');
+        if (category) {
+          query = query.eq('category', category.replace(':', ''));
+        }
+      }
+
+      const { data, error } = await query;
+      if (error) throw error;
+
+      return (data || []).map((row: any) => `${row.category}:${row.filename}`);
+    } catch (error) {
+      console.error('Supabase list failed:', error);
+      return [];
+    }
+  }
 }
 
 // In-memory storage fallback (data persists only during function execution)
@@ -30,61 +128,45 @@ class MemoryStorage implements StorageAdapter {
   }
 }
 
-// Vercel KV storage (if available)
-class VercelKVStorage implements StorageAdapter {
-  private kv: any;
-
-  constructor() {
-    try {
-      // Try to import Vercel KV
-      this.kv = require('@vercel/kv');
-    } catch {
-      throw new Error('Vercel KV not available');
-    }
-  }
-
-  async get(key: string): Promise<any> {
-    try {
-      return await this.kv.get(key);
-    } catch {
-      return null;
-    }
-  }
-
-  async set(key: string, value: any): Promise<void> {
-    await this.kv.set(key, value);
-  }
-
-  async delete(key: string): Promise<void> {
-    await this.kv.del(key);
-  }
-
-  async list(prefix?: string): Promise<string[]> {
-    try {
-      const keys = await this.kv.keys(prefix ? `${prefix}*` : '*');
-      return keys || [];
-    } catch {
-      return [];
-    }
-  }
-}
-
 // Factory to create appropriate storage adapter
-function createStorageAdapter(): StorageAdapter {
-  // Try Vercel KV first
+async function createStorageAdapter(): Promise<StorageAdapter> {
+  // Try Supabase first (preferred option)
   try {
-    return new VercelKVStorage();
-  } catch {
-    console.warn('Vercel KV not available, using memory storage');
-    return new MemoryStorage();
+    const isSupabaseAvailable = await testSupabaseConnection();
+    if (isSupabaseAvailable) {
+      console.log('🎯 Using Supabase for data storage');
+      return new SupabaseStorage();
+    }
+  } catch (error) {
+    console.warn('Supabase not available:', error);
   }
+
+  // Fall back to memory storage
+  console.warn('⚠️ Using temporary memory storage - data will not persist between sessions');
+  return new MemoryStorage();
 }
 
 export class CloudFileManager {
-  private storage: StorageAdapter;
+  private storage: StorageAdapter | null = null;
+  private initPromise: Promise<void> | null = null;
 
   constructor() {
-    this.storage = createStorageAdapter();
+    this.initPromise = this.initialize();
+  }
+
+  private async initialize(): Promise<void> {
+    this.storage = await createStorageAdapter();
+  }
+
+  private async ensureInitialized(): Promise<StorageAdapter> {
+    if (this.initPromise) {
+      await this.initPromise;
+      this.initPromise = null;
+    }
+    if (!this.storage) {
+      throw new Error('Storage adapter not initialized');
+    }
+    return this.storage;
   }
 
   private getKey(category: string, filename: string): string {
@@ -93,8 +175,9 @@ export class CloudFileManager {
 
   async readJSON(category: string, filename: string): Promise<any> {
     try {
+      const storage = await this.ensureInitialized();
       const key = this.getKey(category, filename);
-      const data = await this.storage.get(key);
+      const data = await storage.get(key);
       return data;
     } catch (error) {
       console.warn(`Data not found: ${category}/${filename}`);
@@ -104,13 +187,14 @@ export class CloudFileManager {
 
   async writeJSON(category: string, filename: string, data: any): Promise<any> {
     try {
+      const storage = await this.ensureInitialized();
       const key = this.getKey(category, filename);
       const dataWithTimestamp = {
         ...data,
         lastUpdated: new Date().toISOString()
       };
       
-      await this.storage.set(key, dataWithTimestamp);
+      await storage.set(key, dataWithTimestamp);
       return dataWithTimestamp;
     } catch (error) {
       console.error(`Error storing data: ${category}/${filename}`, error);
@@ -120,8 +204,9 @@ export class CloudFileManager {
 
   async deleteJSON(category: string, filename: string): Promise<void> {
     try {
+      const storage = await this.ensureInitialized();
       const key = this.getKey(category, filename);
-      await this.storage.delete(key);
+      await storage.delete(key);
     } catch (error) {
       console.error(`Error deleting data: ${category}/${filename}`, error);
       throw error;
@@ -130,8 +215,9 @@ export class CloudFileManager {
 
   async listFiles(category: string): Promise<string[]> {
     try {
+      const storage = await this.ensureInitialized();
       const prefix = `${category}:`;
-      const keys = await this.storage.list(prefix);
+      const keys = await storage.list(prefix);
       return keys.map(key => key.replace(prefix, ''));
     } catch (error) {
       console.error(`Error listing files for category: ${category}`, error);
@@ -150,11 +236,12 @@ export class CloudFileManager {
 
   async backup(): Promise<{ [key: string]: any }> {
     try {
-      const allKeys = await this.storage.list();
+      const storage = await this.ensureInitialized();
+      const allKeys = await storage.list();
       const backup: { [key: string]: any } = {};
       
       for (const key of allKeys) {
-        backup[key] = await this.storage.get(key);
+        backup[key] = await storage.get(key);
       }
       
       return backup;
@@ -166,8 +253,9 @@ export class CloudFileManager {
 
   async restore(backupData: { [key: string]: any }): Promise<void> {
     try {
+      const storage = await this.ensureInitialized();
       for (const [key, value] of Object.entries(backupData)) {
-        await this.storage.set(key, value);
+        await storage.set(key, value);
       }
     } catch (error) {
       console.error('Error restoring backup:', error);

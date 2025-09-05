@@ -74,8 +74,28 @@ A comprehensive web application designed to help McDonald's restaurant managers 
 - **Icons**: Lucide React
 - **File Processing**: PapaParse (CSV parsing)
 - **PDF Generation**: jsPDF
+- **Database**: Supabase (PostgreSQL) with automatic fallbacks
+- **Storage**: Cloud-compatible with multiple backend options
 - **State Management**: React Hooks (useState, useEffect)
 - **Development**: Node.js, npm
+
+## 💾 Database & Storage
+
+The application supports multiple storage backends with automatic fallback:
+
+1. **Supabase (Recommended)**: Full-featured PostgreSQL database
+   - ✅ Persistent data across sessions and users
+   - ✅ Real-time collaboration capabilities
+   - ✅ Automatic backups and scaling
+   - 📚 See [SUPABASE_SETUP.md](./SUPABASE_SETUP.md) for setup guide
+
+2. **Vercel KV**: Simple key-value storage (when available)
+   - ✅ Fast and reliable for simple use cases
+   - ✅ Serverless-optimized
+
+3. **Memory Storage**: Temporary fallback
+   - ⚠️ Data only persists during session
+   - 🔄 Automatic fallback when other options unavailable
 
 ## 📋 Prerequisites
 
