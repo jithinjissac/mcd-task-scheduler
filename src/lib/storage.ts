@@ -100,7 +100,7 @@ const FileStorage = {
         ? 'https://mcd-task-scheduler.vercel.app'
         : 'http://localhost:3000';
       
-      await fetch(`${apiUrl}/api/sync/${key}`, {
+      const response = await fetch(`${apiUrl}/api/sync`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -108,10 +108,15 @@ const FileStorage = {
           'Pragma': 'no-cache',
           'Expires': '0'
         },
-        body: JSON.stringify(syncData)
+        body: JSON.stringify({ key, syncData })
       });
+      
+      if (!response.ok) {
+        console.log(`Server sync failed for ${key}, data saved locally only`);
+      }
     } catch (error) {
-      console.warn('Failed to sync to server:', error);
+      // Silently handle sync failures - data is still saved locally
+      console.log('Server sync temporarily unavailable, data saved locally only');
     }
   },
 
@@ -121,13 +126,19 @@ const FileStorage = {
         ? 'https://mcd-task-scheduler.vercel.app'
         : 'http://localhost:3000';
       
-      const response = await fetch(`${apiUrl}/api/sync/${key}?t=${Date.now()}`, {
+      const response = await fetch(`${apiUrl}/api/sync?key=${encodeURIComponent(key)}&t=${Date.now()}`, {
         headers: {
           'Cache-Control': 'no-cache, no-store, must-revalidate',
           'Pragma': 'no-cache',
           'Expires': '0'
         }
       });
+      
+      // If endpoint doesn't exist (404), silently skip sync
+      if (response.status === 404) {
+        console.log(`No server data available for ${key}, using local data only`);
+        return false;
+      }
       
       if (response.ok) {
         const serverData: SyncData = await response.json();
@@ -140,7 +151,8 @@ const FileStorage = {
         }
       }
     } catch (error) {
-      console.warn('Failed to sync from server:', error);
+      // Silently handle network errors during sync
+      console.log('Sync temporarily unavailable:', error instanceof Error ? error.message : 'Unknown error');
     }
     return false; // No update
   }

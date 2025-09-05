@@ -306,13 +306,18 @@ const TaskScheduler: React.FC = () => {
 
           for (const key of keys) {
             try {
-              const response = await fetch(`${apiUrl}/api/sync/${key}?t=${Date.now()}`, {
+              const response = await fetch(`${apiUrl}/api/sync?key=${encodeURIComponent(key)}&t=${Date.now()}`, {
                 headers: {
                   'Cache-Control': 'no-cache, no-store, must-revalidate',
                   'Pragma': 'no-cache',
                   'Expires': '0'
                 }
               });
+
+              // Skip sync if no data available
+              if (response.status === 404) {
+                continue;
+              }
 
               if (response.ok) {
                 const serverData = await response.json();
@@ -346,7 +351,8 @@ const TaskScheduler: React.FC = () => {
                 }
               }
             } catch (error) {
-              console.warn(`Failed to sync ${key}:`, error);
+              // Silently skip individual sync errors
+              continue;
             }
           }
 
