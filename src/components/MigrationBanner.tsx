@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { CloudUpload, Database, Wifi, WifiOff, CheckCircle, AlertCircle, X, Users, Calendar } from 'lucide-react';
-import apiService from '@/services/apiService_nextjs';
+import apiService from '@/services/apiService';
 
 interface MigrationBannerProps {
   onMigrationComplete?: () => void;
@@ -29,8 +29,14 @@ const MigrationBanner: React.FC<MigrationBannerProps> = ({ onMigrationComplete, 
     // Check server connection
     const checkConnection = async () => {
       try {
-        const serverAvailable = await apiService.isServerAvailable();
-        setIsServerConnected(serverAvailable);
+        // Check if isServerAvailable method exists (for development mode)
+        if (typeof apiService.isServerAvailable === 'function') {
+          const serverAvailable = await apiService.isServerAvailable();
+          setIsServerConnected(serverAvailable);
+        } else {
+          // In production mode (Vercel), assume connection is available
+          setIsServerConnected(true);
+        }
       } catch (error) {
         setIsServerConnected(false);
       }
@@ -38,15 +44,22 @@ const MigrationBanner: React.FC<MigrationBannerProps> = ({ onMigrationComplete, 
 
     checkConnection();
 
-    // Set up connection listener
-    const unsubscribe = apiService.onConnectionChange((connected) => {
-      setIsServerConnected(connected);
-    });
+    // Set up connection listener (if available)
+    let unsubscribe: (() => void) | undefined;
+    if (typeof apiService.onConnectionChange === 'function') {
+      unsubscribe = apiService.onConnectionChange((connected) => {
+        setIsServerConnected(connected);
+      });
+    }
 
     // Check for local data that can be migrated
     checkLocalData();
 
-    return unsubscribe;
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
   }, []);
 
   const checkLocalData = () => {
