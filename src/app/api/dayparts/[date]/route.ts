@@ -1,12 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { fileManager } from '@/lib/fileManager';
+import { fileManager } from '@/services/fileManager';
+
+interface RouteParams {
+  params: Promise<{ date: string }>;
+}
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { date: string } }
+  { params }: RouteParams
 ) {
   try {
-    const date = params.date;
+    const { date } = await params;
     
     // Validate date format (YYYY-MM-DD)
     if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
@@ -34,10 +38,10 @@ export async function GET(
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { date: string } }
+  { params }: RouteParams
 ) {
   try {
-    const date = params.date;
+    const { date } = await params;
     const { dayPart } = await request.json();
     
     // Validate date format

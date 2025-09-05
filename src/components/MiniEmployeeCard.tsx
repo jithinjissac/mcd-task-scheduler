@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 import TinyRemoveButton from './TinyRemoveButton';
 
 interface MiniEmployeeCardProps {
@@ -46,9 +47,11 @@ const MiniEmployeeCard: React.FC<MiniEmployeeCardProps> = ({
       {/* Avatar */}
       <div className={`${avatarSize} bg-blue-300 rounded-full flex items-center justify-center flex-shrink-0`}>
         {avatar ? (
-          <img 
+          <Image 
             src={avatar} 
             alt={name} 
+            width={compact ? 12 : 24}
+            height={compact ? 12 : 24}
             className={`${avatarSize} rounded-full object-cover`}
           />
         ) : (

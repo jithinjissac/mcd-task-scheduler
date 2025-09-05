@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { fileManager } from '@/lib/fileManager';
+import { fileManager } from '@/services/fileManager';
 
 export async function POST(request: NextRequest) {
   try {
