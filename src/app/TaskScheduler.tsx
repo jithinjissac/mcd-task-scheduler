@@ -12,9 +12,8 @@ import DayPartTabs from '@/components/DayPartTabs';
 import HorizontalEmployeePool from '@/components/HorizontalEmployeePool';
 import StationSelectionModal from '@/components/StationSelectionModal';
 import PDFLayoutGrid from '@/components/PDFLayoutGrid';
-import { MemoryStorage } from '@/lib/storage';
+import storageService from '@/services/storageService_simple';
 import apiService from '@/services/apiService';
-import { PersistenceService } from '@/services/persistenceService';
 import '../styles/compact-layout.css';
 
 const TaskScheduler: React.FC = () => {
@@ -42,14 +41,10 @@ const TaskScheduler: React.FC = () => {
   const [saveStatus, setSaveStatus] = useState<'saved' | 'saving' | 'pending' | 'error'>('saved');
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [showStaffPool, setShowStaffPool] = useState(false);
-  const [syncStatus, setSyncStatus] = useState<'synced' | 'syncing' | 'conflict' | 'offline'>('synced');
-  const [lastSyncTime, setLastSyncTime] = useState<Date | null>(null);
   
-  // Refs for change tracking and sync management
+  // Refs for change tracking
   const previousAssignmentsRef = useRef<Assignment>({});
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const syncIntervalRef = useRef<NodeJS.Timeout | null>(null);
-  const isSyncingRef = useRef(false);
 
   // Initialize assignments for empty structure
   const initializeAssignments = () => {
@@ -71,14 +66,14 @@ const TaskScheduler: React.FC = () => {
     setAssignments(newAssignments);
   };
 
-  // Save assignments using file-based storage
+  // Save assignments using hybrid storage service
   const saveAssignmentsToStorage = useCallback(async (isManual = false) => {
     try {
       if (!isManual) setSaveStatus('saving');
       
       const dateKey = selectedDate.toISOString().split('T')[0];
-      await MemoryStorage.saveAssignment(dateKey, { assignments });
-      await MemoryStorage.saveDayPart(dateKey, { dayPart: currentDayPart });
+      await storageService.saveAssignments(dateKey, assignments, currentDayPart);
+      await storageService.saveDayPart(dateKey, currentDayPart);
       
       setSaveStatus('saved');
       setLastSaved(new Date());
@@ -95,20 +90,20 @@ const TaskScheduler: React.FC = () => {
     await saveAssignmentsToStorage(true);
   }, [saveAssignmentsToStorage]);
 
-  // Load assignments using file-based storage
+  // Load assignments using hybrid storage service
   const loadAssignmentsFromStorage = useCallback(async () => {
     try {
       const dateKey = selectedDate.toISOString().split('T')[0];
-      const result = await MemoryStorage.getAssignment(dateKey);
+      const result = await storageService.getAssignments(dateKey);
       
       if (result.assignments && Object.keys(result.assignments).length > 0) {
         setAssignments(result.assignments);
         
         // Load the last used day part for this date
-        const dayPartResult = await MemoryStorage.getDayPart(dateKey);
-        if (dayPartResult && dayPartResult.dayPart && (dayPartResult.dayPart === 'Breakfast' || dayPartResult.dayPart === 'Lunch')) {
-          setCurrentDayPart(dayPartResult.dayPart as DayPart);
-          console.log('Restored last used day part for date:', dateKey, '→', dayPartResult.dayPart);
+        const dayPart = await storageService.getDayPart(dateKey);
+        if (dayPart && (dayPart === 'Breakfast' || dayPart === 'Lunch')) {
+          setCurrentDayPart(dayPart as DayPart);
+          console.log('Restored last used day part for date:', dateKey, '→', dayPart);
         }
         
         console.log('Assignments loaded from storage for date:', dateKey);
@@ -125,11 +120,11 @@ const TaskScheduler: React.FC = () => {
     }
   }, [selectedDate]);
 
-  // Load employees from file-based storage for the selected date
+  // Load employees from server storage for the selected date
   const loadEmployeesFromStorage = useCallback(async () => {
     try {
       const dateKey = selectedDate.toISOString().split('T')[0];
-      const schedule = await MemoryStorage.getSchedule(dateKey);
+      const schedule = await storageService.getSchedule(dateKey);
       
       if (schedule && schedule.employees && Array.isArray(schedule.employees) && schedule.employees.length > 0) {
         setEmployees(schedule.employees);
@@ -159,27 +154,6 @@ const TaskScheduler: React.FC = () => {
       }
     }; 
   }, []);
-
-  // Sync localStorage data to server on mount (for persistence across page reloads)
-  useEffect(() => {
-    if (!mounted) return;
-    
-    const syncData = async () => {
-      try {
-        // In production mode, sync any localStorage data to server
-        if (process.env.NODE_ENV === 'production') {
-          const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
-          await PersistenceService.syncToServer(baseUrl);
-          console.log('🔄 Data synced from localStorage to server');
-        }
-      } catch (error) {
-        console.warn('⚠️ Failed to sync data on mount:', error);
-      }
-    };
-    
-    // Delay sync slightly to ensure everything is initialized
-    setTimeout(syncData, 1000);
-  }, [mounted]);
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -213,14 +187,17 @@ const TaskScheduler: React.FC = () => {
   useEffect(() => {
     if (!mounted) return;
 
-    // With file-based storage, we're always in local mode with optional sync
-    setIsServerMode(false);
+    // Check initial server mode with safety check
+    if (storageService && typeof storageService.isServerMode === 'function') {
+      setIsServerMode(storageService.isServerMode());
+    }
 
     // Set up connection listener
     const unsubscribeConnection = apiService.onConnectionChange((connected) => {
       setIsConnected(connected);
-      // File-based storage doesn't depend on server connection
-      setIsServerMode(false);
+      if (storageService && typeof storageService.isServerMode === 'function') {
+        setIsServerMode(storageService.isServerMode());
+      }
     });
 
     // Set up real-time update listeners
@@ -268,122 +245,6 @@ const TaskScheduler: React.FC = () => {
       apiService.leaveDate(currentDateKey);
     };
   }, [mounted, selectedDate]);
-
-  // Real-time cross-device synchronization with polling
-  useEffect(() => {
-    if (!mounted) return;
-
-    const startRealtimeSync = () => {
-      // Clear any existing interval
-      if (syncIntervalRef.current) {
-        clearInterval(syncIntervalRef.current);
-      }
-
-      // Set up polling interval for cross-device sync (every 10 seconds)
-      syncIntervalRef.current = setInterval(async () => {
-        if (isSyncingRef.current) return; // Skip if already syncing
-
-        try {
-          isSyncingRef.current = true;
-          setSyncStatus('syncing');
-
-          const currentDateKey = selectedDate.toISOString().split('T')[0];
-          
-          // Check for updates from other devices
-          const apiUrl = process.env.NODE_ENV === 'production' 
-            ? 'https://mcd-task-scheduler.vercel.app'
-            : 'http://localhost:3000';
-
-          const keys = [`schedule_${currentDateKey}`, `assignment_${currentDateKey}`, `daypart_${currentDateKey}`];
-          let hasUpdates = false;
-
-          for (const key of keys) {
-            try {
-              const response = await fetch(`${apiUrl}/api/sync?key=${encodeURIComponent(key)}&t=${Date.now()}`, {
-                headers: {
-                  'Cache-Control': 'no-cache, no-store, must-revalidate',
-                  'Pragma': 'no-cache',
-                  'Expires': '0'
-                }
-              });
-
-              // Skip sync if no data available
-              if (response.status === 404) {
-                continue;
-              }
-
-              if (response.ok) {
-                const serverData = await response.json();
-                
-                // Check if we have this data locally
-                const localData = localStorage.getItem(`mcd_${key}`);
-                let shouldUpdate = false;
-
-                if (!localData) {
-                  shouldUpdate = true;
-                } else {
-                  const localSyncData = JSON.parse(localData);
-                  if (serverData.timestamp > localSyncData.timestamp) {
-                    shouldUpdate = true;
-                  }
-                }
-
-                if (shouldUpdate) {
-                  // Update localStorage with newer data from server
-                  localStorage.setItem(`mcd_${key}`, JSON.stringify(serverData));
-                  hasUpdates = true;
-
-                  // Update state based on the data type
-                  if (key.startsWith('schedule_')) {
-                    setEmployees(serverData.data.employees || []);
-                  } else if (key.startsWith('assignment_')) {
-                    setAssignments(serverData.data.assignments || {});
-                  } else if (key.startsWith('daypart_')) {
-                    setCurrentDayPart(serverData.data.dayPart || 'Breakfast');
-                  }
-                }
-              }
-            } catch (error) {
-              // Silently skip individual sync errors
-              continue;
-            }
-          }
-
-          setSyncStatus('synced');
-          if (hasUpdates) {
-            setLastSyncTime(new Date());
-            console.log('🔄 Cross-device sync completed with updates');
-          }
-
-        } catch (error) {
-          console.warn('Cross-device sync error:', error);
-          setSyncStatus('offline');
-        } finally {
-          isSyncingRef.current = false;
-        }
-      }, 10000); // Poll every 10 seconds
-    };
-
-    startRealtimeSync();
-
-    return () => {
-      if (syncIntervalRef.current) {
-        clearInterval(syncIntervalRef.current);
-      }
-    };
-  }, [mounted, selectedDate]);
-
-  // Cleanup all intervals on unmount
-  useEffect(() => {
-    return () => {
-      if (saveTimeoutRef.current) {
-        clearTimeout(saveTimeoutRef.current);
-      }
-      if (syncIntervalRef.current) {
-        clearInterval(syncIntervalRef.current);
-      }
-    };
-  }, []);
 
   // Manage body scroll when confirmation modal is open
   useEffect(() => {
@@ -459,10 +320,10 @@ const TaskScheduler: React.FC = () => {
     }
   }, [mounted, loadAssignmentsFromStorage]);
 
-  // Load employees from file-based storage for a specific date
+  // Load employees from server storage for a specific date
   const loadEmployeesFromStorageForDate = async (dateKey: string) => {
     try {
-      const schedule = await MemoryStorage.getSchedule(dateKey);
+      const schedule = await storageService.getSchedule(dateKey);
       
       if (schedule && schedule.employees && Array.isArray(schedule.employees) && schedule.employees.length > 0) {
         setEmployees(schedule.employees);
@@ -481,33 +342,11 @@ const TaskScheduler: React.FC = () => {
     }
   };
 
-  // Get the latest uploaded schedule (most recent across all dates) from localStorage
+  // Get the latest uploaded schedule (most recent across all dates)
   const getLatestSchedule = async () => {
     try {
-      // Get all stored dates and find the most recent one with employee data
-      const allData = await MemoryStorage.getAllData();
-      let latestDate: string | null = null;
-      let latestTimestamp = 0;
-      
-      for (const [date, schedule] of Object.entries(allData.schedules)) {
-        if (schedule.employees && schedule.employees.length > 0) {
-          const timestamp = new Date(schedule.savedAt || 0).getTime();
-          if (timestamp > latestTimestamp) {
-            latestTimestamp = timestamp;
-            latestDate = date;
-          }
-        }
-      }
-      
-      if (latestDate && allData.schedules[latestDate]) {
-        return {
-          employees: allData.schedules[latestDate].employees,
-          date: latestDate,
-          uploadedAt: allData.schedules[latestDate].savedAt
-        };
-      }
-      
-      return null;
+      const latest = await storageService.getLatestSchedule();
+      return latest;
     } catch (error) {
       console.warn('Failed to get latest schedule:', error);
       return null;
@@ -554,7 +393,7 @@ const TaskScheduler: React.FC = () => {
           // For replace all assignments, clear existing assignments and reinitialize
           console.log('Replace all assignments: clearing existing assignments for date:', workingDate.toLocaleDateString());
           const dateKey = workingDate.toISOString().split('T')[0]; // Use workingDate instead of selectedDate
-          await MemoryStorage.saveAssignment(dateKey, { assignments: {} });
+          await storageService.saveAssignments(dateKey, {});
           initializeAssignments();
           sessionStorage.removeItem('replaceAllAssignments');
         } else if (!hasNewUpload) {
@@ -577,16 +416,16 @@ const TaskScheduler: React.FC = () => {
         // Small delay to ensure state updates are processed
         setTimeout(async () => {
           try {
-            const result = await MemoryStorage.getAssignment(finalDateKey);
+            const result = await storageService.getAssignments(finalDateKey);
             
             if (result.assignments && Object.keys(result.assignments).length > 0) {
               setAssignments(result.assignments);
               
               // Load the last used day part for this date
-              const dayPartResult = await MemoryStorage.getDayPart(finalDateKey);
-              if (dayPartResult && dayPartResult.dayPart && (dayPartResult.dayPart === 'Breakfast' || dayPartResult.dayPart === 'Lunch')) {
-                setCurrentDayPart(dayPartResult.dayPart as DayPart);
-                console.log('Restored last used day part for date:', finalDateKey, '→', dayPartResult.dayPart);
+              const dayPart = await storageService.getDayPart(finalDateKey);
+              if (dayPart && (dayPart === 'Breakfast' || dayPart === 'Lunch')) {
+                setCurrentDayPart(dayPart as DayPart);
+                console.log('Restored last used day part for date:', finalDateKey, '→', dayPart);
               }
               
               console.log('Assignments loaded from storage for specific date:', finalDateKey);
@@ -633,13 +472,12 @@ const TaskScheduler: React.FC = () => {
   const handleAddEmployee = async (newEmployee: Employee) => {
     setEmployees(prev => [...prev, newEmployee]);
     
-    // Save updated employee list using file-based storage
+    // Save updated employee list using storage service
     try {
       const dateKey = selectedDate.toISOString().split('T')[0];
       const updatedEmployees = [...employees, newEmployee];
       
-      await MemoryStorage.saveSchedule(dateKey, { employees: updatedEmployees });
-      
+      await storageService.saveSchedule(dateKey, updatedEmployees);
       console.log('New employee added and saved:', newEmployee.name);
     } catch (error) {
       console.warn('Failed to save employee to storage:', error);
@@ -655,7 +493,7 @@ const TaskScheduler: React.FC = () => {
     const dateKey = selectedDate.toISOString().split('T')[0];
 
     try {
-      const existingData = await MemoryStorage.getAssignment(dateKey);
+      const existingData = await storageService.getAssignments(dateKey);
       const existingAssignments = existingData?.assignments;
 
       if (existingAssignments) {
@@ -691,13 +529,13 @@ const TaskScheduler: React.FC = () => {
       if (result.success && result.employees) {
         setEmployees(result.employees);
         
-        // Save using file-based storage with current date
+        // Save using storage service with current date
         const dateKey = selectedDate.toISOString().split('T')[0];
-        await MemoryStorage.saveSchedule(dateKey, { employees: result.employees });
+        await storageService.saveSchedule(dateKey, result.employees, file.name, true); // replaceAll = true
         
         // Clear existing assignments since we're importing a new schedule
         setAssignments({});
-        await MemoryStorage.saveAssignment(dateKey, { assignments: {} });
+        await storageService.saveAssignments(dateKey, {});
         
         console.log('Schedule imported successfully:', result.employees.length, 'employees');
         alert(`Successfully imported ${result.employees.length} employees! All previous assignments have been cleared.`);
@@ -718,9 +556,9 @@ const TaskScheduler: React.FC = () => {
       if (result.success && result.employees) {
         setEmployees(result.employees);
         
-        // Save using file-based storage with current date
+        // Save using storage service with current date
         const dateKey = selectedDate.toISOString().split('T')[0];
-        await MemoryStorage.saveSchedule(dateKey, { employees: result.employees });
+        await storageService.saveSchedule(dateKey, result.employees, file.name);
         
         console.log('Employee pool updated:', result.employees.length, 'employees');
         alert(`Successfully updated employee pool with ${result.employees.length} employees! Existing assignments preserved.`);
@@ -861,7 +699,7 @@ const TaskScheduler: React.FC = () => {
     // Save the day part preference for this date
     try {
       const dateKey = selectedDate.toISOString().split('T')[0];
-      await MemoryStorage.saveDayPart(dateKey, { dayPart });
+      await storageService.saveDayPart(dateKey, dayPart);
       console.log('Day part preference saved for date:', dateKey, '→', dayPart);
     } catch (error) {
       console.warn('Failed to save day part preference:', error);
@@ -977,35 +815,8 @@ const TaskScheduler: React.FC = () => {
           onDayPartChange={handleDayPartChange}
         />
         
-        {/* Save Status and Sync Status Indicators */}
+        {/* Save Status Indicator */}
         <div className="flex items-center gap-2">
-          {/* Sync Status Indicator */}
-          <div className={`flex items-center gap-2 px-3 py-1 rounded-full text-xs ${
-            syncStatus === 'synced' ? 'bg-green-50 text-green-700 border border-green-200' :
-            syncStatus === 'syncing' ? 'bg-blue-50 text-blue-700 border border-blue-200' :
-            syncStatus === 'conflict' ? 'bg-orange-50 text-orange-700 border border-orange-200' :
-            'bg-gray-50 text-gray-700 border border-gray-200'
-          }`}>
-            <div className={`w-1.5 h-1.5 rounded-full ${
-              syncStatus === 'synced' ? 'bg-green-500' :
-              syncStatus === 'syncing' ? 'bg-blue-500 animate-pulse' :
-              syncStatus === 'conflict' ? 'bg-orange-500 animate-pulse' :
-              'bg-gray-400'
-            }`}></div>
-            <span>
-              {syncStatus === 'synced' && '🔄 Synced'}
-              {syncStatus === 'syncing' && '🔄 Syncing...'}
-              {syncStatus === 'conflict' && '⚠️ Conflict'}
-              {syncStatus === 'offline' && '📶 Offline'}
-            </span>
-            {lastSyncTime && syncStatus === 'synced' && (
-              <span className="text-xs opacity-70">
-                {lastSyncTime.toLocaleTimeString()}
-              </span>
-            )}
-          </div>
-
-          {/* Save Status Indicator */}
           <div className={`flex items-center gap-2 px-3 py-1 rounded-full text-sm ${
             saveStatus === 'saved' ? 'bg-green-100 text-green-800' :
             saveStatus === 'saving' ? 'bg-blue-100 text-blue-800' :

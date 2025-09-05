@@ -1,53 +1,82 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { MemoryStorage } from '@/lib/storage';
-
-// CORS headers for cross-origin requests
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-};
-
-export async function OPTIONS(request: NextRequest) {
-  return new NextResponse(null, {
-    status: 200,
-    headers: corsHeaders,
-  });
-}
+import { fileManager } from '@/lib/fileManager';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ date: string }> }
+  { params }: { params: { date: string } }
 ) {
   try {
-    const { date } = await params;
-    const data = await MemoryStorage.getDayPart(date);
-    return NextResponse.json(data, { headers: corsHeaders });
-  } catch (error) {
-    console.error('Error reading dayparts:', error);
-    return NextResponse.json({ error: 'Failed to read dayparts' }, { 
-      status: 500,
-      headers: corsHeaders 
+    const date = params.date;
+    
+    // Validate date format (YYYY-MM-DD)
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+      return NextResponse.json(
+        { error: 'Invalid date format. Use YYYY-MM-DD' },
+        { status: 400 }
+      );
+    }
+
+    const dayPartData = await fileManager.readJSON('dayparts', date);
+    
+    return NextResponse.json({
+      dayPart: dayPartData?.dayPart || 'Breakfast',
+      savedAt: dayPartData?.savedAt,
+      date
     });
+  } catch (error) {
+    console.error('Error getting daypart:', error);
+    return NextResponse.json(
+      { error: 'Failed to get daypart' },
+      { status: 500 }
+    );
   }
 }
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: Promise<{ date: string }> }
+  { params }: { params: { date: string } }
 ) {
   try {
-    const { date } = await params;
-    const body = await request.json();
+    const date = params.date;
+    const { dayPart } = await request.json();
     
-    await MemoryStorage.saveDayPart(date, body);
-    
-    return NextResponse.json({ success: true }, { headers: corsHeaders });
-  } catch (error) {
-    console.error('Error saving dayparts:', error);
-    return NextResponse.json({ error: 'Failed to save dayparts' }, { 
-      status: 500,
-      headers: corsHeaders 
+    // Validate date format
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+      return NextResponse.json(
+        { error: 'Invalid date format. Use YYYY-MM-DD' },
+        { status: 400 }
+      );
+    }
+
+    // Validate dayPart
+    const validDayParts = ['Breakfast', 'Lunch'];
+    if (!validDayParts.includes(dayPart)) {
+      return NextResponse.json(
+        { error: 'Invalid dayPart. Must be Breakfast or Lunch' },
+        { status: 400 }
+      );
+    }
+
+    const dayPartData = {
+      dayPart,
+      savedAt: new Date().toISOString(),
+      date
+    };
+
+    // Save daypart
+    const savedDayPart = await fileManager.writeJSON('dayparts', date, dayPartData);
+
+    return NextResponse.json({
+      success: true,
+      dayPart: savedDayPart.dayPart,
+      savedAt: savedDayPart.savedAt,
+      date
     });
+  } catch (error) {
+    console.error('Error saving daypart:', error);
+    return NextResponse.json(
+      { error: 'Failed to save daypart' },
+      { status: 500 }
+    );
   }
 }
