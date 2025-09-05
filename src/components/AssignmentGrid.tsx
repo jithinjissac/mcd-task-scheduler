@@ -23,75 +23,41 @@ const AssignmentGrid: React.FC<AssignmentGridProps> = ({
   onRemove,
   onMove
 }) => {
-  // Create a 9x9 grid from the available tables
-  const createGridLayout = () => {
-    const gridSize = 9;
-    const grid = Array(gridSize).fill(null).map(() => Array(gridSize).fill(null));
-    
-    // Place tables in the grid in a logical arrangement
-    const tables = layout.tables;
-    let tableIndex = 0;
-    
-    for (let row = 0; row < gridSize && tableIndex < tables.length; row++) {
-      for (let col = 0; col < gridSize && tableIndex < tables.length; col++) {
-        grid[row][col] = tables[tableIndex];
-        tableIndex++;
-      }
-    }
-    
-    return grid;
-  };
-
-  const gridLayout = createGridLayout();
-
   return (
     <div className="assignment-section">
-      <h2 className="text-xl font-bold text-gray-800 mb-4">{dayPart} Assignment Grid (9x9)</h2>
+      <h2 className="text-xl font-bold text-gray-800 mb-4">{dayPart} Assignment Grid</h2>
       
-      <div className="grid-container-9x9">
-        <div className="assignment-grid-9x9">
-          {gridLayout.map((row, rowIndex) => (
-            <div key={rowIndex} className="grid-row">
-              {row.map((table, colIndex) => (
-                <div key={`${rowIndex}-${colIndex}`} className="grid-cell">
-                  {table ? (
-                    <div className="station-card-9x9" data-station-id={table.id}>
-                      {/* Station Header */}
-                      <div className="station-header-9x9">
-                        <h3 className="station-title-9x9">{table.name}</h3>
-                      </div>
-                      
-                      {/* Station Columns/Tasks */}
-                      <div className="station-content-9x9">
-                        {table.columns.map((column: string) => (
-                            <div key={column} className="task-column-9x9">
-                              <div className="task-header-9x9">
-                                <span className="task-name-9x9">{column}</span>
-                              </div>
-                              <div className="task-assignments-9x9">
-                                <DropZone
-                                  tableId={table.id}
-                                  columnName={column}
-                                  employees={assignments?.[table.id]?.[column] || []}
-                                  allEmployees={employees}
-                                  onDrop={onDrop}
-                                  onRemove={onRemove}
-                                  onMove={onMove}
-                                  assignments={assignments}
-                                />
-                              </div>
-                            </div>
-                          ))
-                        }
-                      </div>
+      <div className="grid-container-responsive">
+        <div className="assignment-grid-responsive">
+          {layout.tables.map((table) => (
+            <div key={table.id} className="station-card-responsive" data-station-id={table.id}>
+              {/* Station Header */}
+              <div className="station-header-responsive">
+                <h3 className="station-title-responsive">{table.name}</h3>
+              </div>
+              
+              {/* Station Columns/Tasks */}
+              <div className="station-content-responsive">
+                {table.columns.map((column: string) => (
+                  <div key={column} className="task-column-responsive">
+                    <div className="task-header-responsive">
+                      <span className="task-name-responsive">{column}</span>
                     </div>
-                  ) : (
-                    <div className="empty-cell">
-                      {/* Empty grid cell */}
+                    <div className="task-assignments-responsive">
+                      <DropZone
+                        tableId={table.id}
+                        columnName={column}
+                        employees={assignments?.[table.id]?.[column] || []}
+                        allEmployees={employees}
+                        onDrop={onDrop}
+                        onRemove={onRemove}
+                        onMove={onMove}
+                        assignments={assignments}
+                      />
                     </div>
-                  )}
-                </div>
-              ))}
+                  </div>
+                ))}
+              </div>
             </div>
           ))}
         </div>
