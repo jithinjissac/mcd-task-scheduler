@@ -3,12 +3,18 @@ import { Employee, Assignment } from '@/types';
 
 // Dynamic API URL configuration for both development and production
 const getApiBaseUrl = () => {
-  // In production (Vercel), use the Next.js API routes
+  // In production (Vercel), always use the current domain
   if (process.env.NODE_ENV === 'production') {
-    const baseUrl = process.env.NEXT_PUBLIC_API_URL || 
-                   (typeof window !== 'undefined' ? window.location.origin : '');
-    console.log('🌐 Using production API URL:', baseUrl);
-    return baseUrl;
+    if (typeof window !== 'undefined') {
+      // In browser, use current origin
+      console.log('🌐 Using production API URL (browser):', window.location.origin);
+      return window.location.origin;
+    } else {
+      // SSR fallback - use environment variable or vercel domain
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://mcd-task-scheduler.vercel.app';
+      console.log('🌐 Using production API URL (SSR):', baseUrl);
+      return baseUrl;
+    }
   }
   
   // In development, check if we have an environment variable first

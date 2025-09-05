@@ -37,8 +37,8 @@ Go to Project Settings > Environment Variables and add:
 
 ```
 NODE_ENV=production
-NEXT_PUBLIC_API_URL=https://your-app-name.vercel.app
-NEXT_PUBLIC_WS_URL=https://your-app-name.vercel.app
+NEXT_PUBLIC_API_URL=https://mcd-task-scheduler.vercel.app
+NEXT_PUBLIC_WS_URL=https://mcd-task-scheduler.vercel.app
 NEXT_PUBLIC_APP_NAME=McDonald's Task Scheduler
 ```
 
@@ -74,7 +74,7 @@ The app includes:
 
 ## Domains
 
-- Production: `https://your-app-name.vercel.app`
+- Production: `https://mcd-task-scheduler.vercel.app`
 - Custom domain: Configure in Vercel dashboard under "Domains"
 
 ## Monitoring
