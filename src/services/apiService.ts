@@ -67,7 +67,13 @@ class ApiService {
   };
 
   constructor() {
-    this.initializeSocket();
+    // Only initialize Socket.IO in development mode
+    if (!USE_NEXT_API) {
+      this.initializeSocket();
+    } else {
+      console.log('🔄 Running in production mode - using polling instead of Socket.IO');
+      this.initializePolling();
+    }
   }
 
   private initializeSocket() {
@@ -127,6 +133,49 @@ class ApiService {
 
     } catch (error) {
       console.error('Failed to initialize socket:', error);
+    }
+  }
+
+  private initializePolling() {
+    // For production mode, we use polling instead of Socket.IO
+    // Start polling for updates every 5 seconds
+    this.startPolling();
+    
+    // Simulate connection event
+    setTimeout(() => {
+      this.connectionListeners.forEach(listener => listener(true));
+    }, 100);
+  }
+
+  private pollingInterval: NodeJS.Timeout | null = null;
+  private lastPollTime = 0;
+
+  private startPolling() {
+    if (this.pollingInterval) return;
+    
+    this.pollingInterval = setInterval(async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/realtime?lastPoll=${this.lastPollTime}`);
+        const data = await response.json();
+        
+        if (data.hasUpdates) {
+          // Notify listeners of potential updates
+          this.updateListeners.schedule.forEach(listener => listener({}));
+          this.updateListeners.assignments.forEach(listener => listener({}));
+          this.updateListeners.daypart.forEach(listener => listener({}));
+        }
+        
+        this.lastPollTime = data.timestamp || Date.now();
+      } catch (error) {
+        console.error('Polling error:', error);
+      }
+    }, 5000); // Poll every 5 seconds
+  }
+
+  private stopPolling() {
+    if (this.pollingInterval) {
+      clearInterval(this.pollingInterval);
+      this.pollingInterval = null;
     }
   }
 
@@ -325,6 +374,7 @@ class ApiService {
       this.socket.disconnect();
       this.socket = null;
     }
+    this.stopPolling();
   }
 }
 
